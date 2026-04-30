@@ -1,3 +1,4 @@
+# python version => python 3.10.14
 import tkinter as tk
 
 from app import SegViewApp
