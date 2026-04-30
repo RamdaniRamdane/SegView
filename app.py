@@ -40,15 +40,20 @@ class SegViewApp:
         if os.path.isdir(path_dir):
             self.path_dir = path_dir
             files = os.listdir(path_dir)
-            self.files = files
-            path_first = path_dir + "/" + files[0]
-            self.ui.next_btn.config(state=tk.NORMAL)
-            self.ui.prev_btn.config(state=tk.NORMAL)
-            self.ui.zoom_slider.config(state=tk.NORMAL)
-            self.ui.refuse_but.config(state=tk.NORMAL)
-            self.ui.validate_but.config(state=tk.NORMAL)
+            if any(f.endswith(".tif") for f in files):
+                self.files = files
+                path_first = path_dir + "/" + files[0]
+                self.ui.next_btn.config(state=tk.NORMAL)
+                self.ui.prev_btn.config(state=tk.NORMAL)
+                self.ui.zoom_slider.config(state=tk.NORMAL)
+                self.ui.refuse_but.config(state=tk.NORMAL)
+                self.ui.validate_but.config(state=tk.NORMAL)
 
-            self.open_file(path_first)
+                self.open_file(path_first)
+            else:
+                tk.messagebox.showerror(
+                    title="Not found", message="no tif file in this dir"
+                )
 
         else:
             tk.messagebox.showerror(title="Not found", message="directory not found")
