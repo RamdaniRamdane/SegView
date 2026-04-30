@@ -65,6 +65,12 @@ class FileManager:
         os.makedirs(invalid_path, exist_ok=True)
 
         if is_valid:
-            shutil.copy(file_path, os.path.join(valid_path, filename))
+            if os.path.isfile(invalid_path + "/" + filename):
+                shutil.move(invalid_path + "/" + filename, valid_path)
+            else:
+                shutil.copy(file_path, os.path.join(valid_path, filename))
         else:
-            shutil.copy(file_path, os.path.join(invalid_path, filename))
+            if os.path.isfile(valid_path + "/" + filename):
+                shutil.move(valid_path + "/" + filename, invalid_path)
+            else:
+                shutil.copy(file_path, os.path.join(invalid_path, filename))

@@ -45,8 +45,10 @@ class SegViewUI:
         self.sidebar.grid_rowconfigure(1, weight=0)
         self.sidebar.grid_rowconfigure(2, weight=0)
         self.sidebar.grid_rowconfigure(3, weight=0)
-        self.sidebar.grid_rowconfigure(4, weight=1)  # space
+        self.sidebar.grid_rowconfigure(4, weight=0)
         self.sidebar.grid_rowconfigure(5, weight=0)
+        self.sidebar.grid_rowconfigure(6, weight=0)
+        self.sidebar.grid_rowconfigure(7, weight=0)
         self.sidebar.grid_columnconfigure(0, weight=1)
 
         # toolbar
@@ -143,7 +145,7 @@ class SegViewUI:
 
         UIutils.sidebar_label(self.sidebar, "INPUT", 0)
         self.btn = UIutils.make_btn(
-            self.sidebar, "Import Image", 1, color=MUTED, text_color=TEXT_HI, pady_top=4
+            self.sidebar, "Import Foder", 1, color=MUTED, text_color=TEXT_HI, pady_top=4
         )
         self.get_model = UIutils.make_btn(
             self.sidebar, "Import Model", 2, color=MUTED, text_color=TEXT, pady_top=6
@@ -151,10 +153,10 @@ class SegViewUI:
 
         UIutils.sidebar_label(self.sidebar, "REVIEW", 3)
         self.validate_but = UIutils.make_btn(
-            self.sidebar, "Validate", 4, color=SUCCESS, text_color="white", pady_top=4
+            self.sidebar, "Validate", 5, color=SUCCESS, text_color="white", pady_top=4
         )
         self.refuse_but = UIutils.make_btn(
-            self.sidebar, "Refuse", 5, color=DANGER, text_color="white", pady_top=4
+            self.sidebar, "Refuse", 6, color=DANGER, text_color="white", pady_top=4
         )
 
         # QUIT pinned on the bottom
@@ -172,4 +174,30 @@ class SegViewUI:
             cursor="hand2",
             command=self.root.destroy,
         )
-        self.quit_btn.grid(row=6, column=0, sticky="ew", padx=12, pady=(0, 10))
+        self.navigateFrame = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
+        self.navigateFrame.grid(row=4, column=0)
+        self.navigateFrame.grid_columnconfigure(0, weight=0)
+        self.navigateFrame.grid_columnconfigure(1, weight=0)
+        self.navigateFrame.grid_rowconfigure(0, weight=1)
+
+        self.quit_btn.grid(row=7, column=0, sticky="sew", padx=12, pady=(0, 10))
+        self.next_btn = tk.Button(
+            self.navigateFrame,
+            text="Next",
+            font=(MONO, 8),
+            bg=MUTED,
+            fg=TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+        )
+        self.next_btn.grid(row=0, column=1, sticky="en", padx=2, pady=2)
+        self.prev_btn = tk.Button(
+            self.navigateFrame,
+            text="Prev",
+            font=(MONO, 8),
+            bg=MUTED,
+            fg=TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+        )
+        self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)

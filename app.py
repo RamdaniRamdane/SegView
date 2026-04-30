@@ -1,3 +1,6 @@
+import os
+from tkinter import filedialog
+
 import tifffile
 
 from file_manager import FileManager
@@ -15,20 +18,28 @@ class SegViewApp:
         self.shape = None
         self.zoom = 0
         self.has_prediction = False
+        self.files = []
+        self.index = 0
+        self.path_dir = ""
 
     def bind_events(self):
-        self.ui.btn.config(command=self.open_file)
+        self.ui.btn.config(command=self.open_dir)
         self.ui.refuse_but.config(command=lambda: self.save(False))
         self.ui.validate_but.config(command=lambda: self.save(True))
         self.ui.zoom_slider.config(command=self.change_z)
+        self.ui.next_btn.config(command=lambda: self.navigate("NEXT"))
+        self.ui.prev_btn.config(command=lambda: self.navigate("PREV"))
 
-    def open_file(self):
-        from tkinter import filedialog
+    def open_dir(self):
+        path_dir = filedialog.askdirectory()
+        self.path_dir = path_dir
+        print(path_dir)
+        files = os.listdir(path_dir)
+        self.files = files
+        path_first = path_dir + "/" + files[0]
+        self.open_file(path_first)
 
-        path = filedialog.askopenfilename()
-        if not path:
-            return
-
+    def open_file(self, path):
         self.file_path = path
 
         display_path = path if len(path) <= 72 else "..." + path[-70:]
@@ -36,7 +47,8 @@ class SegViewApp:
 
         self.data = tifffile.imread(path)
         self.shape = self.data.shape
-        self.zoom = 0
+        # ici j ai mis le zoom au milieu car generalement le model detect dans le milieu (z,x,y)
+        self.zoom = int(self.shape[0] / 2)
 
         self.ui.info_label.config(text=f"shape={self.shape} dtype={self.data.dtype}")
 
@@ -46,11 +58,32 @@ class SegViewApp:
         # slider config
         if self.data.ndim > 2:
             self.ui.zoom_slider.config(to=self.shape[0] - 1)
-            self.ui.zoom_slider.set(0)
+            self.ui.zoom_slider.set(self.zoom)
         else:
             self.ui.zoom_slider.config(to=0)
 
         self.update_display()
+
+    def navigate(self, direction):
+        if direction == "NEXT" and len(self.files):
+            self.index = (
+                self.index + 1
+                if self.index < (len(self.files) - 1)
+                else ((self.index + 1) % len(self.files))
+            )
+            print(self.index)
+            self.open_file(self.path_dir + "/" + self.files[self.index])
+        elif direction == "PREV" and len(self.files):
+            self.index = (
+                self.index - 1
+                if self.index > 0
+                else ((self.index - 1) % len(self.files))
+            )
+
+            print(self.index)
+            self.open_file(self.path_dir + "/" + self.files[self.index])
+        else:
+            print("no files")
 
     def update_display(self):
         if self.data is None:
