@@ -4,6 +4,7 @@ from tkinter import filedialog
 
 import tifffile
 
+from biom3d_handel import Biom3d
 from file_manager import FileManager
 from image_utils import display
 
@@ -22,6 +23,7 @@ class SegViewApp:
         self.files = []
         self.index = 0
         self.path_dir = ""
+        self.biom = Biom3d()
 
     def bind_events(self):
         self.ui.btn.config(command=self.open_dir)
@@ -34,6 +36,7 @@ class SegViewApp:
         self.ui.prev_btn.config(
             state=tk.DISABLED, command=lambda: self.navigate("PREV")
         )
+        self.ui.get_model.config(command=self.biom.get_model)
 
     def open_dir(self):
         path_dir = filedialog.askdirectory()

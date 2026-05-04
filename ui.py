@@ -148,7 +148,12 @@ class SegViewUI:
             self.sidebar, "Import Foder", 1, color=MUTED, text_color=TEXT_HI, pady_top=4
         )
         self.get_model = UIutils.make_btn(
-            self.sidebar, "Import Model", 2, color=MUTED, text_color=TEXT, pady_top=6
+            self.sidebar,
+            "Import Biom3d Model",
+            2,
+            color=MUTED,
+            text_color=TEXT,
+            pady_top=6,
         )
 
         UIutils.sidebar_label(self.sidebar, "REVIEW", 3)
