@@ -36,7 +36,7 @@ class SegViewApp:
         self.ui.prev_btn.config(
             state=tk.DISABLED, command=lambda: self.navigate("PREV")
         )
-        self.ui.get_model.config(command=self.biom.get_model)
+        self.ui.get_model.config(state=tk.DISABLED, command=self.biom.get_model)
 
     def open_dir(self):
         path_dir = filedialog.askdirectory()
@@ -51,6 +51,7 @@ class SegViewApp:
                 self.ui.zoom_slider.config(state=tk.NORMAL)
                 self.ui.refuse_but.config(state=tk.NORMAL)
                 self.ui.validate_but.config(state=tk.NORMAL)
+                self.ui.get_model.config(state=tk.NORMAL)
 
                 self.open_file(path_first)
             else:
