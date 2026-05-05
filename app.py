@@ -45,8 +45,10 @@ class SegViewApp:
         self.ui.rev_btn.config(command=lambda: self.route("review"))
         self.ui.fine_btn.config(command=lambda: self.route("fineTune"))
         self.ui.btn.config(command=lambda: self.open_dir("PATH_RAW"))
-        self.ui.refuse_but.config(state=tk.DISABLED, command=lambda: self.save(False))
-        self.ui.validate_but.config(state=tk.DISABLED, command=lambda: self.save(True))
+        self.ui.refuse_but.config(
+            state=tk.DISABLED, command=lambda: self.save(False))
+        self.ui.validate_but.config(
+            state=tk.DISABLED, command=lambda: self.save(True))
         self.ui.zoom_slider.config(state=tk.DISABLED, command=self.change_z)
         self.ui.next_btn.config(
             state=tk.DISABLED, command=lambda: self.navigate("NEXT")
@@ -65,16 +67,17 @@ class SegViewApp:
                 skip_preprocessing=False,
             )
         )
+        self.ui.get_predictions_path.config(
+            command=lambda: self.open_dir("PATH_PRED"))
 
     def open_dir(self, action):
         path_dir = filedialog.askdirectory()
         if os.path.isdir(path_dir):
-            if action == "PATH_RAW":
-                self.path_dir = path_dir
-                path_out = self.path_dir.split("/")
-                path_out.pop()
-                self.path_out = "/".join(path_out) + "/final_out"
-                print(self.path_out)
+            if action == "PATH_RAW" or action == "PATH_PRED":
+                if action == "PATH_RAW":
+                    self.path_dir = path_dir
+                if action == "PATH_RAW":
+                    self.path_out = path_dir
                 files = os.listdir(path_dir)
                 if len(files) > 1:
                     self.ui.navigateFrame.grid()
@@ -91,11 +94,20 @@ class SegViewApp:
                     self.ui.refuse_but.config(state=tk.NORMAL)
                     self.ui.validate_but.config(state=tk.NORMAL)
                     self.ui.get_model.config(state=tk.NORMAL, fg="white")
-                    self.open_file(path_first)
+                    if action == "PATH_RAW":
+                        self.open_file(path_first)
+                    if action == "PATH_PRED":
+                        self.prediction, self.has_prediction = (
+                            self.file_manager.get_prediction(
+                                self.file_path, self.path_out
+                            )
+                        )
+                        self.update_display()
                 else:
                     tk.messagebox.showerror(
                         title="Not found", message="no tif file in this dir"
                     )
+
             else:
                 self.path_log = path_dir
                 self.ui.get_model.config(bg="orange")
@@ -103,7 +115,8 @@ class SegViewApp:
                 self.ui.get_folder_out.grid()
 
         else:
-            tk.messagebox.showerror(title="Not found", message="directory not found")
+            tk.messagebox.showerror(
+                title="Not found", message="directory not found")
 
     def open_file(self, path):
         if os.path.isfile(path):
@@ -121,11 +134,6 @@ class SegViewApp:
                 text=f"shape={self.shape} dtype={self.data.dtype}"
             )
 
-            # load prediction
-            self.prediction, self.has_prediction = self.file_manager.get_prediction(
-                path
-            )
-
             # slider config
             if self.data.ndim > 2:
                 self.ui.zoom_slider.config(to=self.shape[0] - 1)
@@ -135,7 +143,8 @@ class SegViewApp:
 
             self.update_display()
         else:
-            tk.messagebox.showerror(title="Not found", message="file not found")
+            tk.messagebox.showerror(
+                title="Not found", message="file not found")
 
     def navigate(self, direction):
         if direction == "NEXT" and len(self.files):
@@ -154,7 +163,6 @@ class SegViewApp:
 
             self.open_file(self.path_dir + "/" + self.files[self.index])
         else:
-            print("no files")
 
     def update_display(self):
         if self.data is None:
@@ -201,7 +209,6 @@ class SegViewApp:
             self.ui.rev_Frame.grid()
             self.ui.pred_frame.grid_remove()
         elif route == "fineTune":
-            print(route)
             self.ui.fine_btn.config(bg="white", fg="black")
             self.ui.rev_btn.config(bg=PANEL, fg=TEXT_HI)
             self.ui.pred_btn.config(bg=PANEL, fg=TEXT_HI)

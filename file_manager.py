@@ -10,10 +10,10 @@ class FileManager:
     def __init__(self, ui):
         self.ui = ui
 
-    def get_prediction(self, file_path):
+    def get_prediction(self, file_path, out_path):
         parts = file_path.split("/")
-        parts[-2] = "final_out"
-        pred_path = "/".join(parts)
+        pred_path = out_path + "/" + parts[-1]
+        print(pred_path)
 
         if os.path.isfile(pred_path):
             self.ui.refuse_but.grid()
