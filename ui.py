@@ -49,6 +49,8 @@ class SegViewUI:
         self.sidebar.grid_rowconfigure(5, weight=0)
         self.sidebar.grid_rowconfigure(6, weight=0)
         self.sidebar.grid_rowconfigure(7, weight=0)
+        self.sidebar.grid_rowconfigure(8, weight=0)
+        self.sidebar.grid_rowconfigure(9, weight=0)
         self.sidebar.grid_columnconfigure(0, weight=1)
 
         # toolbar
@@ -155,37 +157,23 @@ class SegViewUI:
             text_color=TEXT,
             pady_top=6,
         )
+        self.get_model.grid_remove()
+        self.use_model_label = UIutils.sidebar_label(self.sidebar, "USE MODEL", 3)
+        self.pred = UIutils.make_btn(
+            self.sidebar, "Predict", 4, color=SUCCESS, text_color=TEXT_HI, pady_top=6
+        )
+        self.pred.grid_remove()
+        self.use_model_label.grid_remove()
 
-        UIutils.sidebar_label(self.sidebar, "REVIEW", 3)
-        self.validate_but = UIutils.make_btn(
-            self.sidebar, "Validate", 5, color=SUCCESS, text_color="white", pady_top=4
-        )
-        self.refuse_but = UIutils.make_btn(
-            self.sidebar, "Refuse", 6, color=DANGER, text_color="white", pady_top=4
-        )
+        # navigate and validate and invalidate results
+        self.review_lab = UIutils.sidebar_label(self.sidebar, "REVIEW", 5)
 
-        # QUIT pinned on the bottom
-        self.quit_btn = tk.Button(
-            self.sidebar,
-            text="Quit",
-            font=(SANS, 8),
-            bg=PANEL,
-            fg=TEXT_DIM,
-            activebackground=PANEL,
-            activeforeground=DANGER,
-            relief="flat",
-            bd=0,
-            pady=4,
-            cursor="hand2",
-            command=self.root.destroy,
-        )
         self.navigateFrame = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
-        self.navigateFrame.grid(row=4, column=0)
+        self.navigateFrame.grid(row=6, column=0)
         self.navigateFrame.grid_columnconfigure(0, weight=0)
         self.navigateFrame.grid_columnconfigure(1, weight=0)
         self.navigateFrame.grid_rowconfigure(0, weight=1)
 
-        self.quit_btn.grid(row=7, column=0, sticky="sew", padx=12, pady=(0, 10))
         self.next_btn = tk.Button(
             self.navigateFrame,
             text="Next",
@@ -206,3 +194,33 @@ class SegViewUI:
             cursor="hand2",
         )
         self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)
+
+        self.validate_but = UIutils.make_btn(
+            self.sidebar, "Validate", 7, color=SUCCESS, text_color="white", pady_top=4
+        )
+        self.refuse_but = UIutils.make_btn(
+            self.sidebar, "Refuse", 8, color=DANGER, text_color="white", pady_top=4
+        )
+
+        self.navigateFrame.grid_remove()
+        self.refuse_but.grid_remove()
+        self.validate_but.grid_remove()
+        self.review_lab.grid_remove()
+
+        # QUIT pinned on the bottom
+        self.quit_btn = tk.Button(
+            self.sidebar,
+            text="Quit",
+            font=(SANS, 8),
+            bg=PANEL,
+            fg=TEXT_DIM,
+            activebackground=PANEL,
+            activeforeground=DANGER,
+            relief="flat",
+            bd=0,
+            pady=4,
+            cursor="hand2",
+            command=self.root.destroy,
+        )
+
+        self.quit_btn.grid(row=9, column=0, sticky="sew", padx=12, pady=(0, 10))

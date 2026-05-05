@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import filedialog
 
 import tifffile
+from biom3d.pred import pred
 
-from biom3d_handel import Biom3d
 from file_manager import FileManager
 from image_utils import display
 
@@ -13,7 +13,7 @@ class SegViewApp:
     def __init__(self, ui):
         self.ui = ui
         self.file_manager = FileManager(ui)
-
+        self.path_log = ""
         self.file_path = ""
         self.data = None
         self.prediction = None
@@ -23,10 +23,11 @@ class SegViewApp:
         self.files = []
         self.index = 0
         self.path_dir = ""
-        self.biom = Biom3d()
+        self.path_out = ""
 
     def bind_events(self):
-        self.ui.btn.config(command=self.open_dir)
+
+        self.ui.btn.config(command=lambda: self.open_dir("PATH_RAW"))
         self.ui.refuse_but.config(state=tk.DISABLED, command=lambda: self.save(False))
         self.ui.validate_but.config(state=tk.DISABLED, command=lambda: self.save(True))
         self.ui.zoom_slider.config(state=tk.DISABLED, command=self.change_z)
@@ -36,28 +37,52 @@ class SegViewApp:
         self.ui.prev_btn.config(
             state=tk.DISABLED, command=lambda: self.navigate("PREV")
         )
-        self.ui.get_model.config(state=tk.DISABLED, command=self.biom.get_model)
+        self.ui.get_model.config(
+            state=tk.DISABLED, command=lambda: self.open_dir("PATH_LOG")
+        )
+        self.ui.pred.config(
+            command=lambda: pred(
+                log=self.path_log,
+                path_in=self.path_dir,
+                path_out=self.path_out,
+                skip_preprocessing=False,
+            )
+        )
 
-    def open_dir(self):
+    def open_dir(self, action):
         path_dir = filedialog.askdirectory()
         if os.path.isdir(path_dir):
-            self.path_dir = path_dir
-            files = os.listdir(path_dir)
-            if any(f.endswith(".tif") for f in files):
-                self.files = files
-                path_first = path_dir + "/" + files[0]
-                self.ui.next_btn.config(state=tk.NORMAL)
-                self.ui.prev_btn.config(state=tk.NORMAL)
-                self.ui.zoom_slider.config(state=tk.NORMAL)
-                self.ui.refuse_but.config(state=tk.NORMAL)
-                self.ui.validate_but.config(state=tk.NORMAL)
-                self.ui.get_model.config(state=tk.NORMAL)
+            self.ui.get_model.grid()
+            if action == "PATH_RAW":
+                self.path_dir = path_dir
+                path_out = self.path_dir.split("/")
+                path_out.pop()
+                self.path_out = "/".join(path_out) + "/rey_out"
+                print(self.path_out)
+                files = os.listdir(path_dir)
+                if len(files) > 1:
+                    self.ui.navigateFrame.grid()
+                    self.ui.review_lab.grid()
 
-                self.open_file(path_first)
+                if any(f.endswith(".tif") for f in files):
+                    self.files = files
+                    path_first = path_dir + "/" + files[0]
+                    self.ui.next_btn.config(state=tk.NORMAL)
+                    self.ui.btn.config(bg="orange")
+                    self.ui.prev_btn.config(state=tk.NORMAL)
+                    self.ui.zoom_slider.config(state=tk.NORMAL)
+                    self.ui.refuse_but.config(state=tk.NORMAL)
+                    self.ui.validate_but.config(state=tk.NORMAL)
+                    self.ui.get_model.config(state=tk.NORMAL, fg="white")
+                    self.open_file(path_first)
+                else:
+                    tk.messagebox.showerror(
+                        title="Not found", message="no tif file in this dir"
+                    )
             else:
-                tk.messagebox.showerror(
-                    title="Not found", message="no tif file in this dir"
-                )
+                self.path_log = path_dir
+                self.ui.get_model.config(bg="orange")
+                self.ui.pred.grid()
 
         else:
             tk.messagebox.showerror(title="Not found", message="directory not found")

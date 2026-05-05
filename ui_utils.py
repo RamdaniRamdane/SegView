@@ -49,6 +49,7 @@ class UIutils:
             padx=12,
         )
         lbl.grid(row=row, column=0, sticky="ew", pady=(14, 0))
+        return lbl
 
     def set_flag(flgd, flgtxt, st):
         if st == 1:

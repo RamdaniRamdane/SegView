@@ -16,6 +16,8 @@ class FileManager:
         pred_path = "/".join(parts)
 
         if os.path.isfile(pred_path):
+            self.ui.refuse_but.grid()
+            self.ui.validate_but.grid()
             pred = tifffile.imread(pred_path)
             st = self.status(pred_path)
             UIutils.set_flag(self.ui.flag_sign, self.ui.flag_text, st)
