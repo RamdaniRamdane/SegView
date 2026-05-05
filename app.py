@@ -8,6 +8,20 @@ from biom3d.pred import pred
 from file_manager import FileManager
 from image_utils import display
 
+BG = "#0e0e0f"  # near-black base
+PANEL = "#141416"  # slightly lighter panel
+BORDER = "#222226"  # subtle separator
+MUTED = "#3a3a40"  # inactive elements
+TEXT_DIM = "#555560"  # secondary labels
+TEXT = "#c8c8d0"  # primary text
+TEXT_HI = "#e8e8f0"  # highlighted text
+ACCENT = "#4a9eff"  # blue accent (validate / active)
+DANGER = "#d94f4f"  # red (refuse)
+SUCCESS = "#3dab6e"  # green (validated status)
+WARNING = "#c09030"  # amber (pending status)
+MONO = "Courier"  # monospace for scientific labels
+SANS = "Helvetica"  # clean sans
+
 
 class SegViewApp:
     def __init__(self, ui):
@@ -27,6 +41,9 @@ class SegViewApp:
 
     def bind_events(self):
 
+        self.ui.pred_btn.config(command=lambda: self.route("prediction"))
+        self.ui.rev_btn.config(command=lambda: self.route("review"))
+        self.ui.fine_btn.config(command=lambda: self.route("fineTune"))
         self.ui.btn.config(command=lambda: self.open_dir("PATH_RAW"))
         self.ui.refuse_but.config(state=tk.DISABLED, command=lambda: self.save(False))
         self.ui.validate_but.config(state=tk.DISABLED, command=lambda: self.save(True))
@@ -52,23 +69,23 @@ class SegViewApp:
     def open_dir(self, action):
         path_dir = filedialog.askdirectory()
         if os.path.isdir(path_dir):
-            self.ui.get_model.grid()
             if action == "PATH_RAW":
                 self.path_dir = path_dir
                 path_out = self.path_dir.split("/")
                 path_out.pop()
-                self.path_out = "/".join(path_out) + "/rey_out"
+                self.path_out = "/".join(path_out) + "/final_out"
                 print(self.path_out)
                 files = os.listdir(path_dir)
                 if len(files) > 1:
                     self.ui.navigateFrame.grid()
-                    self.ui.review_lab.grid()
 
                 if any(f.endswith(".tif") for f in files):
+                    self.ui.use_cases.grid()
+                    self.ui.get_model.grid()
                     self.files = files
                     path_first = path_dir + "/" + files[0]
                     self.ui.next_btn.config(state=tk.NORMAL)
-                    self.ui.btn.config(bg="orange")
+                    self.ui.btn.config(bg="white", fg="black")
                     self.ui.prev_btn.config(state=tk.NORMAL)
                     self.ui.zoom_slider.config(state=tk.NORMAL)
                     self.ui.refuse_but.config(state=tk.NORMAL)
@@ -83,6 +100,7 @@ class SegViewApp:
                 self.path_log = path_dir
                 self.ui.get_model.config(bg="orange")
                 self.ui.pred.grid()
+                self.ui.get_folder_out.grid()
 
         else:
             tk.messagebox.showerror(title="Not found", message="directory not found")
@@ -167,3 +185,27 @@ class SegViewApp:
         from ui_utils import UIutils
 
         UIutils.set_flag(self.ui.flag_sign, self.ui.flag_text, st)
+
+    # a reecrire
+    def route(self, route):
+        if route == "prediction":
+            self.ui.pred_btn.config(bg="white", fg="black")
+            self.ui.rev_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.fine_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.pred_frame.grid()
+            self.ui.rev_Frame.grid_remove()
+        elif route == "review":
+            self.ui.pred_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.rev_btn.config(bg="white", fg="black")
+            self.ui.fine_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.rev_Frame.grid()
+            self.ui.pred_frame.grid_remove()
+        elif route == "fineTune":
+            print(route)
+            self.ui.fine_btn.config(bg="white", fg="black")
+            self.ui.rev_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.pred_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.pred_frame.grid_remove()
+            self.ui.rev_Frame.grid_remove()
+        else:
+            print("nothing")

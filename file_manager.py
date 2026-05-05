@@ -12,7 +12,7 @@ class FileManager:
 
     def get_prediction(self, file_path):
         parts = file_path.split("/")
-        parts[-2] = "fg_out"
+        parts[-2] = "final_out"
         pred_path = "/".join(parts)
 
         if os.path.isfile(pred_path):

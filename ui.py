@@ -51,6 +51,7 @@ class SegViewUI:
         self.sidebar.grid_rowconfigure(7, weight=0)
         self.sidebar.grid_rowconfigure(8, weight=0)
         self.sidebar.grid_rowconfigure(9, weight=0)
+        self.sidebar.grid_rowconfigure(10, weight=0)
         self.sidebar.grid_columnconfigure(0, weight=1)
 
         # toolbar
@@ -147,29 +148,71 @@ class SegViewUI:
 
         UIutils.sidebar_label(self.sidebar, "INPUT", 0)
         self.btn = UIutils.make_btn(
-            self.sidebar, "Import Foder", 1, color=MUTED, text_color=TEXT_HI, pady_top=4
-        )
-        self.get_model = UIutils.make_btn(
             self.sidebar,
-            "Import Biom3d Model",
-            2,
+            "Import Folder RAW",
+            1,
             color=MUTED,
-            text_color=TEXT,
-            pady_top=6,
+            text_color=TEXT_HI,
+            pady_top=4,
         )
-        self.get_model.grid_remove()
-        self.use_model_label = UIutils.sidebar_label(self.sidebar, "USE MODEL", 3)
-        self.pred = UIutils.make_btn(
-            self.sidebar, "Predict", 4, color=SUCCESS, text_color=TEXT_HI, pady_top=6
+        self.use_cases = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
+        self.pred_btn = tk.Button(
+            self.use_cases,
+            text="Predict Mask",
+            font=(MONO, 8),
+            bg=MUTED,
+            fg=TEXT_HI,
+            relief="flat",
+            cursor="hand2",
         )
-        self.pred.grid_remove()
-        self.use_model_label.grid_remove()
+        self.rev_btn = tk.Button(
+            self.use_cases,
+            text="Review Predictions",
+            font=(MONO, 8),
+            bg=MUTED,
+            fg=TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+        )
+        self.fine_btn = tk.Button(
+            self.use_cases,
+            text="Fine Tuning",
+            font=(MONO, 8),
+            bg=MUTED,
+            fg=TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+        )
 
+        self.use_cases.grid(row=2, column=0)
+        self.pred_btn.pack(fill="both", padx=5, pady=5)
+        self.rev_btn.pack(fill="both", padx=5, pady=5)
+        self.fine_btn.pack(fill="both", padx=5, pady=5)
+
+        self.use_cases.grid_remove()
+        # creating frames
+
+        # reviewing frame
+        self.rev_Frame = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
+        self.get_predictions_path = tk.Button(
+            self.rev_Frame,
+            text="Import Predictions Folder",
+            font=(MONO, 8),
+            bg=MUTED,
+            fg=TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+        )
+        self.rev_Frame.grid(row=3, column=0)
+        self.rev_Frame.grid_rowconfigure(0, weight=0)
+        self.rev_Frame.grid_rowconfigure(1, weight=0)
+        self.rev_Frame.grid_rowconfigure(2, weight=0)
+        self.rev_Frame.grid_rowconfigure(3, weight=0)
+        self.rev_Frame.grid_rowconfigure(4, weight=0)
+        self.rev_Frame.grid_columnconfigure(0, weight=1)
         # navigate and validate and invalidate results
-        self.review_lab = UIutils.sidebar_label(self.sidebar, "REVIEW", 5)
-
-        self.navigateFrame = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
-        self.navigateFrame.grid(row=6, column=0)
+        self.navigateFrame = tk.Frame(self.rev_Frame, bg=PANEL, width=200, height=100)
+        self.navigateFrame.grid(row=1, column=0)
         self.navigateFrame.grid_columnconfigure(0, weight=0)
         self.navigateFrame.grid_columnconfigure(1, weight=0)
         self.navigateFrame.grid_rowconfigure(0, weight=1)
@@ -196,16 +239,54 @@ class SegViewUI:
         self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)
 
         self.validate_but = UIutils.make_btn(
-            self.sidebar, "Validate", 7, color=SUCCESS, text_color="white", pady_top=4
+            self.rev_Frame, "Validate", 2, color=SUCCESS, text_color="white", pady_top=4
         )
         self.refuse_but = UIutils.make_btn(
-            self.sidebar, "Refuse", 8, color=DANGER, text_color="white", pady_top=4
+            self.rev_Frame, "Refuse", 3, color=DANGER, text_color="white", pady_top=4
+        )
+        self.correct_but = UIutils.make_btn(
+            self.rev_Frame, "correct imperfections", 4, color=ACCENT, pady_top=4
         )
 
-        self.navigateFrame.grid_remove()
-        self.refuse_but.grid_remove()
+        self.get_predictions_path.grid(row=0, column=0)
+        self.rev_Frame.grid_remove()
         self.validate_but.grid_remove()
-        self.review_lab.grid_remove()
+        self.refuse_but.grid_remove()
+        self.navigateFrame.grid_remove()
+
+        # end reviewing frame
+
+        # predictionss frame
+        self.pred_frame = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
+        self.pred_frame.grid(row=3, column=0)
+        self.pred_frame.grid_rowconfigure(0, weight=0)
+        self.pred_frame.grid_rowconfigure(1, weight=0)
+        self.pred_frame.grid_rowconfigure(2, weight=0)
+        self.pred_frame.grid_columnconfigure(0, weight=1)
+        self.get_model = UIutils.make_btn(
+            self.pred_frame,
+            "Import Biom3d Model",
+            0,
+            color=MUTED,
+            text_color=TEXT,
+            pady_top=6,
+        )
+        self.get_folder_out = UIutils.make_btn(
+            self.pred_frame,
+            "OUT FOlDER",
+            1,
+            color=MUTED,
+            text_color=TEXT,
+            pady_top=6,
+        )
+        self.pred = UIutils.make_btn(
+            self.pred_frame, "Predict", 2, color=SUCCESS, text_color=TEXT_HI, pady_top=6
+        )
+        self.pred_frame.grid_remove()
+        self.get_model.grid_remove()
+        self.get_folder_out.grid_remove()
+        self.pred.grid_remove()
+        # end predictionss frame
 
         # QUIT pinned on the bottom
         self.quit_btn = tk.Button(
@@ -223,4 +304,4 @@ class SegViewUI:
             command=self.root.destroy,
         )
 
-        self.quit_btn.grid(row=9, column=0, sticky="sew", padx=12, pady=(0, 10))
+        self.quit_btn.grid(row=10, column=0, sticky="sew", padx=12, pady=(0, 10))
