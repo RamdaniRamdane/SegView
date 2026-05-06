@@ -13,13 +13,13 @@ class FileManager:
     def get_prediction(self, file_path, out_path):
         parts = file_path.split("/")
         pred_path = out_path + "/" + parts[-1]
-        print(pred_path)
 
         if os.path.isfile(pred_path):
             self.ui.refuse_but.grid()
             self.ui.validate_but.grid()
             pred = tifffile.imread(pred_path)
             st = self.status(pred_path)
+            self.ui.st = st
             UIutils.set_flag(self.ui.flag_sign, self.ui.flag_text, st)
             return pred, True
         else:
@@ -46,22 +46,26 @@ class FileManager:
                 return 3
         return 0
 
-    def save_choice(self, file_path, is_valid):
+    def save_choice(self, file_path, out_path, is_valid):
         if not file_path:
             return
 
         path = file_path.split("/")
         filename = path[-1]
-        path.pop()
+        out_path = out_path.split("/")
+        out_path.pop()
 
-        valid_path = path.copy()
-        invalid_path = path.copy()
+        valid_path = out_path.copy()
+        invalid_path = out_path.copy()
+        print(valid_path)
 
-        valid_path[-1] = "Valide"
-        invalid_path[-1] = "NON-valide"
+        valid_path.append("Valide")
+        invalid_path.append("NON-valide")
 
         valid_path = "/".join(valid_path)
         invalid_path = "/".join(invalid_path)
+
+        print(valid_path)
 
         os.makedirs(valid_path, exist_ok=True)
         os.makedirs(invalid_path, exist_ok=True)

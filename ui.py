@@ -20,6 +20,7 @@ SANS = "Helvetica"  # clean sans
 
 class SegViewUI:
     def __init__(self, root):
+        self.st = 3
         # root tkinter tk main config
         self.root = root
         self.root.title("SegView")
@@ -245,7 +246,12 @@ class SegViewUI:
             self.rev_Frame, "Refuse", 3, color=DANGER, text_color="white", pady_top=4
         )
         self.correct_but = UIutils.make_btn(
-            self.rev_Frame, "correct imperfections", 4, color=ACCENT, pady_top=4
+            self.rev_Frame,
+            "correct imperfections",
+            4,
+            color=ACCENT,
+            text_color="white",
+            pady_top=4,
         )
 
         self.get_predictions_path.grid(row=0, column=0)
@@ -253,6 +259,7 @@ class SegViewUI:
         self.validate_but.grid_remove()
         self.refuse_but.grid_remove()
         self.navigateFrame.grid_remove()
+        self.correct_but.grid_remove()
 
         # end reviewing frame
 

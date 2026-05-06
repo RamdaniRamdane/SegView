@@ -45,10 +45,8 @@ class SegViewApp:
         self.ui.rev_btn.config(command=lambda: self.route("review"))
         self.ui.fine_btn.config(command=lambda: self.route("fineTune"))
         self.ui.btn.config(command=lambda: self.open_dir("PATH_RAW"))
-        self.ui.refuse_but.config(
-            state=tk.DISABLED, command=lambda: self.save(False))
-        self.ui.validate_but.config(
-            state=tk.DISABLED, command=lambda: self.save(True))
+        self.ui.refuse_but.config(state=tk.DISABLED, command=lambda: self.save(False))
+        self.ui.validate_but.config(state=tk.DISABLED, command=lambda: self.save(True))
         self.ui.zoom_slider.config(state=tk.DISABLED, command=self.change_z)
         self.ui.next_btn.config(
             state=tk.DISABLED, command=lambda: self.navigate("NEXT")
@@ -67,8 +65,7 @@ class SegViewApp:
                 skip_preprocessing=False,
             )
         )
-        self.ui.get_predictions_path.config(
-            command=lambda: self.open_dir("PATH_PRED"))
+        self.ui.get_predictions_path.config(command=lambda: self.open_dir("PATH_PRED"))
 
     def open_dir(self, action):
         path_dir = filedialog.askdirectory()
@@ -76,33 +73,38 @@ class SegViewApp:
             if action == "PATH_RAW" or action == "PATH_PRED":
                 if action == "PATH_RAW":
                     self.path_dir = path_dir
-                if action == "PATH_RAW":
-                    self.path_out = path_dir
-                files = os.listdir(path_dir)
-                if len(files) > 1:
-                    self.ui.navigateFrame.grid()
+                    files = os.listdir(path_dir)
+                    if len(files) > 1:
+                        self.ui.navigateFrame.grid()
 
-                if any(f.endswith(".tif") for f in files):
-                    self.ui.use_cases.grid()
-                    self.ui.get_model.grid()
-                    self.files = files
-                    path_first = path_dir + "/" + files[0]
-                    self.ui.next_btn.config(state=tk.NORMAL)
-                    self.ui.btn.config(bg="white", fg="black")
-                    self.ui.prev_btn.config(state=tk.NORMAL)
-                    self.ui.zoom_slider.config(state=tk.NORMAL)
-                    self.ui.refuse_but.config(state=tk.NORMAL)
-                    self.ui.validate_but.config(state=tk.NORMAL)
-                    self.ui.get_model.config(state=tk.NORMAL, fg="white")
-                    if action == "PATH_RAW":
+                    if any(f.endswith(".tif") for f in files):
+                        self.ui.use_cases.grid()
+                        self.ui.get_model.grid()
+                        self.files = files
+                        path_first = path_dir + "/" + files[0]
+                        self.ui.next_btn.config(state=tk.NORMAL)
+                        self.ui.btn.config(bg="white", fg="black")
+                        self.ui.prev_btn.config(state=tk.NORMAL)
+                        self.ui.zoom_slider.config(state=tk.NORMAL)
+                        self.ui.get_model.config(state=tk.NORMAL, fg="white")
                         self.open_file(path_first)
-                    if action == "PATH_PRED":
-                        self.prediction, self.has_prediction = (
-                            self.file_manager.get_prediction(
-                                self.file_path, self.path_out
-                            )
-                        )
-                        self.update_display()
+
+                elif action == "PATH_PRED":
+                    self.path_out = path_dir
+                    files = os.listdir(path_dir)
+                    if any(f.endswith(".tif") for f in files):
+                        self.ui.refuse_but.config(state=tk.NORMAL)
+                        self.ui.validate_but.config(state=tk.NORMAL)
+                    self.prediction, self.has_prediction = (
+                        self.file_manager.get_prediction(self.file_path, self.path_out)
+                    )
+                    if self.ui.st == 2:
+                        self.ui.correct_but.grid()
+                    else:
+                        self.ui.correct_but.grid_remove()
+
+                    self.update_display()
+
                 else:
                     tk.messagebox.showerror(
                         title="Not found", message="no tif file in this dir"
@@ -115,8 +117,7 @@ class SegViewApp:
                 self.ui.get_folder_out.grid()
 
         else:
-            tk.messagebox.showerror(
-                title="Not found", message="directory not found")
+            tk.messagebox.showerror(title="Not found", message="directory not found")
 
     def open_file(self, path):
         if os.path.isfile(path):
@@ -141,10 +142,16 @@ class SegViewApp:
             else:
                 self.ui.zoom_slider.config(to=0)
 
+            self.prediction, self.has_prediction = self.file_manager.get_prediction(
+                self.file_path, self.path_out
+            )
+            if self.ui.st == 2:
+                self.ui.correct_but.grid()
+            else:
+                self.ui.correct_but.grid_remove()
             self.update_display()
         else:
-            tk.messagebox.showerror(
-                title="Not found", message="file not found")
+            tk.messagebox.showerror(title="Not found", message="file not found")
 
     def navigate(self, direction):
         if direction == "NEXT" and len(self.files):
@@ -153,7 +160,8 @@ class SegViewApp:
                 if self.index < (len(self.files) - 1)
                 else ((self.index + 1) % len(self.files))
             )
-            self.open_file(self.path_dir + "/" + self.files[self.index])
+            to_file = self.path_dir + "/" + self.files[self.index]
+            self.open_file(to_file)
         elif direction == "PREV" and len(self.files):
             self.index = (
                 self.index - 1
@@ -163,6 +171,7 @@ class SegViewApp:
 
             self.open_file(self.path_dir + "/" + self.files[self.index])
         else:
+            print("app.py navigate")
 
     def update_display(self):
         if self.data is None:
@@ -187,14 +196,19 @@ class SegViewApp:
         if not self.file_path:
             return
 
-        self.file_manager.save_choice(self.file_path, is_valid)
+        self.file_manager.save_choice(self.file_path, self.path_out, is_valid)
 
         st = 1 if is_valid else 2
         from ui_utils import UIutils
 
         UIutils.set_flag(self.ui.flag_sign, self.ui.flag_text, st)
+        if st == 2:
+            self.ui.correct_but.grid()
+        else:
+            self.ui.correct_but.grid_remove()
 
     # a reecrire
+
     def route(self, route):
         if route == "prediction":
             self.ui.pred_btn.config(bg="white", fg="black")

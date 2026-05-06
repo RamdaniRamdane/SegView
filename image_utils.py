@@ -12,6 +12,13 @@ def overlay(base, mask, alpha=0.4):
     base = normalize_image(base)
     base_rgb = np.stack([base] * 3, axis=-1)
 
+    if mask.shape != base.shape:
+        mask_img = Image.fromarray(mask.astype(np.uint8))
+        mask_img = mask_img.resize(
+            (base.shape[1], base.shape[0]), resample=Image.NEAREST
+        )
+        mask = np.array(mask_img)
+
     mask = (mask > 0).astype(np.uint8) * 255
     red_layer = np.zeros_like(base_rgb)
     red_layer[..., 0] = mask
