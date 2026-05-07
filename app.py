@@ -41,7 +41,7 @@ class SegViewApp:
         self.path_dir = ""
         self.path_out = ""
         self.edit_mode = False
-        self.brush_active = False
+        self.edit_tool = ""
 
     def bind_events(self):
 
@@ -71,7 +71,10 @@ class SegViewApp:
         )
         self.ui.get_predictions_path.config(command=lambda: self.open_dir("PATH_PRED"))
         self.ui.correct_but.config(command=self.edit_mode_utils.toggle_edit_mode)
-        self.ui.brush.config(command=self.edit_mode_utils.toggle_brush_mode)
+        self.ui.brush.config(command=lambda: self.edit_mode_utils.toggle_tool("Brush"))
+        self.ui.ereaser.config(
+            command=lambda: self.edit_mode_utils.toggle_tool("Ereaser")
+        )
         # ici je capture les movemenets de la souris
         self.ui.canvas.bind("<ButtonPress-1>", self.edit_mode_utils.on_mouse_down)
         self.ui.canvas.bind("<B1-Motion>", self.edit_mode_utils.on_mouse_drag)
@@ -111,6 +114,8 @@ class SegViewApp:
                         self.ui.correct_but.grid()
                     else:
                         self.ui.correct_but.grid_remove()
+                        self.edit_mode = False
+                        self.ui.edit_frame.grid_remove()
 
                     self.update_display()
 
@@ -158,6 +163,8 @@ class SegViewApp:
                 self.ui.correct_but.grid()
             else:
                 self.ui.correct_but.grid_remove()
+                self.edit_mode = False
+                self.ui.edit_frame.grid_remove()
             self.update_display()
         else:
             tk.messagebox.showerror(title="Not found", message="file not found")

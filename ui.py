@@ -262,7 +262,10 @@ class SegViewUI:
         self.edit_frame.grid_columnconfigure(1, weight=0)
         self.edit_frame.grid(row=5, column=0)
         self.brush = UIutils.make_btn(
-            self.edit_frame, "/", 0, color="green", text_color="white", pady_top=4
+            self.edit_frame, "/", 0, color=PANEL, text_color=MUTED, pady_top=4
+        )
+        self.ereaser = UIutils.make_btn(
+            self.edit_frame, "o", 1, color=PANEL, text_color=MUTED, pady_top=4
         )
 
         self.get_predictions_path.grid(row=0, column=0)
