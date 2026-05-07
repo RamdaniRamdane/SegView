@@ -21,10 +21,10 @@ class FileManager:
             st = self.status(pred_path)
             self.ui.st = st
             UIutils.set_flag(self.ui.flag_sign, self.ui.flag_text, st)
-            return pred, True
+            return pred, pred_path, True
         else:
             UIutils.set_flag(self.ui.flag_sign, self.ui.flag_text, 0)
-            return None, False
+            return None, None, False
 
     def status(self, file_path):
         if file_path:

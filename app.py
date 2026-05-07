@@ -33,6 +33,7 @@ class SegViewApp:
         self.file_path = ""
         self.data = None
         self.prediction = None
+        self.prediciton_path_file = ""
         self.shape = None
         self.zoom = 0
         self.has_prediction = False
@@ -75,6 +76,7 @@ class SegViewApp:
         self.ui.ereaser.config(
             command=lambda: self.edit_mode_utils.toggle_tool("Ereaser")
         )
+        self.ui.save_changes.config(command=self.edit_mode_utils.save_changes)
         # ici je capture les movemenets de la souris
         self.ui.canvas.bind("<ButtonPress-1>", self.edit_mode_utils.on_mouse_down)
         self.ui.canvas.bind("<B1-Motion>", self.edit_mode_utils.on_mouse_drag)
@@ -107,9 +109,10 @@ class SegViewApp:
                     if any(f.endswith(".tif") for f in files):
                         self.ui.refuse_but.config(state=tk.NORMAL)
                         self.ui.validate_but.config(state=tk.NORMAL)
-                    self.prediction, self.has_prediction = (
+                    self.prediction, self.prediciton_path_file, self.has_prediction = (
                         self.file_manager.get_prediction(self.file_path, self.path_out)
                     )
+                    print(self.prediciton_path_file)
                     if self.ui.st == 2:
                         self.ui.correct_but.grid()
                     else:
@@ -156,8 +159,8 @@ class SegViewApp:
             else:
                 self.ui.zoom_slider.config(to=0)
 
-            self.prediction, self.has_prediction = self.file_manager.get_prediction(
-                self.file_path, self.path_out
+            self.prediction, self.prediciton_path_file, self.has_prediction = (
+                self.file_manager.get_prediction(self.file_path, self.path_out)
             )
             if self.ui.st == 2:
                 self.ui.correct_but.grid()

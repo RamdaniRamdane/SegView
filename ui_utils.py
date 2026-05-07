@@ -16,9 +16,11 @@ SANS = "Helvetica"
 
 
 class UIutils:
-    def make_btn(parent, text, row, color=MUTED, text_color=TEXT, cmd=None, pady_top=8):
+    def make_btn(
+        parent, text, row, color=MUTED, text_color=TEXT, cmd=None, pady_top=8, col=0
+    ):
         f = tk.Frame(parent, bg=PANEL)
-        f.grid(row=row, column=0, sticky="ew", padx=12, pady=(pady_top, 0))
+        f.grid(row=row, column=col, sticky="ew", padx=12, pady=(pady_top, 0))
         f.grid_columnconfigure(0, weight=1)
 
         b = tk.Button(

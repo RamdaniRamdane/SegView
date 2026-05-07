@@ -4,6 +4,7 @@ import numpy as np
 class Edit_mode:
     def __init__(self, app):
         self.app = app
+        self.pred_correction = None
 
     def toggle_edit_mode(self):
         self.app.edit_mode = not self.app.edit_mode
@@ -90,4 +91,12 @@ class Edit_mode:
         else:
             return
         self.app.prediction[z][mask] = bit
+        self.pred_correction = self.app.prediction
+
         self.app.update_display()
+
+    # a continuer
+
+    def save_changes(self):
+        if not np.array_equal():
+            print(self.app.prediciton_path_file)
