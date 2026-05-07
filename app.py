@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 
+import numpy as np
 import tifffile
 from biom3d.pred import pred
 
@@ -38,6 +39,8 @@ class SegViewApp:
         self.index = 0
         self.path_dir = ""
         self.path_out = ""
+        self.edit_mode = False
+        self.brush_active = False
 
     def bind_events(self):
 
@@ -66,6 +69,11 @@ class SegViewApp:
             )
         )
         self.ui.get_predictions_path.config(command=lambda: self.open_dir("PATH_PRED"))
+        self.ui.correct_but.config(command=self.toggle_edit_mode)
+        self.ui.brush.config(command=self.toggle_brush_mode)
+        # ici je capture les movemenets de la souris
+        self.ui.canvas.bind("<ButtonPress-1>", self.on_mouse_down)
+        self.ui.canvas.bind("<B1-Motion>", self.on_mouse_drag)
 
     def open_dir(self, action):
         path_dir = filedialog.askdirectory()
@@ -230,3 +238,56 @@ class SegViewApp:
             self.ui.rev_Frame.grid_remove()
         else:
             print("nothing")
+
+    def toggle_edit_mode(self):
+        self.edit_mode = not self.edit_mode
+        if self.edit_mode:
+            self.ui.edit_frame.grid()
+        else:
+            self.ui.edit_frame.grid_remove()
+
+    def toggle_brush_mode(self):
+        self.brush_active = not self.brush_active
+        print("brush:", self.brush_active)
+
+    def on_mouse_down(self, event):
+        self.apply_brush(event.x, event.y)
+        print(event.x, event.y)
+
+    def on_mouse_drag(self, event):
+        self.apply_brush(event.x, event.y)
+
+    def apply_brush(self, x, y):
+        if not self.brush_active:
+            return
+
+        if self.data is None:
+            return
+
+        if self.prediction is None:
+            self.prediction = np.zeros_like(self.data, dtype=np.uint8)
+
+        h, w = self.data.shape[-2:]
+
+        # taille canvas
+        c_w = self.ui.canvas.winfo_width()
+        c_h = self.ui.canvas.winfo_height()
+
+        # taille affichée image (IMPORTANT)
+        scale = min(c_w / w, c_h / h)
+        new_w = int(w * scale)
+        new_h = int(h * scale)
+
+        offset_x = (c_w - new_w) // 2
+        offset_y = (c_h - new_h) // 2
+        # conversion coords
+        ix = int((x - offset_x) / scale)
+        iy = int((y - offset_y) / scale)
+        if ix < 0 or iy < 0 or ix >= w or iy >= h:
+            return
+        r = 2
+        yy, xx = np.ogrid[:h, :w]
+        mask = (yy - iy) ** 2 + (xx - ix) ** 2 <= r * r
+        z = self.zoom
+        self.prediction[z][mask] = 1
+        self.update_display()

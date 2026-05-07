@@ -210,6 +210,7 @@ class SegViewUI:
         self.rev_Frame.grid_rowconfigure(2, weight=0)
         self.rev_Frame.grid_rowconfigure(3, weight=0)
         self.rev_Frame.grid_rowconfigure(4, weight=0)
+        self.rev_Frame.grid_rowconfigure(5, weight=0)
         self.rev_Frame.grid_columnconfigure(0, weight=1)
         # navigate and validate and invalidate results
         self.navigateFrame = tk.Frame(self.rev_Frame, bg=PANEL, width=200, height=100)
@@ -254,12 +255,23 @@ class SegViewUI:
             pady_top=4,
         )
 
+        self.edit_frame = tk.Frame(self.rev_Frame, bg=PANEL, width=200, height=100)
+        self.edit_frame.grid_rowconfigure(0, weight=0)
+        self.edit_frame.grid_rowconfigure(1, weight=0)
+        self.edit_frame.grid_columnconfigure(0, weight=0)
+        self.edit_frame.grid_columnconfigure(1, weight=0)
+        self.edit_frame.grid(row=5, column=0)
+        self.brush = UIutils.make_btn(
+            self.edit_frame, "/", 0, color="green", text_color="white", pady_top=4
+        )
+
         self.get_predictions_path.grid(row=0, column=0)
         self.rev_Frame.grid_remove()
         self.validate_but.grid_remove()
         self.refuse_but.grid_remove()
         self.navigateFrame.grid_remove()
         self.correct_but.grid_remove()
+        self.edit_frame.grid_remove()
 
         # end reviewing frame
 
