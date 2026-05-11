@@ -12,8 +12,9 @@ from ui_helpers import EditMode
 from ui_utils import UIutils
 
 BG = "#0e0e0f"
-PANEL = "#141416"
+MUTED = "#141416"
 TEXT_HI = "#e8e8f0"
+MUTED = "#3a3a40"  # inactive elements
 
 
 @dataclass
@@ -297,19 +298,19 @@ class SegViewApp:
     def route(self, route):
         if route == "prediction":
             self.ui.pred_btn.config(bg="white", fg="black")
-            self.ui.rev_btn.config(bg=PANEL, fg=TEXT_HI)
-            self.ui.fine_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.rev_btn.config(bg=MUTED, fg=TEXT_HI)
+            self.ui.fine_btn.config(bg=MUTED, fg=TEXT_HI)
             self.ui.pred_frame.grid()
             self.ui.rev_Frame.grid_remove()
         elif route == "review":
-            self.ui.pred_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.pred_btn.config(bg=MUTED, fg=TEXT_HI)
             self.ui.rev_btn.config(bg="white", fg="black")
-            self.ui.fine_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.fine_btn.config(bg=MUTED, fg=TEXT_HI)
             self.ui.rev_Frame.grid()
             self.ui.pred_frame.grid_remove()
         elif route == "fineTune":
             self.ui.fine_btn.config(bg="white", fg="black")
-            self.ui.rev_btn.config(bg=PANEL, fg=TEXT_HI)
-            self.ui.pred_btn.config(bg=PANEL, fg=TEXT_HI)
+            self.ui.rev_btn.config(bg=MUTED, fg=TEXT_HI)
+            self.ui.pred_btn.config(bg=MUTED, fg=TEXT_HI)
             self.ui.pred_frame.grid_remove()
             self.ui.rev_Frame.grid_remove()

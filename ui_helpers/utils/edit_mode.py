@@ -32,8 +32,7 @@ class EditMode:
                 activeforeground="black",
             )
             self.app.ui.ereaser.config(
-                bg="#141416",
-                fg="#3a3a40",
+                bg="#3a3a40",
             )
         elif tool == "Ereaser":
             self.app.ui.ereaser.config(
@@ -43,17 +42,14 @@ class EditMode:
                 activeforeground="black",
             )
             self.app.ui.brush.config(
-                bg="#141416",
-                fg="#3a3a40",
+                bg="#3a3a40",
             )
         else:
             self.app.ui.brush.config(
-                bg="#141416",
-                fg="#3a3a40",
+                bg="#3a3a40",
             )
             self.app.ui.ereaser.config(
-                bg="#141416",
-                fg="#3a3a40",
+                bg="#3a3a40",
             )
 
     def on_mouse_down(self, event):
