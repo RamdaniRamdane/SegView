@@ -1,3 +1,3 @@
-from .utils.edit_mode import Edit_mode
+from .utils.edit_mode import EditMode
 
-__all__ = ["Edit_mode"]
+__all__ = ["EditMode"]
