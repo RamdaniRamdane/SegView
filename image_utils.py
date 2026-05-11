@@ -58,3 +58,13 @@ def display(canvas, data, pred=None):
         image=tk_img,
     )
     canvas.image = tk_img
+
+
+def load_icon(img_dir, name, size=None):
+    import os
+
+    path = os.path.join(img_dir, name)
+    img = Image.open(path)
+    if size:
+        img = img.resize(size, Image.LANCZOS)
+    return ImageTk.PhotoImage(img)

@@ -1,7 +1,13 @@
+import os
+import sys
 import tkinter as tk
 from tkinter import Canvas
 
+import image_utils
 from ui_utils import UIutils
+
+BASE_DIR = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+IMG_DIR = os.path.join(BASE_DIR, "images")
 
 BG = "#0e0e0f"  # near-black base
 PANEL = "#141416"  # slightly lighter panel
@@ -147,6 +153,8 @@ class SegViewUI:
         )
         self.flag_text.pack(side="right", padx=(0, 2))
 
+        # first try adding icon
+        self.import_icon = image_utils.load_icon(IMG_DIR, "import.png", (24, 24))
         UIutils.sidebar_label(self.sidebar, "INPUT", 0)
         self.btn = UIutils.make_btn(
             self.sidebar,
@@ -155,8 +163,10 @@ class SegViewUI:
             color=MUTED,
             text_color=TEXT_HI,
             pady_top=4,
+            image=self.import_icon,
         )
         self.use_cases = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
+        self.predict_icon = image_utils.load_icon(IMG_DIR, "predict.png", (24, 24))
         self.pred_btn = tk.Button(
             self.use_cases,
             text="Predict Mask",
@@ -165,7 +175,10 @@ class SegViewUI:
             fg=TEXT_HI,
             relief="flat",
             cursor="hand2",
+            image=self.predict_icon,
+            compound="left",
         )
+        self.review_icon = image_utils.load_icon(IMG_DIR, "review.png", (24, 24))
         self.rev_btn = tk.Button(
             self.use_cases,
             text="Review Predictions",
@@ -174,7 +187,10 @@ class SegViewUI:
             fg=TEXT_HI,
             relief="flat",
             cursor="hand2",
+            image=self.review_icon,
+            compound="left",
         )
+        self.fine_icon = image_utils.load_icon(IMG_DIR, "fine.png", (24, 24))
         self.fine_btn = tk.Button(
             self.use_cases,
             text="Fine Tuning",
@@ -183,6 +199,8 @@ class SegViewUI:
             fg=TEXT_HI,
             relief="flat",
             cursor="hand2",
+            image=self.fine_icon,
+            compound="left",
         )
 
         self.use_cases.grid(row=2, column=0)
@@ -203,6 +221,8 @@ class SegViewUI:
             fg=TEXT_HI,
             relief="flat",
             cursor="hand2",
+            image=self.import_icon,
+            compound="left",
         )
         self.rev_Frame.grid(row=3, column=0)
         self.rev_Frame.grid_rowconfigure(0, weight=0)
@@ -218,7 +238,7 @@ class SegViewUI:
         self.navigateFrame.grid_columnconfigure(0, weight=0)
         self.navigateFrame.grid_columnconfigure(1, weight=0)
         self.navigateFrame.grid_rowconfigure(0, weight=1)
-
+        self.next_icon = image_utils.load_icon(IMG_DIR, "next.png", (24, 24))
         self.next_btn = tk.Button(
             self.navigateFrame,
             text="Next",
@@ -227,7 +247,11 @@ class SegViewUI:
             fg=TEXT_HI,
             relief="flat",
             cursor="hand2",
+            image=self.next_icon,
+            compound="right",
         )
+
+        self.prev_icon = image_utils.load_icon(IMG_DIR, "prev.png", (24, 24))
         self.next_btn.grid(row=0, column=1, sticky="en", padx=2, pady=2)
         self.prev_btn = tk.Button(
             self.navigateFrame,
@@ -237,6 +261,8 @@ class SegViewUI:
             fg=TEXT_HI,
             relief="flat",
             cursor="hand2",
+            image=self.prev_icon,
+            compound="left",
         )
         self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)
 
@@ -261,24 +287,30 @@ class SegViewUI:
         self.edit_frame.grid_columnconfigure(0, weight=0)
         self.edit_frame.grid_columnconfigure(1, weight=0)
         self.edit_frame.grid(row=5, column=0)
+        self.brush_icon = image_utils.load_icon(IMG_DIR, "brush.png", (24, 24))
         self.brush = UIutils.make_btn(
             self.edit_frame,
-            "brush",
+            "",
             0,
             color=PANEL,
             text_color=MUTED,
             pady_top=4,
             col=0,
+            image=self.brush_icon,
         )
+
+        self.eraser_icon = image_utils.load_icon(IMG_DIR, "eraser.png", (24, 24))
         self.ereaser = UIutils.make_btn(
             self.edit_frame,
-            "ereaser",
+            "",
             0,
             color=PANEL,
             text_color=MUTED,
             pady_top=4,
             col=1,
+            image=self.eraser_icon,
         )
+        self.save_icon = image_utils.load_icon(IMG_DIR, "save.png", (24, 24))
         self.save_changes = UIutils.make_btn(
             self.edit_frame,
             "save_changes",
@@ -287,6 +319,7 @@ class SegViewUI:
             text_color="white",
             pady_top=4,
             col=1,
+            image=self.save_icon,
         )
         self.changes_state_label = tk.Label(
             self.edit_frame,
@@ -344,6 +377,8 @@ class SegViewUI:
         # end predictionss frame
 
         # QUIT pinned on the bottom
+
+        self.quit_icon = image_utils.load_icon(IMG_DIR, "quit.png", (24, 24))
         self.quit_btn = tk.Button(
             self.sidebar,
             text="Quit",
@@ -357,6 +392,8 @@ class SegViewUI:
             pady=4,
             cursor="hand2",
             command=self.root.destroy,
+            image=self.quit_icon,
+            compound="left",
         )
 
         self.quit_btn.grid(row=10, column=0, sticky="sew", padx=12, pady=(0, 10))

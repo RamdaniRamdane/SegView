@@ -31,6 +31,7 @@ class UIutils:
         cmd=None,
         pady_top=8,
         col=0,
+        image=None,
     ):
 
         frame = tk.Frame(
@@ -65,6 +66,8 @@ class UIutils:
             cursor="hand2",
             command=cmd,
         )
+        if image:
+            button.config(image=image, compound="left")
 
         button.grid(sticky="ew")
 
