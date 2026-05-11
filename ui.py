@@ -288,6 +288,17 @@ class SegViewUI:
             pady_top=4,
             col=1,
         )
+        self.changes_state_label = tk.Label(
+            self.edit_frame,
+            text="no changes",
+            font=(MONO, 9),
+            bg=PANEL,
+            fg=TEXT_DIM,
+            anchor="w",
+            padx=10,
+            pady=10,
+        )
+        self.changes_state_label.grid(row=1, column=1)
 
         self.get_predictions_path.grid(row=0, column=0)
         self.rev_Frame.grid_remove()
@@ -296,7 +307,8 @@ class SegViewUI:
         self.navigateFrame.grid_remove()
         self.correct_but.grid_remove()
         self.edit_frame.grid_remove()
-
+        self.save_changes.grid_remove()
+        self.changes_state_label.grid_remove()
         # end reviewing frame
 
         # predictionss frame

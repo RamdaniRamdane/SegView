@@ -28,6 +28,8 @@ class EditMode:
             self.app.ui.brush.config(
                 bg="white",
                 fg="black",
+                activebackground="white",
+                activeforeground="black",
             )
             self.app.ui.ereaser.config(
                 bg="#141416",
@@ -37,6 +39,8 @@ class EditMode:
             self.app.ui.ereaser.config(
                 bg="white",
                 fg="black",
+                activebackground="white",
+                activeforeground="black",
             )
             self.app.ui.brush.config(
                 bg="#141416",
@@ -98,6 +102,10 @@ class EditMode:
             z = self.app.state.zoom
             self.app.state.prediction[z][mask] = bit
         self.app.state.edited += 1
+
+        if self.app.state.edited > 0:
+            self.app.ui.changes_state_label.grid_remove()
+            self.app.ui.save_changes.grid()
         self.app.update_display()
 
     def save_changes(self):
@@ -110,3 +118,5 @@ class EditMode:
             self.app.state.prediction.astype(np.uint8),
         )
         self.app.state.edited = 0
+        self.app.ui.save_changes.grid_remove()
+        self.app.ui.changes_state_label.grid()

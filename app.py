@@ -200,6 +200,7 @@ class SegViewApp:
         )
         self.state.data = tifffile.imread(path)
         self.state.shape = self.state.data.shape
+
         if self.state.data.ndim > 2:
             self.state.zoom = int(self.state.shape[0] / 2)
         else:
@@ -224,6 +225,10 @@ class SegViewApp:
             self.ui.correct_but.grid()
         else:
             self.ui.correct_but.grid_remove()
+        if self.state.edited:
+            self.ui.changes_state_label.grid_remove()
+        else:
+            self.ui.changes_state_label.grid()
         self.state.edit_mode = False
         self.ui.edit_frame.grid_remove()
         self.update_display()
@@ -284,6 +289,10 @@ class SegViewApp:
             self.ui.correct_but.grid()
         else:
             self.ui.correct_but.grid_remove()
+        if self.state.edited:
+            self.ui.changes_state_label.grid_remove()
+        else:
+            self.ui.changes_state_label.grid()
 
     def route(self, route):
         if route == "prediction":
