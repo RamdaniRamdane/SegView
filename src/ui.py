@@ -1,13 +1,12 @@
 import os
-import sys
 import tkinter as tk
 from tkinter import Canvas
 
-import image_utils
-from ui_utils import UIutils
+import src.image_utils as image_utils
+from src.ui_utils import UIutils
 
-BASE_DIR = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
-IMG_DIR = os.path.join(BASE_DIR, "images")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMG_DIR = os.path.join(BASE_DIR, "..", "images")
 
 BG = "#0e0e0f"  # near-black base
 PANEL = "#141416"  # slightly lighter panel

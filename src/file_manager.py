@@ -3,7 +3,7 @@ import shutil
 
 import tifffile
 
-from ui_utils import UIutils
+from src.ui_utils import UIutils
 
 
 class FileManager:

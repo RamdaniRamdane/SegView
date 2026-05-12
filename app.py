@@ -6,10 +6,10 @@ from tkinter import filedialog, messagebox
 import tifffile
 from biom3d.pred import pred
 
-from file_manager import FileManager
-from image_utils import display
+from src.file_manager import FileManager
+from src.image_utils import display
+from src.ui_utils import UIutils
 from ui_helpers import EditMode
-from ui_utils import UIutils
 
 BG = "#0e0e0f"
 MUTED = "#141416"
