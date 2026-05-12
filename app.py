@@ -6,15 +6,11 @@ from tkinter import filedialog, messagebox
 import tifffile
 from biom3d.pred import pred
 
+import theme
 from src.file_manager import FileManager
 from src.image_utils import display
 from src.ui_utils import UIutils
 from ui_helpers import EditMode
-
-BG = "#0e0e0f"
-MUTED = "#141416"
-TEXT_HI = "#e8e8f0"
-MUTED = "#3a3a40"  # inactive elements
 
 
 @dataclass
@@ -54,16 +50,16 @@ class SegViewApp:
 
     def bind_events(self):
 
-        self.ui.pred_btn.config(command=lambda: self.route("prediction"))
-        self.ui.rev_btn.config(command=lambda: self.route("review"))
-        self.ui.fine_btn.config(command=lambda: self.route("fineTune"))
-        self.ui.btn.config(command=lambda: self.open_dir("PATH_RAW"))
+        self.ui.sidebarright.pred_btn.config(command=lambda: self.route("prediction"))
+        self.ui.sidebarright.rev_btn.config(command=lambda: self.route("review"))
+        self.ui.sidebarright.fine_btn.config(command=lambda: self.route("fineTune"))
+        self.ui.sidebarright.btn.config(command=lambda: self.open_dir("PATH_RAW"))
 
-        self.ui.refuse_but.config(
+        self.ui.sidebarright.refuse_but.config(
             state=tk.DISABLED,
             command=lambda: self.save(False),
         )
-        self.ui.validate_but.config(
+        self.ui.sidebarright.validate_but.config(
             state=tk.DISABLED,
             command=lambda: self.save(True),
         )
@@ -71,27 +67,37 @@ class SegViewApp:
             state=tk.DISABLED,
             command=self.change_z,
         )
-        self.ui.next_btn.config(
+        self.ui.sidebarright.next_btn.config(
             state=tk.DISABLED,
             command=lambda: self.navigate("NEXT"),
         )
-        self.ui.prev_btn.config(
+        self.ui.sidebarright.prev_btn.config(
             state=tk.DISABLED,
             command=lambda: self.navigate("PREV"),
         )
-        self.ui.get_model.config(
+        self.ui.sidebarright.get_model.config(
             state=tk.DISABLED,
             command=lambda: self.open_dir("PATH_LOG"),
         )
-        self.ui.get_folder_out.config(command=lambda: self.open_dir("PATH_PRED"))
-        self.ui.pred.config(command=self.run_prediction)
-        self.ui.get_predictions_path.config(command=lambda: self.open_dir("PATH_PRED"))
-        self.ui.correct_but.config(command=self.edit_mode_utils.toggle_edit_mode)
-        self.ui.brush.config(command=lambda: self.edit_mode_utils.toggle_tool("Brush"))
-        self.ui.ereaser.config(
+        self.ui.sidebarright.get_folder_out.config(
+            command=lambda: self.open_dir("PATH_PRED")
+        )
+        self.ui.sidebarright.pred.config(command=self.run_prediction)
+        self.ui.sidebarright.get_predictions_path.config(
+            command=lambda: self.open_dir("PATH_PRED")
+        )
+        self.ui.sidebarright.correct_but.config(
+            command=self.edit_mode_utils.toggle_edit_mode
+        )
+        self.ui.sidebarright.brush.config(
+            command=lambda: self.edit_mode_utils.toggle_tool("Brush")
+        )
+        self.ui.sidebarright.ereaser.config(
             command=lambda: self.edit_mode_utils.toggle_tool("Ereaser")
         )
-        self.ui.save_changes.config(command=self.edit_mode_utils.save_changes)
+        self.ui.sidebarright.save_changes.config(
+            command=self.edit_mode_utils.save_changes
+        )
         self.ui.canvas.bind(
             "<ButtonPress-1>",
             self.edit_mode_utils.on_mouse_down,
@@ -144,16 +150,16 @@ class SegViewApp:
             if action == "PATH_RAW":
                 self.state.path_dir = path_dir
                 self.state.files = tif_files
-                self.ui.use_cases.grid()
-                self.ui.navigateFrame.grid()
-                self.ui.next_btn.config(state=tk.NORMAL)
-                self.ui.prev_btn.config(state=tk.NORMAL)
+                self.ui.sidebarright.use_cases.grid()
+                self.ui.sidebarright.navigateFrame.grid()
+                self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
+                self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
                 self.ui.zoom_slider.config(state=tk.NORMAL)
-                self.ui.get_model.config(
+                self.ui.sidebarright.get_model.config(
                     state=tk.NORMAL,
                     fg="white",
                 )
-                self.ui.btn.config(bg="white", fg="black")
+                self.ui.sidebarright.btn.config(bg="white", fg="black")
                 first_path = os.path.join(
                     path_dir,
                     tif_files[0],
@@ -163,8 +169,8 @@ class SegViewApp:
 
             elif action == "PATH_PRED":
                 self.state.path_out = path_dir
-                self.ui.refuse_but.config(state=tk.NORMAL)
-                self.ui.validate_but.config(state=tk.NORMAL)
+                self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
+                self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
                 (
                     self.state.prediction,
                     self.state.prediction_path_file,
@@ -174,11 +180,11 @@ class SegViewApp:
                     self.state.path_out,
                 )
                 if self.ui.st == 2:
-                    self.ui.correct_but.grid()
+                    self.ui.sidebarright.correct_but.grid()
                 else:
-                    self.ui.correct_but.grid_remove()
+                    self.ui.sidebarright.correct_but.grid_remove()
                 self.state.edit_mode = False
-                self.ui.edit_frame.grid_remove()
+                self.ui.sidebarright.edit_frame.grid_remove()
                 self.update_display()
         else:
             self.state.path_log = path_dir
@@ -206,7 +212,7 @@ class SegViewApp:
             self.state.zoom = int(self.state.shape[0] / 2)
         else:
             self.state.zoom = 0
-        self.ui.info_label.config(
+        self.ui.status.info_label.config(
             text=f"shape={self.state.shape} dtype={self.state.data.dtype}"
         )
         if self.state.data.ndim > 2:
@@ -223,15 +229,15 @@ class SegViewApp:
             self.state.path_out,
         )
         if self.ui.st == 2:
-            self.ui.correct_but.grid()
+            self.ui.sidebarright.correct_but.grid()
         else:
-            self.ui.correct_but.grid_remove()
+            self.ui.sidebarright.correct_but.grid_remove()
         if self.state.edited:
-            self.ui.changes_state_label.grid_remove()
+            self.ui.sidebarright.changes_state_label.grid_remove()
         else:
-            self.ui.changes_state_label.grid()
+            self.ui.sidebarright.changes_state_label.grid()
         self.state.edit_mode = False
-        self.ui.edit_frame.grid_remove()
+        self.ui.sidebarright.edit_frame.grid_remove()
         self.update_display()
 
     def navigate(self, direction):
@@ -282,35 +288,35 @@ class SegViewApp:
         )
         st = 1 if is_valid else 2
         UIutils.set_flag(
-            self.ui.flag_sign,
-            self.ui.flag_text,
+            self.ui.status.flag_sign,
+            self.ui.sidebarright.flag_text,
             st,
         )
         if st == 2:
-            self.ui.correct_but.grid()
+            self.ui.sidebarright.correct_but.grid()
         else:
-            self.ui.correct_but.grid_remove()
+            self.ui.sidebarright.correct_but.grid_remove()
         if self.state.edited:
-            self.ui.changes_state_label.grid_remove()
+            self.ui.sidebarright.changes_state_label.grid_remove()
         else:
-            self.ui.changes_state_label.grid()
+            self.ui.sidebarright.changes_state_label.grid()
 
     def route(self, route):
         if route == "prediction":
-            self.ui.pred_btn.config(bg="white", fg="black")
-            self.ui.rev_btn.config(bg=MUTED, fg=TEXT_HI)
-            self.ui.fine_btn.config(bg=MUTED, fg=TEXT_HI)
-            self.ui.pred_frame.grid()
-            self.ui.rev_Frame.grid_remove()
+            self.ui.sidebarright.pred_btn.config(bg="white", fg="black")
+            self.ui.sidebarright.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.sidebarright.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.sidebarright.pred_frame.grid()
+            self.ui.sidebarright.rev_Frame.grid_remove()
         elif route == "review":
-            self.ui.pred_btn.config(bg=MUTED, fg=TEXT_HI)
-            self.ui.rev_btn.config(bg="white", fg="black")
-            self.ui.fine_btn.config(bg=MUTED, fg=TEXT_HI)
-            self.ui.rev_Frame.grid()
-            self.ui.pred_frame.grid_remove()
+            self.ui.sidebarright.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.sidebarright.rev_btn.config(bg="white", fg="black")
+            self.ui.sidebarright.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.sidebarright.rev_Frame.grid()
+            self.ui.sidebarright.pred_frame.grid_remove()
         elif route == "fineTune":
-            self.ui.fine_btn.config(bg="white", fg="black")
-            self.ui.rev_btn.config(bg=MUTED, fg=TEXT_HI)
-            self.ui.pred_btn.config(bg=MUTED, fg=TEXT_HI)
-            self.ui.pred_frame.grid_remove()
-            self.ui.rev_Frame.grid_remove()
+            self.ui.sidebarright.fine_btn.config(bg="white", fg="black")
+            self.ui.sidebarright.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.sidebarright.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.sidebarright.pred_frame.grid_remove()
+            self.ui.sidebarright.rev_Frame.grid_remove()

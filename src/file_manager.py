@@ -16,20 +16,20 @@ class FileManager:
         filename = os.path.basename(file_path)
         pred_path = os.path.join(out_path, filename)
         if os.path.isfile(pred_path):
-            self.ui.refuse_but.grid()
-            self.ui.validate_but.grid()
+            self.ui.sidebarright.refuse_but.grid()
+            self.ui.sidebarright.validate_but.grid()
             pred = tifffile.imread(pred_path)
             st = self.status(pred_path)
             self.ui.st = st
             UIutils.set_flag(
-                self.ui.flag_sign,
-                self.ui.flag_text,
+                self.ui.status.flag_sign,
+                self.ui.status.flag_text,
                 st,
             )
             return pred, pred_path, True
         UIutils.set_flag(
-            self.ui.flag_sign,
-            self.ui.flag_text,
+            self.ui.status.flag_sign,
+            self.ui.status.flag_text,
             0,
         )
         return None, None, False

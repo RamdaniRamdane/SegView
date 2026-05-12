@@ -1,23 +1,6 @@
 import tkinter as tk
 
-BG = "#0e0e0f"
-PANEL = "#141416"
-BORDER = "#222226"
-
-MUTED = "#3a3a40"
-
-TEXT_DIM = "#555560"
-TEXT = "#c8c8d0"
-TEXT_HI = "#e8e8f0"
-
-ACCENT = "#4a9eff"
-
-DANGER = "#d94f4f"
-SUCCESS = "#3dab6e"
-WARNING = "#c09030"
-
-MONO = "Courier"
-SANS = "Helvetica"
+import theme
 
 
 class UIutils:
@@ -26,8 +9,8 @@ class UIutils:
         parent,
         text,
         row,
-        color=MUTED,
-        text_color=TEXT,
+        color=theme.MUTED,
+        text_color=theme.TEXT,
         cmd=None,
         pady_top=8,
         col=0,
@@ -36,7 +19,7 @@ class UIutils:
 
         frame = tk.Frame(
             parent,
-            bg=PANEL,
+            bg=theme.PANEL,
         )
 
         frame.grid(
@@ -55,7 +38,7 @@ class UIutils:
         button = tk.Button(
             frame,
             text=text,
-            font=(SANS, 9),
+            font=(theme.SANS, 9),
             bg=color,
             fg=text_color,
             activebackground=color,
@@ -79,9 +62,9 @@ class UIutils:
         label = tk.Label(
             parent,
             text=text,
-            font=(MONO, 7),
-            bg=PANEL,
-            fg=TEXT_DIM,
+            font=(theme.MONO, 7),
+            bg=theme.PANEL,
+            fg=theme.TEXT_DIM,
             anchor="w",
             padx=12,
         )
@@ -99,25 +82,25 @@ class UIutils:
     def set_flag(flag_dot, flag_text, st):
 
         if st == 1:
-            flag_dot.config(fg=SUCCESS)
+            flag_dot.config(fg=theme.SUCCESS)
 
             flag_text.config(
                 text="validated",
-                fg=SUCCESS,
+                fg=theme.SUCCESS,
             )
 
         elif st == 2:
-            flag_dot.config(fg=DANGER)
+            flag_dot.config(fg=theme.DANGER)
 
             flag_text.config(
                 text="refused",
-                fg=DANGER,
+                fg=theme.DANGER,
             )
 
         else:
-            flag_dot.config(fg=WARNING)
+            flag_dot.config(fg=theme.WARNING)
 
             flag_text.config(
                 text="unreviewed",
-                fg=WARNING,
+                fg=theme.WARNING,
             )

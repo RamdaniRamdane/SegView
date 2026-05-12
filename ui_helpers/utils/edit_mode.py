@@ -9,11 +9,11 @@ class EditMode:
     def toggle_edit_mode(self):
         self.app.state.edit_mode = not self.app.state.edit_mode
         if self.app.state.edit_mode:
-            self.app.ui.edit_frame.grid()
-            self.app.ui.ereaser.grid()
-            self.app.ui.brush.grid()
+            self.app.ui.sidebarright.edit_frame.grid()
+            self.app.ui.sidebarright.ereaser.grid()
+            self.app.ui.sidebarright.brush.grid()
         else:
-            self.app.ui.edit_frame.grid_remove()
+            self.app.ui.sidebarright.edit_frame.grid_remove()
 
     def toggle_tool(self, tool):
         if self.app.state.edit_tool != tool:
@@ -25,30 +25,30 @@ class EditMode:
     def change_bg_tool(self):
         tool = self.app.state.edit_tool
         if tool == "Brush":
-            self.app.ui.brush.config(
+            self.app.ui.sidebarright.brush.config(
                 bg="white",
                 fg="black",
                 activebackground="white",
                 activeforeground="black",
             )
-            self.app.ui.ereaser.config(
+            self.app.ui.sidebarright.ereaser.config(
                 bg="#3a3a40",
             )
         elif tool == "Ereaser":
-            self.app.ui.ereaser.config(
+            self.app.ui.sidebarright.ereaser.config(
                 bg="white",
                 fg="black",
                 activebackground="white",
                 activeforeground="black",
             )
-            self.app.ui.brush.config(
+            self.app.ui.sidebarright.brush.config(
                 bg="#3a3a40",
             )
         else:
-            self.app.ui.brush.config(
+            self.app.ui.sidebarright.brush.config(
                 bg="#3a3a40",
             )
-            self.app.ui.ereaser.config(
+            self.app.ui.sidebarright.ereaser.config(
                 bg="#3a3a40",
             )
 
@@ -100,8 +100,8 @@ class EditMode:
         self.app.state.edited += 1
 
         if self.app.state.edited > 0:
-            self.app.ui.changes_state_label.grid_remove()
-            self.app.ui.save_changes.grid()
+            self.app.ui.sidebarright.changes_state_label.grid_remove()
+            self.app.ui.sidebarright.save_changes.grid()
         self.app.update_display()
 
     def save_changes(self):
@@ -114,5 +114,5 @@ class EditMode:
             self.app.state.prediction.astype(np.uint8),
         )
         self.app.state.edited = 0
-        self.app.ui.save_changes.grid_remove()
-        self.app.ui.changes_state_label.grid()
+        self.app.ui.sidebarright.save_changes.grid_remove()
+        self.app.ui.sidebarright.changes_state_label.grid()
