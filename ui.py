@@ -165,6 +165,7 @@ class SegViewUI:
             pady_top=4,
             image=self.import_icon,
         )
+        self.btn.image = self.import_icon
         self.use_cases = tk.Frame(self.sidebar, bg=PANEL, width=200, height=100)
         self.predict_icon = image_utils.load_icon(IMG_DIR, "predict.png", (24, 24))
         self.pred_btn = tk.Button(
@@ -266,8 +267,15 @@ class SegViewUI:
         )
         self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)
 
+        self.validate_icon = image_utils.load_icon(IMG_DIR, "valid.png", (24, 24))
         self.validate_but = UIutils.make_btn(
-            self.rev_Frame, "Validate", 2, color=SUCCESS, text_color="white", pady_top=4
+            self.rev_Frame,
+            "Validate",
+            2,
+            color=SUCCESS,
+            text_color="white",
+            pady_top=4,
+            image=self.validate_icon,
         )
         self.refuse_but = UIutils.make_btn(
             self.rev_Frame, "Refuse", 3, color=DANGER, text_color="white", pady_top=4
