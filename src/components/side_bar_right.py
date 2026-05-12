@@ -17,7 +17,7 @@ class Sidebarright:
         # grid rows reserved to replicate original layout
         for i in range(11):
             self.frame.grid_rowconfigure(i, weight=0)
-        self.frame.grid_columnconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(1, weight=1)
 
         # INPUT label + Import button
         UIutils.sidebar_label(self.frame, "INPUT", 0)
@@ -38,7 +38,7 @@ class Sidebarright:
         self.get_predictions_path = tk.Button(
             self.rev_Frame,
             text="Import Predictions Folder",
-            font=(theme.MONO, 8),
+            font=(theme.MONO, 6),
             bg=theme.MUTED,
             fg=theme.TEXT_HI,
             relief="flat",

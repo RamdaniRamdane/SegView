@@ -55,8 +55,9 @@ class SegViewUI:
         self.status.status_sep.grid(row=3, column=0, sticky="new")
         self.status.frame.grid(row=4, column=1, sticky="ew")
 
-        test = tk.Frame(self.root, bg="pink", width=200)
-        test.grid(row=1, column=0)
+        test = tk.Frame(self.root, bg=theme.PANEL, width=200, height=500)
+        test.grid(row=1, column=0, rowspan=4)
+        test.grid_propagate(False)
         # frequently used widgets on top-level
         self.canvas = self.canvas_view.canvas
         self.zoom_slider = self.slider.zoom_slider

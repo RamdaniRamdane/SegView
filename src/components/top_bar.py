@@ -12,7 +12,7 @@ class TopBar:
     def __init__(self, root):
         self.root = root
         self.frame = tk.Frame(
-            self.root, bg=theme.PANEL, height=30, width=self.root.winfo_screenmmwidth()
+            self.root, bg=theme.BG, height=30, width=self.root.winfo_screenmmwidth()
         )
         self.frame.grid_rowconfigure(0, weight=0)
         for i in range(3):
