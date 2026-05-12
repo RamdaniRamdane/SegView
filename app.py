@@ -50,9 +50,9 @@ class SegViewApp:
 
     def bind_events(self):
 
-        self.ui.sidebarright.pred_btn.config(command=lambda: self.route("prediction"))
-        self.ui.sidebarright.rev_btn.config(command=lambda: self.route("review"))
-        self.ui.sidebarright.fine_btn.config(command=lambda: self.route("fineTune"))
+        self.ui.topbar.pred_btn.config(command=lambda: self.route("prediction"))
+        self.ui.topbar.rev_btn.config(command=lambda: self.route("review"))
+        self.ui.topbar.fine_btn.config(command=lambda: self.route("fineTune"))
         self.ui.sidebarright.btn.config(command=lambda: self.open_dir("PATH_RAW"))
 
         self.ui.sidebarright.refuse_but.config(
@@ -150,7 +150,6 @@ class SegViewApp:
             if action == "PATH_RAW":
                 self.state.path_dir = path_dir
                 self.state.files = tif_files
-                self.ui.sidebarright.use_cases.grid()
                 self.ui.sidebarright.navigateFrame.grid()
                 self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
                 self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
@@ -303,20 +302,20 @@ class SegViewApp:
 
     def route(self, route):
         if route == "prediction":
-            self.ui.sidebarright.pred_btn.config(bg="white", fg="black")
-            self.ui.sidebarright.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.sidebarright.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.topbar.pred_btn.config(bg="white", fg="black")
+            self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
             self.ui.sidebarright.pred_frame.grid()
             self.ui.sidebarright.rev_Frame.grid_remove()
         elif route == "review":
-            self.ui.sidebarright.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.sidebarright.rev_btn.config(bg="white", fg="black")
-            self.ui.sidebarright.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.topbar.rev_btn.config(bg="white", fg="black")
+            self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
             self.ui.sidebarright.rev_Frame.grid()
             self.ui.sidebarright.pred_frame.grid_remove()
         elif route == "fineTune":
-            self.ui.sidebarright.fine_btn.config(bg="white", fg="black")
-            self.ui.sidebarright.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.sidebarright.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.topbar.fine_btn.config(bg="white", fg="black")
+            self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+            self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
             self.ui.sidebarright.pred_frame.grid_remove()
             self.ui.sidebarright.rev_Frame.grid_remove()

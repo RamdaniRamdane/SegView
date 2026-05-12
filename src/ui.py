@@ -4,6 +4,7 @@ import theme
 
 from .components.extra import CanvasView, SliderRow, StatusStrip, Toolbar
 from .components.side_bar_right import Sidebarright
+from .components.top_bar import TopBar
 
 
 class SegViewUI:
@@ -17,39 +18,45 @@ class SegViewUI:
 
         # grid weights
         self.root.grid_rowconfigure(0, weight=0)
-        self.root.grid_rowconfigure(1, weight=1)
-        self.root.grid_rowconfigure(2, weight=0)
+        self.root.grid_rowconfigure(1, weight=0)
+        self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_rowconfigure(3, weight=0)
-        self.root.grid_columnconfigure(0, weight=1)
-        self.root.grid_columnconfigure(1, weight=0)
+        self.root.grid_rowconfigure(4, weight=0)
+        self.root.grid_columnconfigure(0, weight=0)
+        self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_columnconfigure(2, weight=0)
 
+        self.topbar = TopBar(self.root)
+        self.topbar.frame.grid(row=0, column=0, columnspan=3)
         # instantiate components
         self.toolbar = Toolbar(self.root)
-        self.toolbar.frame.grid(row=0, column=0, sticky="ew")
+        self.toolbar.frame.grid(row=1, column=1, sticky="ew")
 
         # thin bottom under toolbar
         tb_sep = tk.Frame(self.root, bg=theme.BORDER, height=0)
-        tb_sep.grid(row=0, column=0, sticky="sew")
+        tb_sep.grid(row=1, column=1, sticky="sew")
 
         # sidebarright
         self.sidebarright = Sidebarright(self.root, self.root)
         self.sidebarright.frame.grid(
-            row=0, column=1, rowspan=4, sticky="nsew", padx=(0, 0), pady=0
+            row=1, column=2, rowspan=4, sticky="nsew", padx=(0, 0), pady=0
         )
 
         # canvas view
         self.canvas_view = CanvasView(self.root)
-        self.canvas_view.canvas.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
+        self.canvas_view.canvas.grid(row=2, column=1, sticky="nsew", padx=10, pady=10)
 
         # slider row
         self.slider = SliderRow(self.root)
-        self.slider.frame.grid(row=2, column=0, sticky="ew", padx=12, pady=(0, 2))
+        self.slider.frame.grid(row=3, column=1, sticky="ew", padx=12, pady=(0, 2))
 
         # status strip
         self.status = StatusStrip(self.root)
         self.status.status_sep.grid(row=3, column=0, sticky="new")
-        self.status.frame.grid(row=3, column=0, sticky="ew")
+        self.status.frame.grid(row=4, column=1, sticky="ew")
 
+        test = tk.Frame(self.root, bg="pink", width=200)
+        test.grid(row=1, column=0)
         # frequently used widgets on top-level
         self.canvas = self.canvas_view.canvas
         self.zoom_slider = self.slider.zoom_slider

@@ -33,49 +33,6 @@ class Sidebarright:
         )
         self.btn.image = self.import_icon
 
-        # use_cases area (Predict / Review / Fine)
-        self.use_cases = tk.Frame(self.frame, bg=theme.PANEL, width=200, height=100)
-        self.predict_icon = image_utils.load_icon(IMG_DIR, "predict.png", (24, 24))
-        self.pred_btn = tk.Button(
-            self.use_cases,
-            text="Predict Mask",
-            font=(theme.MONO, 8),
-            bg=theme.MUTED,
-            fg=theme.TEXT_HI,
-            relief="flat",
-            cursor="hand2",
-            image=self.predict_icon,
-            compound="left",
-        )
-        self.review_icon = image_utils.load_icon(IMG_DIR, "review.png", (24, 24))
-        self.rev_btn = tk.Button(
-            self.use_cases,
-            text="Review Predictions",
-            font=(theme.MONO, 8),
-            bg=theme.MUTED,
-            fg=theme.TEXT_HI,
-            relief="flat",
-            cursor="hand2",
-            image=self.review_icon,
-            compound="left",
-        )
-        self.fine_icon = image_utils.load_icon(IMG_DIR, "fine.png", (24, 24))
-        self.fine_btn = tk.Button(
-            self.use_cases,
-            text="Fine Tuning",
-            font=(theme.MONO, 8),
-            bg=theme.MUTED,
-            fg=theme.TEXT_HI,
-            relief="flat",
-            cursor="hand2",
-            image=self.fine_icon,
-            compound="left",
-        )
-        self.use_cases.grid(row=2, column=0)
-        self.pred_btn.pack(fill="both", padx=5, pady=5)
-        self.rev_btn.pack(fill="both", padx=5, pady=5)
-        self.fine_btn.pack(fill="both", padx=5, pady=5)
-
         # review frame (import predictions + nav + validate/refuse/correct)
         self.rev_Frame = tk.Frame(self.frame, bg=theme.PANEL, width=200, height=100)
         self.get_predictions_path = tk.Button(
@@ -199,13 +156,12 @@ class Sidebarright:
             padx=10,
             pady=10,
         )
-        self.changes_state_label.grid(row=1, column=1)
+        self.changes_state_label.grid(row=1, column=0, columnspan=2)
 
         self.get_predictions_path.grid(row=0, column=0)
         self.edit_frame.grid(row=5, column=0)
 
         # keep frames hidden by default (same behavior as original)
-        self.use_cases.grid_remove()
         self.rev_Frame.grid_remove()
         self.validate_but.grid_remove()
         self.refuse_but.grid_remove()
