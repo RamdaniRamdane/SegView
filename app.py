@@ -1,10 +1,11 @@
 import os
+import threading
 import tkinter as tk
 from dataclasses import dataclass, field
+from time import sleep
 from tkinter import filedialog, messagebox
 
 import tifffile
-from biom3d.pred import pred
 
 import theme
 from src.file_manager import FileManager
@@ -47,6 +48,8 @@ class SegViewApp:
         self.state = AppState()
         self.file_manager = FileManager(ui)
         self.edit_mode_utils = EditMode(self)
+        self.worker = None
+        self.result = None
 
     def bind_events(self):
 
@@ -79,9 +82,9 @@ class SegViewApp:
             state=tk.DISABLED,
             command=lambda: self.open_dir("PATH_LOG"),
         )
-        self.ui.sidebarright.get_folder_out.config(
-            command=lambda: self.open_dir("PATH_PRED")
-        )
+        # self.ui.sidebarright.get_folder_out.config(
+        #    command=lambda: self.open_dir("PATH_PRED")
+        # )
         self.ui.sidebarright.pred.config(command=self.run_prediction)
         self.ui.sidebarright.get_predictions_path.config(
             command=lambda: self.open_dir("PATH_PRED")
@@ -107,27 +110,53 @@ class SegViewApp:
             self.edit_mode_utils.on_mouse_drag,
         )
 
-    def run_prediction(self):
+    # for test
+    def biopred_simulation(self):
+        path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/final_out/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
+        sleep(10)
+        return path_to_return
 
+    def _worker(self):
+        try:
+            self.result = self.biopred_simulation()
+        except Exception as e:
+            self.result = e
+
+    def _check(self):
+        if self.worker.is_alive():
+            self.ui.root.after(100, self._check)
+            return
+        # worker fini — traiter résultat dans le thread principal (UI)
+        if isinstance(self.result, Exception):
+            messagebox.showerror("Error", str(self.result))
+        else:
+            messagebox.showinfo("Done", f"prediction saved here: {self.result}")
+            self.go_to_review()
+
+    def run_prediction(self, path_out=None):
         if not self.state.path_log:
             messagebox.showerror("Error", "No model selected")
             return
         if not self.state.path_dir:
             messagebox.showerror("Error", "No input folder selected")
             return
-        if not self.state.path_out:
+        out = filedialog.askdirectory(title="Destination for model predictions")
+        if not out:
             messagebox.showerror("Error", "No output folder selected")
             return
-        pred(
-            log=self.state.path_log,
-            path_in=self.state.path_dir,
-            path_out=self.state.path_out,
-            skip_preprocessing=False,
-        )
-        messagebox.showinfo("Done", "Prediction finished")
+        self.worker = threading.Thread(target=self._worker, daemon=True)
+        self.worker.start()
+        self._check()
+        # predbiom3d = pred(
+        #    log=self.state.path_log,
+        #    path_in=self.state.path_dir,
+        #    path_out=out,
+        #    skip_preprocessing=False,
+        # )
 
-    def open_dir(self, action):
-        path_dir = filedialog.askdirectory()
+    def open_dir(self, action, path_dir=None):
+        if not path_dir:
+            path_dir = filedialog.askdirectory(title=action)
         if not path_dir:
             return
         if not os.path.isdir(path_dir):
@@ -187,9 +216,8 @@ class SegViewApp:
                 self.update_display()
         else:
             self.state.path_log = path_dir
-            self.ui.get_model.config(bg="orange")
-            self.ui.pred.grid()
-            self.ui.get_folder_out.grid()
+            self.ui.sidebarright.get_model.config(bg="orange")
+            self.ui.sidebarright.pred.grid()
 
     def open_file(self, path):
         if not os.path.isfile(path):
@@ -302,20 +330,29 @@ class SegViewApp:
 
     def route(self, route):
         if route == "prediction":
-            self.ui.topbar.pred_btn.config(bg="white", fg="black")
-            self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.sidebarright.pred_frame.grid()
-            self.ui.sidebarright.rev_Frame.grid_remove()
+            self.go_to_prediction()
         elif route == "review":
-            self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.topbar.rev_btn.config(bg="white", fg="black")
-            self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.sidebarright.rev_Frame.grid()
-            self.ui.sidebarright.pred_frame.grid_remove()
+            self.go_to_review()
         elif route == "fineTune":
-            self.ui.topbar.fine_btn.config(bg="white", fg="black")
-            self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-            self.ui.sidebarright.pred_frame.grid_remove()
-            self.ui.sidebarright.rev_Frame.grid_remove()
+            self.go_to_fine()
+
+    def go_to_prediction(self):
+        self.ui.topbar.pred_btn.config(bg="white", fg="black")
+        self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        self.ui.sidebarright.pred_frame.grid()
+        self.ui.sidebarright.rev_Frame.grid_remove()
+
+    def go_to_review(self):
+        self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        self.ui.topbar.rev_btn.config(bg="white", fg="black")
+        self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        self.ui.sidebarright.rev_Frame.grid()
+        self.ui.sidebarright.pred_frame.grid_remove()
+
+    def go_to_fine(self):
+        self.ui.topbar.fine_btn.config(bg="white", fg="black")
+        self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        self.ui.sidebarright.pred_frame.grid_remove()
+        self.ui.sidebarright.rev_Frame.grid_remove()
