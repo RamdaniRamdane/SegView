@@ -6,6 +6,7 @@ from time import sleep
 from tkinter import filedialog, messagebox
 
 import tifffile
+from biom3d.pred import pred
 
 import theme
 from src.file_manager import FileManager
@@ -30,11 +31,14 @@ class AppState:
     has_prediction: bool = False
 
     files: list = field(default_factory=list)
+    files_out: list = field(default_factory=list)
 
     index: int = 0
 
     path_dir: str = ""
     path_out: str = ""
+    path_out_list: list = field(default_factory=list)
+    predStarted = False
 
     edit_mode: bool = False
     edit_tool: str = ""
@@ -112,26 +116,55 @@ class SegViewApp:
 
     # for test
     def biopred_simulation(self):
-        path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/final_out/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
+        path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/out3/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
         sleep(10)
         return path_to_return
 
     def _worker(self):
         try:
-            self.result = self.biopred_simulation()
+            #    self.result = self.biopred_simulation()
+            self.result = pred(
+                log=self.state.path_log,
+                path_in=self.state.path_dir,
+                path_out=self.state.path_out,
+                skip_preprocessing=False,
+            )
+
         except Exception as e:
             self.result = e
 
     def _check(self):
         if self.worker.is_alive():
-            self.ui.root.after(100, self._check)
+            try:
+                if not self.state.predStarted:
+                    out_list = os.listdir(self.state.path_out)
+                    execp = ["Valide", "NON-valide"]
+                    diff = list(set(out_list) - set(self.state.path_out_list))
+                    if diff:
+                        candidate = diff[0]
+                        for el in diff:
+                            if el not in execp:
+                                candidate = el
+                        new_path = os.path.join(self.state.path_out, candidate)
+                        if os.path.isdir(new_path):
+                            self.state.path_out = new_path
+                            self.result = new_path
+                            self.state.predStarted = True
+                else:
+                    self.state.files_out = os.listdir(self.state.path_out)
+                    print("Files:", self.state.path_out, self.state.files_out)
+            except Exception as e:
+                print("Erreur lors du listing:", e)
+            self.ui.root.after(10_000, self._check)
             return
-        # worker fini — traiter résultat dans le thread principal (UI)
+
+        # worker finished — handle result on main thread (UI)
         if isinstance(self.result, Exception):
-            messagebox.showerror("Error", str(self.result))
+            messagebox.showerror("Error", str(self.state.path_out))
         else:
             messagebox.showinfo("Done", f"prediction saved here: {self.result}")
-            self.go_to_review(self.result)
+            self.state.predStarted = False
+            self.go_to_review(self.state.path_out)
 
     def run_prediction(self, path_out=None):
         if not self.state.path_log:
@@ -141,18 +174,13 @@ class SegViewApp:
             messagebox.showerror("Error", "No input folder selected")
             return
         out = filedialog.askdirectory(title="Destination for model predictions")
+        self.state.path_out = out
         if not out:
             messagebox.showerror("Error", "No output folder selected")
             return
         self.worker = threading.Thread(target=self._worker, daemon=True)
         self.worker.start()
         self._check()
-        # predbiom3d = pred(
-        #    log=self.state.path_log,
-        #    path_in=self.state.path_dir,
-        #    path_out=out,
-        #    skip_preprocessing=False,
-        # )
 
     def open_dir(self, action, path_dir=None):
         if not path_dir:
@@ -160,6 +188,7 @@ class SegViewApp:
         if not path_dir:
             return
         if not os.path.isdir(path_dir):
+            print("dagui : ", path_dir)
             messagebox.showerror(
                 title="Not found",
                 message="directory not found",
@@ -171,6 +200,7 @@ class SegViewApp:
             tif_files = [f for f in files if f.lower().endswith(".tif")]
 
             if not tif_files:
+                print("no tif file", path_dir)
                 messagebox.showerror(
                     title="Not found",
                     message="no tif file in this dir",
@@ -345,7 +375,7 @@ class SegViewApp:
 
     def go_to_review(self, path=None):
         if path:
-            self.open_dir("PATH_PRED", os.path.dirname(path))
+            self.open_dir("PATH_PRED", path)
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.rev_btn.config(bg="white", fg="black")
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
