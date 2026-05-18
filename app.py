@@ -131,7 +131,7 @@ class SegViewApp:
             messagebox.showerror("Error", str(self.result))
         else:
             messagebox.showinfo("Done", f"prediction saved here: {self.result}")
-            self.go_to_review()
+            self.go_to_review(self.result)
 
     def run_prediction(self, path_out=None):
         if not self.state.path_log:
@@ -316,7 +316,7 @@ class SegViewApp:
         st = 1 if is_valid else 2
         UIutils.set_flag(
             self.ui.status.flag_sign,
-            self.ui.sidebarright.flag_text,
+            self.ui.status.flag_text,
             st,
         )
         if st == 2:
@@ -343,7 +343,9 @@ class SegViewApp:
         self.ui.sidebarright.pred_frame.grid()
         self.ui.sidebarright.rev_Frame.grid_remove()
 
-    def go_to_review(self):
+    def go_to_review(self, path=None):
+        if path:
+            self.open_dir("PATH_PRED", os.path.dirname(path))
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.rev_btn.config(bg="white", fg="black")
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
