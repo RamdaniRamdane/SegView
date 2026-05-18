@@ -1,0 +1,4 @@
+[  *   ] track out folder actions
+[ TODO ] progress bar
+[ TODO ] export numbers (calc to get clean progress bar)
+[ TODO ] create top level folder on out , solution for confilict
