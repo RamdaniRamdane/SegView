@@ -1,4 +1,5 @@
 import os
+import shutil
 import threading
 import tkinter as tk
 from dataclasses import dataclass, field
@@ -6,7 +7,6 @@ from time import sleep
 from tkinter import filedialog, messagebox
 
 import tifffile
-from biom3d.pred import pred
 
 import theme
 from src.file_manager import FileManager
@@ -118,17 +118,29 @@ class SegViewApp:
     def biopred_simulation(self):
         path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/out3/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
         sleep(10)
+        os.mkdir(
+            "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/testprogress/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/"
+        )
+        src = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/fg_out/"
+        dist = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/testprogress/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/"
+        files_out = os.listdir(src)
+
+        for file in files_out:
+            src_tocopy = os.path.join(src, file)
+            shutil.copy(src_tocopy, dist)
+            sleep(3)
+
         return path_to_return
 
     def _worker(self):
         try:
-            #    self.result = self.biopred_simulation()
-            self.result = pred(
-                log=self.state.path_log,
-                path_in=self.state.path_dir,
-                path_out=self.state.path_out,
-                skip_preprocessing=False,
-            )
+            self.result = self.biopred_simulation()
+            # self.result = pred(
+            #    log=self.state.path_log,
+            #    path_in=self.state.path_dir,
+            #    path_out=self.state.path_out,
+            #    skip_preprocessing=False,
+            # )
 
         except Exception as e:
             self.result = e
@@ -151,17 +163,33 @@ class SegViewApp:
                             self.result = new_path
                             self.state.predStarted = True
                 else:
+                    files_out = os.listdir(self.state.path_out)
+                    if len(files_out) > len(self.state.files_out):
+                        test = self.ui.sidebarleft.progressbar["mode"]
+                        if str(test) == "indeterminate":
+                            self.ui.sidebarleft.toggl_determinate_mode(
+                                self.ui.sidebarleft.progressbar
+                            )
+                        self.ui.sidebarleft.progressbar_handler(
+                            self.ui.sidebarleft.progressbar,
+                            "GROW",
+                            len(self.state.files),
+                        )
                     self.state.files_out = os.listdir(self.state.path_out)
                     print("Files:", self.state.path_out, self.state.files_out)
             except Exception as e:
                 print("Erreur lors du listing:", e)
-            self.ui.root.after(10_000, self._check)
+            self.ui.root.after(1000, self._check)
             return
 
         # worker finished — handle result on main thread (UI)
         if isinstance(self.result, Exception):
             messagebox.showerror("Error", str(self.state.path_out))
         else:
+            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+            self.ui.sidebarleft.progressbar_handler(
+                self.ui.sidebarleft.progressbar, "RESET"
+            )
             messagebox.showinfo("Done", f"prediction saved here: {self.result}")
             self.state.predStarted = False
             self.go_to_review(self.state.path_out)
@@ -180,6 +208,7 @@ class SegViewApp:
             return
         self.worker = threading.Thread(target=self._worker, daemon=True)
         self.worker.start()
+        self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
         self._check()
 
     def open_dir(self, action, path_dir=None):

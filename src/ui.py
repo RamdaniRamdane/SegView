@@ -3,6 +3,7 @@ import tkinter as tk
 import theme
 
 from .components.extra import CanvasView, SliderRow, StatusStrip, Toolbar
+from .components.side_bar_left import Sidebarleft
 from .components.side_bar_right import Sidebarright
 from .components.top_bar import TopBar
 
@@ -46,6 +47,11 @@ class SegViewUI:
         self.canvas_view = CanvasView(self.root)
         self.canvas_view.canvas.grid(row=2, column=1, sticky="nsew", padx=10, pady=10)
 
+        # sidebarleft
+        self.sidebarleft = Sidebarleft(self.root, self.root)
+        self.sidebarleft.frame.grid(
+            row=1, column=0, rowspan=4, sticky="nsew", padx=(0, 0), pady=0
+        )
         # slider row
         self.slider = SliderRow(self.root)
         self.slider.frame.grid(row=3, column=1, sticky="ew", padx=12, pady=(0, 2))
@@ -55,9 +61,6 @@ class SegViewUI:
         self.status.status_sep.grid(row=3, column=0, sticky="new")
         self.status.frame.grid(row=4, column=1, sticky="ew")
 
-        test = tk.Frame(self.root, bg=theme.PANEL, width=200, height=500)
-        test.grid(row=1, column=0, rowspan=4)
-        test.grid_propagate(False)
         # frequently used widgets on top-level
         self.canvas = self.canvas_view.canvas
         self.zoom_slider = self.slider.zoom_slider
