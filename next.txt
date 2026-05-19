@@ -5,4 +5,5 @@
 [ TODO ] first try fine tuning 
 [ TODO ] try to give the user the ability to see the predicted files before ending
 [ TODO ] improve designe
+[ TODO ] read about pyInstaller
 [ TODO ] create top level folder on out , solution for confilict
