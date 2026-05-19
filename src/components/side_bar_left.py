@@ -46,7 +46,7 @@ class Sidebarleft:
         elif act == "END":
             progressbar["value"] = progressbar["maximum"]
         elif act == "RESET":
-            progressbar["value"] = 0
+            progressbar["value"] = 3
         return True
 
     def toggl_determinate_mode(self, progressbar):
@@ -54,6 +54,7 @@ class Sidebarleft:
         progressbar.stop()
         progressbar.config(mode="determinate")
         self.progressbar["maximum"] = 100
+        self.progressbar["value"] = 3
 
     def remove_progressbar(self, progressbar):
         progressbar.grid_remove()

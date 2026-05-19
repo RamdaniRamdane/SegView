@@ -7,6 +7,7 @@ from time import sleep
 from tkinter import filedialog, messagebox
 
 import tifffile
+from biom3d.pred import pred
 
 import theme
 from src.file_manager import FileManager
@@ -134,13 +135,13 @@ class SegViewApp:
 
     def _worker(self):
         try:
-            self.result = self.biopred_simulation()
-            # self.result = pred(
-            #    log=self.state.path_log,
-            #    path_in=self.state.path_dir,
-            #    path_out=self.state.path_out,
-            #    skip_preprocessing=False,
-            # )
+            # self.result = self.biopred_simulation()
+            self.result = pred(
+                log=self.state.path_log,
+                path_in=self.state.path_dir,
+                path_out=self.state.path_out,
+                skip_preprocessing=False,
+            )
 
         except Exception as e:
             self.result = e
