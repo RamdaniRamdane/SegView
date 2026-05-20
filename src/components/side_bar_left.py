@@ -8,6 +8,7 @@ from src.ui_utils import UIutils
 class Sidebarleft:
     def __init__(self, parent, root):
         self.root = root
+        self.pourcentage = ""
         self.frame = tk.Frame(root, bg=theme.PANEL, width=200)
         self.frame.grid_propagate(False)
         for i in range(3):
@@ -16,7 +17,7 @@ class Sidebarleft:
 
         self.titel = None
         self.title = "prediction info"
-        UIutils.sidebar_label(self.frame, self.title, 0)
+        self.progressbartext = UIutils.sidebar_label(self.frame, self.title, 0)
 
         style = ttk.Style(self.root)
 
@@ -65,6 +66,7 @@ class Sidebarleft:
         )
         self.progressbar.grid_remove()
 
+    # Methods pour handle progressbar status
     def progressbar_handler(self, progressbar, act, max_todo=None):
         if max_todo:
             grow = progressbar["maximum"] / max_todo
@@ -74,15 +76,16 @@ class Sidebarleft:
         elif act == "GROW":
             if (value + grow) <= progressbar["maximum"]:
                 progressbar["value"] = value + grow
-                print(value)
-                print("grow with", value + grow)
-                print("progress bar value", progressbar["value"])
+                self.update_progress_bar_text()
             else:
                 progressbar["value"] = progressbar["maximum"]
+                self.update_progress_bar_text()
         elif act == "END":
             progressbar["value"] = progressbar["maximum"]
+            self.update_progress_bar_text()
         elif act == "RESET":
-            progressbar["value"] = 3
+            progressbar["value"] = 0
+            self.update_progress_bar_text()
         return True
 
     def toggl_determinate_mode(self, progressbar):
@@ -90,7 +93,7 @@ class Sidebarleft:
         progressbar.stop()
         progressbar.config(mode="determinate")
         self.progressbar["maximum"] = 100
-        self.progressbar["value"] = 3
+        self.progressbar["value"] = 0
 
     def remove_progressbar(self, progressbar):
         progressbar.grid_remove()
@@ -99,3 +102,9 @@ class Sidebarleft:
         progressbar.config(mode="indeterminate")
         progressbar.start()
         progressbar.grid()
+
+    def update_progress_bar_text(self):
+        pourcentage = int(self.progressbar["value"])
+        pourcentage = pourcentage if pourcentage else "--"
+        text = "prediction info  " + str(pourcentage) + "%"
+        self.progressbartext.config(text=text)
