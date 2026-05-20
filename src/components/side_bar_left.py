@@ -17,22 +17,58 @@ class Sidebarleft:
         self.titel = None
         self.title = "prediction info"
         UIutils.sidebar_label(self.frame, self.title, 0)
-        self.progressbar = ttk.Progressbar(
-            self.frame, orient="horizontal", length=180, mode="indeterminate"
+
+        style = ttk.Style(self.root)
+
+        # Nom et layout corrects pour une Progressbar personnalisée
+        style_name = "custom.Horizontal.TProgressbar"
+
+        # Layout minimal (assure l'existence du layout si tu veux customiser plus tard)
+        style.layout(
+            style_name,
+            [
+                (
+                    "Horizontal.Progressbar.trough",
+                    {
+                        "children": [
+                            (
+                                "Horizontal.Progressbar.pbar",
+                                {"side": "left", "sticky": "ns"},
+                            )
+                        ],
+                        "sticky": "nswe",
+                    },
+                )
+            ],
         )
 
-        self.progressbar.grid(row=1, column=0, padx=10, pady=(5, 10), sticky="ew")
+        style.configure(
+            style_name,
+            troughcolor=theme.BG,
+            background=theme.SUCCESS,
+        )
+
+        self.progressbar = ttk.Progressbar(
+            self.frame,
+            orient="horizontal",
+            length=180,
+            mode="indeterminate",
+            style=style_name,
+        )
+
+        self.progressbar.grid(
+            row=1,
+            column=0,
+            padx=10,
+            pady=(5, 10),
+            sticky="ew",
+        )
         self.progressbar.grid_remove()
 
     def progressbar_handler(self, progressbar, act, max_todo=None):
         if max_todo:
             grow = progressbar["maximum"] / max_todo
-            print(grow)
-        print(max_todo)
-        print(progressbar["value"])
-        print(progressbar["maximum"])
         value = progressbar["value"]
-        print("value at start handl : ", value)
         if value == progressbar["maximum"]:
             return False
         elif act == "GROW":

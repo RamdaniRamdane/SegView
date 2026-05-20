@@ -7,8 +7,8 @@ from time import sleep
 from tkinter import filedialog, messagebox
 
 import tifffile
-from biom3d.pred import pred
 
+# from biom3d.pred import pred
 import theme
 from src.file_manager import FileManager
 from src.image_utils import display
@@ -135,13 +135,13 @@ class SegViewApp:
 
     def _worker(self):
         try:
-            # self.result = self.biopred_simulation()
-            self.result = pred(
-                log=self.state.path_log,
-                path_in=self.state.path_dir,
-                path_out=self.state.path_out,
-                skip_preprocessing=False,
-            )
+            self.result = self.biopred_simulation()
+            # self.result = pred(
+            #    log=self.state.path_log,
+            #    path_in=self.state.path_dir,
+            #    path_out=self.state.path_out,
+            #    skip_preprocessing=False,
+            # )
 
         except Exception as e:
             self.result = e
@@ -177,7 +177,6 @@ class SegViewApp:
                             len(self.state.files),
                         )
                     self.state.files_out = os.listdir(self.state.path_out)
-                    print("Files:", self.state.path_out, self.state.files_out)
             except Exception as e:
                 print("Erreur lors du listing:", e)
             self.ui.root.after(1000, self._check)
