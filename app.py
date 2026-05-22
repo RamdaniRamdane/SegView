@@ -7,13 +7,28 @@ from time import sleep
 from tkinter import filedialog, messagebox
 
 import tifffile
+import torch
 
 # from biom3d.pred import pred
+from biom3d.preprocess import auto_config_preprocess
+from biom3d.train import train
+
 import theme
 from src.file_manager import FileManager
 from src.image_utils import display
 from src.ui_utils import UIutils
 from ui_helpers import EditMode
+
+_real_torch_load = torch.load
+
+
+def _load_cpu(*args, **kwargs):
+    if "map_location" not in kwargs:
+        kwargs["map_location"] = "cpu"
+    return _real_torch_load(*args, **kwargs)
+
+
+torch.load = _load_cpu
 
 
 @dataclass
@@ -45,6 +60,7 @@ class AppState:
     edit_tool: str = ""
 
     edited: int = 0
+    config_path = str = ""
 
 
 class SegViewApp:
@@ -115,7 +131,31 @@ class SegViewApp:
             self.edit_mode_utils.on_mouse_drag,
         )
 
+    # load config for fine tuning :
+
+    def make_config_fine_tuning(self):
+        self.state.config_path = auto_config_preprocess(
+            img_path=self.state.path_dir,
+            msk_path=self.state.path_out,
+            num_classes=1,
+            config_dir="configs",
+            base_config=None,
+            ct_norm=False,
+            desc="unet",
+            max_dim=128,
+            num_epochs=1,
+            is_2d=False,
+        )
+
+    def run_fine_tuning(self):
+        fine = train(
+            config=self.state.config_path,
+            path=self.state.path_log,
+        )
+        print(fine)
+
     # for test
+
     def biopred_simulation(self):
         path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/out3/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
         sleep(10)
@@ -417,3 +457,5 @@ class SegViewApp:
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.pred_frame.grid_remove()
         self.ui.sidebarright.rev_Frame.grid_remove()
+        self.make_config_fine_tuning()
+        self.run_fine_tuning()
