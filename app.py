@@ -53,6 +53,7 @@ class AppState:
 
     path_dir: str = ""
     path_out: str = ""
+    path_out_valide: str = ""
     path_out_list: list = field(default_factory=list)
     predStarted = False
 
@@ -67,6 +68,7 @@ class SegViewApp:
     def __init__(self, ui):
         self.ui = ui
         self.state = AppState()
+        self.ui.set_state(self.state)
         self.file_manager = FileManager(ui)
         self.edit_mode_utils = EditMode(self)
         self.worker = None
@@ -134,6 +136,7 @@ class SegViewApp:
     # load config for fine tuning :
 
     def make_config_fine_tuning(self):
+        print(" call state :", self.state.path_out_valide)
         self.state.config_path = auto_config_preprocess(
             img_path=self.state.path_dir,
             msk_path=self.state.path_out,
@@ -216,6 +219,7 @@ class SegViewApp:
                             "GROW",
                             len(self.state.files),
                         )
+                        self.ui.sidebarleft.update_color_text_file()
                     self.state.files_out = os.listdir(self.state.path_out)
             except Exception as e:
                 print("Erreur lors du listing:", e)
@@ -278,6 +282,9 @@ class SegViewApp:
             if action == "PATH_RAW":
                 self.state.path_dir = path_dir
                 self.state.files = tif_files
+                self.ui.sidebarleft.show_files_list()
+                self.ui.set_state(self.state)
+                self.ui.sidebarleft.update_color_text_file()
                 self.ui.sidebarright.navigateFrame.grid()
                 self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
                 self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
@@ -306,6 +313,8 @@ class SegViewApp:
                     self.state.file_path,
                     self.state.path_out,
                 )
+
+                self.ui.sidebarleft.update_color_text_file()
                 if self.ui.st == 2:
                     self.ui.sidebarright.correct_but.grid()
                 else:
@@ -354,6 +363,7 @@ class SegViewApp:
             self.state.file_path,
             self.state.path_out,
         )
+        self.ui.sidebarleft.update_color_text_file()
         if self.ui.st == 2:
             self.ui.sidebarright.correct_but.grid()
         else:
@@ -418,6 +428,7 @@ class SegViewApp:
             self.ui.status.flag_text,
             st,
         )
+
         if st == 2:
             self.ui.sidebarright.correct_but.grid()
         else:
@@ -426,6 +437,8 @@ class SegViewApp:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
             self.ui.sidebarright.changes_state_label.grid()
+
+        self.ui.sidebarleft.update_color_text_file()
 
     def route(self, route):
         if route == "prediction":
@@ -458,4 +471,4 @@ class SegViewApp:
         self.ui.sidebarright.pred_frame.grid_remove()
         self.ui.sidebarright.rev_Frame.grid_remove()
         self.make_config_fine_tuning()
-        self.run_fine_tuning()
+        # self.run_fine_tuning()

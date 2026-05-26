@@ -49,12 +49,17 @@ class FileManager:
             "NON-valide",
             filename,
         )
+        path_out = os.path.join(self.ui.state.path_out, filename)
+        print("path valide:", path_val)
+        print("path refused:", path_ref)
         if os.path.isfile(path_val):
             return 1
 
         if os.path.isfile(path_ref):
             return 2
-        return 3
+        if os.path.isfile(path_out):
+            return 3
+        return 4
 
     def save_choice(
         self,
@@ -67,6 +72,11 @@ class FileManager:
         filename = os.path.basename(file_path)
         parent = os.path.dirname(out_path)
         valid_path = os.path.join(parent, "Valide")
+        self.ui.state.path_out_valide = valid_path
+        print(
+            "changed self.ui.state.path_out_valide line 71 src/file_manager.py : ",
+            self.ui.state.path_out_valide,
+        )
         invalid_path = os.path.join(parent, "NON-valide")
         os.makedirs(valid_path, exist_ok=True)
         os.makedirs(invalid_path, exist_ok=True)
@@ -87,3 +97,4 @@ class FileManager:
             shutil.move(old, dst)
         else:
             shutil.copy(src, dst)
+        self.ui.sidebarleft.update_color_text_file()

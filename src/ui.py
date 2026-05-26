@@ -11,6 +11,8 @@ from .components.top_bar import TopBar
 class SegViewUI:
     def __init__(self, root):
         self.st = 3
+        self.state = None
+
         self.root = root
         self.root.title("SegView")
         self.root.geometry("1000x680")
@@ -48,10 +50,11 @@ class SegViewUI:
         self.canvas_view.canvas.grid(row=2, column=1, sticky="nsew", padx=10, pady=10)
 
         # sidebarleft
-        self.sidebarleft = Sidebarleft(self.root, self.root)
+        self.sidebarleft = Sidebarleft(self, self.root)
         self.sidebarleft.frame.grid(
             row=1, column=0, rowspan=4, sticky="nsew", padx=(0, 0), pady=0
         )
+
         # slider row
         self.slider = SliderRow(self.root)
         self.slider.frame.grid(row=3, column=1, sticky="ew", padx=12, pady=(0, 2))
@@ -65,3 +68,6 @@ class SegViewUI:
         self.canvas = self.canvas_view.canvas
         self.zoom_slider = self.slider.zoom_slider
         self.path_label = self.toolbar.path_label
+
+    def set_state(self, state):
+        self.state = state
