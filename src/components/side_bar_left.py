@@ -243,7 +243,7 @@ class Sidebarleft:
                         anchor="w",
                         padx=10,
                         pady=6,
-                        command=lambda idx=i: self.toggle_file(idx),
+                        cursor="hand2",
                     )
 
                     btn.grid(
@@ -263,8 +263,6 @@ class Sidebarleft:
     # ==========================
     # TOGGLE BUTTON
     # ==========================
-    def toggle_file(self, index):
-        pass  # a changer
 
     def update_color_text_file(self):
         filemanager = FileManager(self.ui)
@@ -355,4 +353,3 @@ class Sidebarleft:
         text = "prediction info  " + str(pourcentage) + "%"
 
         self.progressbartext.config(text=text)
-
