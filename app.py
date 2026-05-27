@@ -67,7 +67,7 @@ class SegViewApp:
         self.ui = ui
         self.state = AppState()
         self.ui.set_state(self.state)
-        self.file_manager = FileManager(ui, self.state)
+        self.file_manager = FileManager(ui, self.state, self)
         self.edit_mode_utils = EditMode(self)
         self.ui_handel = UIutils(self.ui, self.state, self.file_manager)
         self.worker = None

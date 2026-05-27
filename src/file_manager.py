@@ -10,11 +10,13 @@ from src.ui_utils import UIutils
 
 
 class FileManager:
-    def __init__(self, ui=None, state=None):
+    def __init__(self, ui=None, state=None, app=None):
         if ui:
             self.ui = ui
         if state:
             self.state = state
+        if app:
+            self.app = app
         if ui and state:
             self.ui_handel = UIutils(ui, state)
 
@@ -106,6 +108,10 @@ class FileManager:
         else:
             shutil.copy(src, dst)
         self.ui.sidebarleft.update_color_text_file()
+        valid_masks = os.listdir(self.state.path_out_valide)
+        valid_len = len(valid_masks)
+        if valid_len == len(self.state.files):
+            self.app.go_to_fine()
 
     def open_dir(self, action, path_dir=None):
         if not path_dir:
