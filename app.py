@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from time import sleep
 from tkinter import filedialog, messagebox
 
-import tifffile
 import torch
 
 # from biom3d.pred import pred
@@ -15,7 +14,6 @@ from biom3d.train import train
 
 import theme
 from src.file_manager import FileManager
-from src.image_utils import display
 from src.ui_utils import UIutils
 from ui_helpers import EditMode
 
@@ -69,8 +67,9 @@ class SegViewApp:
         self.ui = ui
         self.state = AppState()
         self.ui.set_state(self.state)
-        self.file_manager = FileManager(ui)
+        self.file_manager = FileManager(ui, self.state)
         self.edit_mode_utils = EditMode(self)
+        self.ui_handel = UIutils(self.ui, self.state, self.file_manager)
         self.worker = None
         self.result = None
 
@@ -79,7 +78,9 @@ class SegViewApp:
         self.ui.topbar.pred_btn.config(command=lambda: self.route("prediction"))
         self.ui.topbar.rev_btn.config(command=lambda: self.route("review"))
         self.ui.topbar.fine_btn.config(command=lambda: self.route("fineTune"))
-        self.ui.sidebarright.btn.config(command=lambda: self.open_dir("PATH_RAW"))
+        self.ui.sidebarright.btn.config(
+            command=lambda: self.file_manager.open_dir("PATH_RAW")
+        )
 
         self.ui.sidebarright.refuse_but.config(
             state=tk.DISABLED,
@@ -91,26 +92,26 @@ class SegViewApp:
         )
         self.ui.zoom_slider.config(
             state=tk.DISABLED,
-            command=self.change_z,
+            command=self.ui_handel.change_z,
         )
         self.ui.sidebarright.next_btn.config(
             state=tk.DISABLED,
-            command=lambda: self.navigate("NEXT"),
+            command=lambda: self.ui_handel.navigate("NEXT"),
         )
         self.ui.sidebarright.prev_btn.config(
             state=tk.DISABLED,
-            command=lambda: self.navigate("PREV"),
+            command=lambda: self.ui_handel.navigate("PREV"),
         )
         self.ui.sidebarright.get_model.config(
             state=tk.DISABLED,
-            command=lambda: self.open_dir("PATH_LOG"),
+            command=lambda: self.file_manager.open_dir("PATH_LOG"),
         )
         # self.ui.sidebarright.get_folder_out.config(
         #    command=lambda: self.open_dir("PATH_PRED")
         # )
         self.ui.sidebarright.pred.config(command=self.run_prediction)
         self.ui.sidebarright.get_predictions_path.config(
-            command=lambda: self.open_dir("PATH_PRED")
+            command=lambda: self.file_manager.open_dir("PATH_PRED")
         )
         self.ui.sidebarright.correct_but.config(
             command=self.edit_mode_utils.toggle_edit_mode
@@ -264,165 +265,6 @@ class SegViewApp:
         self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
         self._check()
 
-    def open_dir(self, action, path_dir=None):
-        if not path_dir:
-            path_dir = filedialog.askdirectory(title=action)
-        if not path_dir:
-            return
-        if not os.path.isdir(path_dir):
-            print("dagui : ", path_dir)
-            messagebox.showerror(
-                title="Not found",
-                message="directory not found",
-            )
-            return
-        if action in ["PATH_RAW", "PATH_PRED"]:
-            files = os.listdir(path_dir)
-
-            tif_files = [f for f in files if f.lower().endswith(".tif")]
-
-            if not tif_files:
-                print("no tif file", path_dir)
-                messagebox.showerror(
-                    title="Not found",
-                    message="no tif file in this dir",
-                )
-                return
-            if action == "PATH_RAW":
-                self.state.path_dir = path_dir
-                self.state.files = tif_files
-                self.ui.sidebarleft.show_files_list()
-                self.ui.set_state(self.state)
-                self.ui.sidebarleft.update_color_text_file()
-                self.ui.sidebarright.navigateFrame.grid()
-                self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
-                self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
-                self.ui.zoom_slider.config(state=tk.NORMAL)
-                self.ui.sidebarright.get_model.config(
-                    state=tk.NORMAL,
-                    fg="white",
-                )
-                self.ui.sidebarright.btn.config(bg="white", fg="black")
-                first_path = os.path.join(
-                    path_dir,
-                    tif_files[0],
-                )
-
-                self.open_file(first_path)
-
-            elif action == "PATH_PRED":
-                self.state.path_out = path_dir
-                self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
-                self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
-                (
-                    self.state.prediction,
-                    self.state.prediction_path_file,
-                    self.state.has_prediction,
-                ) = self.file_manager.get_prediction(
-                    self.state.file_path,
-                    self.state.path_out,
-                )
-
-                self.ui.sidebarleft.update_color_text_file()
-                if self.ui.st == 2:
-                    self.ui.sidebarright.correct_but.grid()
-                else:
-                    self.ui.sidebarright.correct_but.grid_remove()
-                self.state.edit_mode = False
-                self.ui.sidebarright.edit_frame.grid_remove()
-                self.update_display()
-        else:
-            self.state.path_log = path_dir
-            self.ui.sidebarright.get_model.config(bg="orange")
-            self.ui.sidebarright.pred.grid()
-
-    def open_file(self, path):
-        if not os.path.isfile(path):
-            messagebox.showerror(
-                title="Not found",
-                message="file not found",
-            )
-            return
-        self.state.file_path = path
-        display_path = path if len(path) <= 72 else "..." + path[-70:]
-        self.ui.path_label.config(
-            text=display_path,
-            fg="white",
-        )
-        self.state.data = tifffile.imread(path)
-        self.state.shape = self.state.data.shape
-
-        if self.state.data.ndim > 2:
-            self.state.zoom = int(self.state.shape[0] / 2)
-        else:
-            self.state.zoom = 0
-        self.ui.status.info_label.config(
-            text=f"shape={self.state.shape} dtype={self.state.data.dtype}"
-        )
-        if self.state.data.ndim > 2:
-            self.ui.zoom_slider.config(to=self.state.shape[0] - 1)
-            self.ui.zoom_slider.set(self.state.zoom)
-        else:
-            self.ui.zoom_slider.config(to=0)
-        (
-            self.state.prediction,
-            self.state.prediction_path_file,
-            self.state.has_prediction,
-        ) = self.file_manager.get_prediction(
-            self.state.file_path,
-            self.state.path_out,
-        )
-        self.ui.sidebarleft.update_color_text_file()
-        if self.ui.st == 2:
-            self.ui.sidebarright.correct_but.grid()
-        else:
-            self.ui.sidebarright.correct_but.grid_remove()
-        if self.state.edited:
-            self.ui.sidebarright.changes_state_label.grid_remove()
-        else:
-            self.ui.sidebarright.changes_state_label.grid()
-        self.state.edit_mode = False
-        self.ui.sidebarright.edit_frame.grid_remove()
-        self.update_display()
-
-    def navigate(self, direction):
-        if not self.state.files:
-            return
-        if direction == "NEXT":
-            self.state.index = (self.state.index + 1) % len(self.state.files)
-        elif direction == "PREV":
-            self.state.index = (self.state.index - 1) % len(self.state.files)
-        file_path = os.path.join(
-            self.state.path_dir,
-            self.state.files[self.state.index],
-        )
-        self.open_file(file_path)
-
-    def update_display(self):
-        if self.state.data is None:
-            return
-        if self.state.data.ndim == 2:
-            img = self.state.data
-        else:
-            img = self.state.data[self.state.zoom]
-
-        if self.state.has_prediction and self.state.prediction is not None:
-            if self.state.prediction.ndim == 2:
-                pred_img = self.state.prediction
-            else:
-                pred_img = self.state.prediction[self.state.zoom]
-            display(
-                self.ui.canvas,
-                img,
-                pred_img,
-            )
-        else:
-            display(self.ui.canvas, img)
-
-    def change_z(self, val):
-        self.state.zoom = int(float(val))
-        self.update_display()
-
     def save(self, is_valid):
         if not self.state.file_path:
             return
@@ -466,7 +308,7 @@ class SegViewApp:
 
     def go_to_review(self, path=None):
         if path:
-            self.open_dir("PATH_PRED", path)
+            self.file_manager.open_dir("PATH_PRED", path)
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.rev_btn.config(bg="white", fg="black")
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)

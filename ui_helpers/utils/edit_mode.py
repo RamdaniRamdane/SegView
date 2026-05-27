@@ -102,7 +102,7 @@ class EditMode:
         if self.app.state.edited > 0:
             self.app.ui.sidebarright.changes_state_label.grid_remove()
             self.app.ui.sidebarright.save_changes.grid()
-        self.app.update_display()
+        self.app.ui_handel.update_display()
 
     def save_changes(self):
         if self.app.state.edited <= 0:

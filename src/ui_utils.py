@@ -1,9 +1,19 @@
+import os
 import tkinter as tk
 
 import theme
+from src.image_utils import display
 
 
 class UIutils:
+    def __init__(self, ui=None, state=None, file_manager=None):
+        if ui:
+            self.ui = ui
+        if state:
+            self.state = state
+        if file_manager:
+            self.file_manager = file_manager
+
     @staticmethod
     def make_btn(
         parent,
@@ -104,3 +114,41 @@ class UIutils:
                 text="unreviewed",
                 fg=theme.WARNING,
             )
+
+    def navigate(self, direction):
+        if not self.state.files:
+            return
+        if direction == "NEXT":
+            self.state.index = (self.state.index + 1) % len(self.state.files)
+        elif direction == "PREV":
+            self.state.index = (self.state.index - 1) % len(self.state.files)
+        file_path = os.path.join(
+            self.state.path_dir,
+            self.state.files[self.state.index],
+        )
+        self.file_manager.open_file(file_path)
+
+    def update_display(self):
+        if self.state.data is None:
+            return
+        if self.state.data.ndim == 2:
+            img = self.state.data
+        else:
+            img = self.state.data[self.state.zoom]
+
+        if self.state.has_prediction and self.state.prediction is not None:
+            if self.state.prediction.ndim == 2:
+                pred_img = self.state.prediction
+            else:
+                pred_img = self.state.prediction[self.state.zoom]
+            display(
+                self.ui.canvas,
+                img,
+                pred_img,
+            )
+        else:
+            display(self.ui.canvas, img)
+
+    def change_z(self, val):
+        self.state.zoom = int(float(val))
+        self.update_display()

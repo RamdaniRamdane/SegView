@@ -21,7 +21,6 @@ class Sidebarright:
 
         # INPUT label + Import button
         UIutils.sidebar_label(self.frame, "INPUT", 0)
-        self.import_icon = image_utils.load_icon(IMG_DIR, "import.png", (24, 24))
         self.btn = UIutils.make_btn(
             self.frame,
             "Import Folder RAW",
@@ -29,9 +28,7 @@ class Sidebarright:
             color=theme.MUTED,
             text_color=theme.TEXT_HI,
             pady_top=4,
-            image=self.import_icon,
         )
-        self.btn.image = self.import_icon
 
         # review frame (import predictions + nav + validate/refuse/correct)
         self.rev_Frame = tk.Frame(self.frame, bg=theme.PANEL, width=200, height=100)
@@ -43,14 +40,12 @@ class Sidebarright:
             fg=theme.TEXT_HI,
             relief="flat",
             cursor="hand2",
-            image=self.import_icon,
             compound="left",
         )
         # navigation
         self.navigateFrame = tk.Frame(
             self.rev_Frame, bg=theme.PANEL, width=200, height=100
         )
-        self.next_icon = image_utils.load_icon(IMG_DIR, "next.png", (24, 24))
         self.next_btn = tk.Button(
             self.navigateFrame,
             text="Next",
@@ -59,10 +54,8 @@ class Sidebarright:
             fg=theme.TEXT_HI,
             relief="flat",
             cursor="hand2",
-            image=self.next_icon,
             compound="right",
         )
-        self.prev_icon = image_utils.load_icon(IMG_DIR, "prev.png", (24, 24))
         self.prev_btn = tk.Button(
             self.navigateFrame,
             text="Prev",
@@ -71,14 +64,12 @@ class Sidebarright:
             fg=theme.TEXT_HI,
             relief="flat",
             cursor="hand2",
-            image=self.prev_icon,
             compound="left",
         )
         self.navigateFrame.grid(row=1, column=0)
         self.next_btn.grid(row=0, column=1, sticky="en", padx=2, pady=2)
         self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)
 
-        self.validate_icon = image_utils.load_icon(IMG_DIR, "valid.png", (24, 24))
         self.validate_but = UIutils.make_btn(
             self.rev_Frame,
             "Validate",
@@ -86,7 +77,6 @@ class Sidebarright:
             color=theme.SUCCESS,
             text_color="white",
             pady_top=4,
-            image=self.validate_icon,
         )
         self.refuse_but = UIutils.make_btn(
             self.rev_Frame,
@@ -200,7 +190,6 @@ class Sidebarright:
         self.pred.grid_remove()
 
         # quit button (pinned bottom)
-        self.quit_icon = image_utils.load_icon(IMG_DIR, "quit.png", (24, 24))
         self.quit_btn = tk.Button(
             self.frame,
             text="Quit",
@@ -214,7 +203,6 @@ class Sidebarright:
             pady=4,
             cursor="hand2",
             command=root.destroy,
-            image=self.quit_icon,
             compound="left",
         )
         self.quit_btn.grid(row=10, column=0, sticky="sew", padx=12, pady=(0, 10))
