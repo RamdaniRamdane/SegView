@@ -5,6 +5,7 @@ from tkinter import filedialog, messagebox
 
 import tifffile
 
+import theme
 from src.ui_utils import UIutils
 
 
@@ -136,6 +137,14 @@ class FileManager:
                 self.ui.sidebarleft.show_files_list()
                 self.ui.set_state(self.state)
                 self.ui.sidebarleft.update_color_text_file()
+                for i in range(len(self.ui.sidebarleft.file_buttons)):
+                    self.ui.sidebarleft.file_buttons[i].config(
+                        command=lambda idx=i: self.sidebarleft_handl_file(idx)
+                    )
+                self.ui.sidebarleft.file_buttons[0].config(bg="#555")
+                for j in range(len(self.state.files)):
+                    if not j == 0:
+                        self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
                 self.ui.sidebarright.navigateFrame.grid()
                 self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
                 self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
@@ -226,3 +235,12 @@ class FileManager:
         self.state.edit_mode = False
         self.ui.sidebarright.edit_frame.grid_remove()
         self.ui_handel.update_display()
+
+    def sidebarleft_handl_file(self, i):
+        filename = self.state.files[i]
+        path = os.path.join(self.state.path_dir, filename)
+        self.open_file(path)
+        self.ui.sidebarleft.file_buttons[i].config(bg="#555")
+        for j in range(len(self.state.files)):
+            if not j == i:
+                self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)

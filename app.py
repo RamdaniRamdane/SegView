@@ -133,10 +133,6 @@ class SegViewApp:
             "<B1-Motion>",
             self.edit_mode_utils.on_mouse_drag,
         )
-        for i in range(len(self.ui.sidebarleft.file_buttons)):
-            self.ui.sidebarleft.file_buttons[i].bind(
-                command=lambda: self.sidebarleft_handl_file(i)
-            )
 
     # load config for fine tuning :
 
@@ -163,9 +159,6 @@ class SegViewApp:
         print(fine)
 
     # sidebarleft handle
-    def sidebarleft_handl_file(self, idx):
-        print("test")
-        print("clicked on file [ ", idx, " ]")
 
     # for test
 
