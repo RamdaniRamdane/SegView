@@ -211,6 +211,8 @@ class SegViewApp:
                             self.state.predStarted = True
                 else:
                     files_out = os.listdir(self.state.path_out)
+                    if len(files_out) == 1:
+                        self.go_to_review(self.state.path_out)
                     if len(files_out) > len(self.state.files_out):
                         test = self.ui.sidebarleft.progressbar["mode"]
                         if str(test) == "indeterminate":
@@ -239,7 +241,6 @@ class SegViewApp:
             )
             messagebox.showinfo("Done", f"prediction saved here: {self.result}")
             self.state.predStarted = False
-            self.go_to_review(self.state.path_out)
 
     def run_prediction(self, path_out=None):
         if not self.state.path_log:

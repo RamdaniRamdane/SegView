@@ -4,6 +4,7 @@
 [  *   ] add numbers to the progress bar make it more clean
 [  *   ] can edit in paralel of prediction 
 [ TODO ] first try fine tuning 
+[ TODO ] problem : no validation if prediction not get + validation to go to fine tune 
 [ TODO ] try to give the user the ability to see the predicted files before ending
 [ TODO ] improve designe
 [ TODO ] read about pyInstaller
