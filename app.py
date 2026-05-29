@@ -7,7 +7,8 @@ from time import sleep
 from tkinter import filedialog, messagebox
 
 import torch
-from biom3d.pred import pred
+
+# from biom3d.pred import pred
 from biom3d.preprocess import auto_config_preprocess
 from biom3d.train import train
 
@@ -180,13 +181,13 @@ class SegViewApp:
 
     def _worker(self):
         try:
-            # self.result = self.biopred_simulation()
-            self.result = pred(
-                log=self.state.path_log,
-                path_in=self.state.path_dir,
-                path_out=self.state.path_out,
-                skip_preprocessing=False,
-            )
+            self.result = self.biopred_simulation()
+        # self.result = pred(
+        #    log=self.state.path_log,
+        #    path_in=self.state.path_dir,
+        #    path_out=self.state.path_out,
+        #    skip_preprocessing=False,
+        # )
 
         except Exception as e:
             self.result = e
@@ -315,4 +316,6 @@ class SegViewApp:
         self.ui.sidebarright.pred_frame.grid_remove()
         self.ui.sidebarright.rev_Frame.grid_remove()
         self.make_config_fine_tuning()
-        # self.run_fine_tuning()
+        # builder=self.run_fine_tuning()
+        # puis ca retourn un builder
+        # comment l utuliser pour avoir un model?
