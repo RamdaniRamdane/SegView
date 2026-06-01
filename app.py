@@ -152,11 +152,28 @@ class SegViewApp:
         )
 
     def run_fine_tuning(self):
+        if not torch.cuda.is_available() and not torch.backends.mps.is_available():
+            print("no gpu")
+            self.popupmsg("no gpu")
+            return
         fine = train(
             config=self.state.config_path,
             path=self.state.path_log,
         )
         print(fine)
+
+    def popupmsg(self, msg):
+        def _show():
+            popup = tk.Tk()
+            popup.wm_title("!")
+            popup.minsize(300, 100)
+            label = tk.Label(popup, text=msg)
+            label.pack(padx=10, pady=10)
+            B1 = tk.Button(popup, text="OK", command=popup.destroy)
+            B1.pack(side="bottom", pady=10)
+            popup.mainloop()
+
+        threading.Thread(target=_show, daemon=True).start()
 
     # sidebarleft handle
 
@@ -316,6 +333,6 @@ class SegViewApp:
         self.ui.sidebarright.pred_frame.grid_remove()
         self.ui.sidebarright.rev_Frame.grid_remove()
         self.make_config_fine_tuning()
-        # builder=self.run_fine_tuning()
+        builder = self.run_fine_tuning()
         # puis ca retourn un builder
         # comment l utuliser pour avoir un model?
