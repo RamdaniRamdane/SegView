@@ -234,9 +234,10 @@ class SegViewApp:
             self.ui.root.after(1000, self._check)
             return
 
-        # worker finished — handle result on main thread (UI)
         if isinstance(self.result, Exception):
             messagebox.showerror("Error", str(self.state.path_out))
+            print(Exception)
+            print("result", self.result)
         else:
             self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
             self.ui.sidebarleft.progressbar_handler(
