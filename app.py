@@ -7,8 +7,7 @@ from time import sleep
 from tkinter import filedialog, messagebox
 
 import torch
-
-# from biom3d.pred import pred
+from biom3d.pred import pred
 from biom3d.preprocess import auto_config_preprocess
 from biom3d.train import train
 
@@ -185,13 +184,13 @@ class SegViewApp:
 
     def _worker(self):
         try:
-            self.result = self.biopred_simulation()
-        # self.result = pred(
-        #    log=self.state.path_log,
-        #    path_in=self.state.path_dir,
-        #    path_out=self.state.path_out,
-        #    skip_preprocessing=False,
-        # )
+            # self.result = self.biopred_simulation()
+            self.result = pred(
+                log=self.state.path_log,
+                path_in=self.state.path_dir,
+                path_out=self.state.path_out,
+                skip_preprocessing=False,
+            )
 
         except Exception as e:
             self.result = e
