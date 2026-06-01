@@ -15,15 +15,11 @@ class Sidebarleft:
         self.selected_file = None
         self.file_buttons = []
 
-        self.frame = tk.Frame(
-            root,
-            bg=theme.PANEL,
-            width=200,
-        )
+        self.frame = tk.Frame(root, bg=theme.PANEL, width=200, bd=0)
 
         self.frame.grid_propagate(False)
 
-        for i in range(8):
+        for i in range(3):
             self.frame.grid_rowconfigure(i, weight=0)
 
         self.frame.grid_rowconfigure(
@@ -46,11 +42,11 @@ class Sidebarleft:
         )
 
         # ==========================
-        # PROGRESS BAR
+        # PROGRESS BAR Refactor it later
         # ==========================
         style = ttk.Style(self.root)
 
-        style_name = "custom.Horizontal.TProgressbar"
+        style_name = "custom"
 
         style.layout(
             style_name,
@@ -102,14 +98,14 @@ class Sidebarleft:
         # ==========================
         self.files_container = tk.Frame(
             self.frame,
-            bg=theme.DANGER,
+            bg=theme.PANEL,
             width=200,
+            bd=0,
         )
 
         self.files_container.grid(
             row=2,
             column=0,
-            rowspan=6,
             sticky="nsew",
             padx=(0, 0),
             pady=0,
@@ -131,6 +127,7 @@ class Sidebarleft:
             bg=theme.PANEL,
             highlightthickness=0,
             bd=0,
+            relief="flat",
         )
 
         self.files_canvas.grid(
@@ -140,9 +137,33 @@ class Sidebarleft:
         )
 
         # Scrollbar
+
+        sbStyle = ttk.Style()
+        sbStyle.theme_use("clam")
+
+        sbStyle.configure(
+            "Custom.Vertical.TScrollbar",
+            gripcount=0,
+            background="#555",
+            darkcolor="#555",
+            lightcolor="#555",
+            troughcolor=theme.PANEL,
+            bordercolor=theme.PANEL,
+            arrowcolor="#999",
+            relief="flat",
+            borderwidth=0,
+        )
+
+        sbStyle.map(
+            "Custom.Vertical.TScrollbar",
+            background=[
+                ("active", "#777"),
+            ],
+        )
         self.scrollbar = ttk.Scrollbar(
             self.files_container,
             orient="vertical",
+            style="Custom.Vertical.TScrollbar",
             command=self.files_canvas.yview,
         )
 
@@ -158,6 +179,8 @@ class Sidebarleft:
         self.files_status_frame = tk.Frame(
             self.files_canvas,
             bg=theme.PANEL,
+            bd=0,
+            highlightthickness=0,
         )
 
         self.canvas_window = self.files_canvas.create_window(

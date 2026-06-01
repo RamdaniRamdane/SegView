@@ -61,7 +61,7 @@ class SegViewUI:
 
         # status strip
         self.status = StatusStrip(self.root)
-        self.status.status_sep.grid(row=3, column=0, sticky="new")
+        # self.status.status_sep.grid(row=3, column=0, sticky="new")
         self.status.frame.grid(row=4, column=1, sticky="ew")
 
         # frequently used widgets on top-level

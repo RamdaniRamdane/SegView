@@ -66,7 +66,7 @@ class StatusStrip:
         self.frame = tk.Frame(parent, bg=theme.PANEL, height=22)
         self.frame.grid_propagate(False)
 
-        self.status_sep = tk.Frame(parent, bg=theme.BORDER, height=1)
+        # self.status_sep = tk.Frame(parent, bg=theme.DANGER, height=1)
 
         self.info_label = tk.Label(
             self.frame,
