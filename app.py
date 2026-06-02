@@ -82,12 +82,13 @@ class SegViewApp:
         )
 
         self.ui.sidebarright.refuse_but.config(
-            state=tk.DISABLED,
-            command=lambda: self.save(False),
+            command=lambda: self.save("refuse"),
         )
         self.ui.sidebarright.validate_but.config(
-            state=tk.DISABLED,
-            command=lambda: self.save(True),
+            command=lambda: self.save("validate"),
+        )
+        self.ui.sidebarright.unreview_but.config(
+            command=lambda: self.save("unreview"),
         )
         self.ui.zoom_slider.config(
             state=tk.DISABLED,
@@ -267,15 +268,20 @@ class SegViewApp:
         self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
         self._check()
 
-    def save(self, is_valid):
+    def save(self, action):
         if not self.state.file_path:
             return
         self.file_manager.save_choice(
             self.state.file_path,
             self.state.path_out,
-            is_valid,
+            action,
         )
-        st = 1 if is_valid else 2
+        if action == "validate":
+            st = 1
+        elif action == "refuse":
+            st = 2
+        else:
+            st = 3
         UIutils.set_flag(
             self.ui.status.flag_sign,
             self.ui.status.flag_text,

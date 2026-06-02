@@ -86,10 +86,18 @@ class Sidebarright:
             text_color="white",
             pady_top=4,
         )
+        self.unreview_but = UIutils.make_btn(
+            self.rev_Frame,
+            "unreview",
+            4,
+            color=theme.WARNING,
+            text_color="white",
+            pady_top=4,
+        )
         self.correct_but = UIutils.make_btn(
             self.rev_Frame,
             "correct imperfections",
-            4,
+            5,
             color=theme.ACCENT,
             text_color="white",
             pady_top=4,
@@ -149,11 +157,12 @@ class Sidebarright:
         self.changes_state_label.grid(row=1, column=0, columnspan=2)
 
         self.get_predictions_path.grid(row=0, column=0)
-        self.edit_frame.grid(row=5, column=0)
+        self.edit_frame.grid(row=6, column=0)
 
         # keep frames hidden by default (same behavior as original)
         self.rev_Frame.grid_remove()
         self.validate_but.grid_remove()
+        self.unreview_but.grid_remove()
         self.refuse_but.grid_remove()
         self.navigateFrame.grid_remove()
         self.correct_but.grid_remove()
@@ -190,19 +199,21 @@ class Sidebarright:
         self.pred.grid_remove()
 
         # quit button (pinned bottom)
-        self.quit_btn = tk.Button(
-            self.frame,
-            text="Quit",
-            font=(theme.SANS, 8),
-            bg=theme.MUTED,
-            fg=theme.TEXT_DIM,
-            activebackground=theme.DANGER,
-            activeforeground=theme.PANEL,
-            relief="flat",
-            bd=0,
-            pady=4,
-            cursor="hand2",
-            command=root.destroy,
-            compound="left",
-        )
-        self.quit_btn.grid(row=10, column=0, sticky="sew", padx=12, pady=(0, 10))
+
+
+#        self.quit_btn = tk.Button(
+#            self.frame,
+#            text="Quit",
+#            font=(theme.SANS, 8),
+#            bg=theme.MUTED,
+#            fg=theme.TEXT_DIM,
+#            activebackground=theme.DANGER,
+#            activeforeground=theme.PANEL,
+#            relief="flat",
+#            bd=0,
+#            pady=4,
+#            cursor="hand2",
+#            command=root.destroy,
+#            compound="left",
+#        )
+#        self.quit_btn.grid(row=10, column=0, sticky="sew", padx=12, pady=(0, 10))
