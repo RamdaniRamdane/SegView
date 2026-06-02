@@ -28,6 +28,7 @@ class FileManager:
         if os.path.isfile(pred_path):
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.validate_but.grid()
+            self.ui.sidebarright.unreview_but.grid()
             pred = tifffile.imread(pred_path)
             st = self.status(pred_path)
             self.ui.st = st
@@ -40,6 +41,7 @@ class FileManager:
         else:
             self.ui.sidebarright.refuse_but.grid_remove()
             self.ui.sidebarright.validate_but.grid_remove()
+            self.ui.sidebarright.unreview_but.grid_remove()
         UIutils.set_flag(
             self.ui.status.flag_sign,
             self.ui.status.flag_text,
@@ -78,7 +80,7 @@ class FileManager:
         self,
         file_path,
         out_path,
-        is_valid,
+        action,
     ):
         if not file_path or not out_path:
             return
@@ -94,22 +96,32 @@ class FileManager:
         os.makedirs(valid_path, exist_ok=True)
         os.makedirs(invalid_path, exist_ok=True)
         src = file_path
-        if is_valid:
+        if action == "validate":
             dst = os.path.join(valid_path, filename)
             old = os.path.join(
                 invalid_path,
                 filename,
             )
-        else:
+        elif action == "refuse":
             dst = os.path.join(invalid_path, filename)
             old = os.path.join(
                 valid_path,
                 filename,
             )
+        else:
+            dst = ""
+            old = ""
         if os.path.isfile(old):
             shutil.move(old, dst)
-        else:
+        elif dst:
             shutil.copy(src, dst)
+        else:
+            valide_file = os.path.join(valid_path, filename)
+            invlid_file = os.path.join(invalid_path, filename)
+            if os.path.isfile(valide_file):
+                os.remove(valide_file)
+            elif os.path.isfile(invlid_file):
+                os.remove(invlid_file)
         self.ui.sidebarleft.update_color_text_file()
         valid_masks = os.listdir(self.state.path_out_valide)
         valid_len = len(valid_masks)
