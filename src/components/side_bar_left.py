@@ -68,10 +68,11 @@ class Sidebarleft:
                 )
             ],
         )
+        style.theme_use("clam")
 
         style.configure(
             style_name,
-            troughcolor=theme.BG,
+            troughcolor=theme.PANEL,
             background=theme.SUCCESS,
         )
 
