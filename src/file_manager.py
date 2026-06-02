@@ -37,6 +37,9 @@ class FileManager:
                 st,
             )
             return pred, pred_path, True
+        else:
+            self.ui.sidebarright.refuse_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid_remove()
         UIutils.set_flag(
             self.ui.status.flag_sign,
             self.ui.status.flag_text,
