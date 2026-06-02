@@ -189,9 +189,28 @@ class FileManager:
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
         else:
-            self.state.path_log = path_dir
-            self.ui.sidebarright.get_model.config(bg="orange")
-            self.ui.sidebarright.pred.grid()
+            # verrify that the path containe a model special biom3d pour l instant
+            list_log = os.listdir(path_dir)
+            if "model" in list_log:
+                paths = os.path.join(path_dir, "model")
+                list_model = os.listdir(paths)
+                path_files = [f for f in list_model if f.lower().endswith(".pth")]
+                print(path_files)
+                if not path_files:
+                    messagebox.showerror(
+                        title="No Model Provided",
+                        message="check if the folder contain model/*.pth , please import correct model",
+                    )
+                    return
+                self.state.path_log = path_dir
+                self.ui.sidebarright.get_model.config(bg="orange")
+                self.ui.sidebarright.pred.grid()
+            else:
+                messagebox.showerror(
+                    title="No Model Provided",
+                    message="check if the folder contain model/*.pth , please import correct model",
+                )
+                return
 
     def open_file(self, path):
         if not os.path.isfile(path):
