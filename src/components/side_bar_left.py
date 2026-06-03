@@ -41,47 +41,50 @@ class Sidebarleft:
             0,
         )
 
+        style = ttk.Style(self.root)
+        style.theme_use("clam")
+
         # ==========================
         # PROGRESS BAR Refactor it later
         # ==========================
-        style = ttk.Style(self.root)
+        # style = ttk.Style(self.root)
 
-        style_name = "Horizontal.Progressbar.trough"
+        # style_name = "Horizontal.Progressbar.trough"
 
-        style.layout(
-            style_name,
-            [
-                (
-                    "Horizontal.Progressbar.trough",
-                    {
-                        "children": [
-                            (
-                                "Horizontal.Progressbar.pbar",
-                                {
-                                    "side": "left",
-                                    "sticky": "ns",
-                                },
-                            )
-                        ],
-                        "sticky": "nswe",
-                    },
-                )
-            ],
-        )
-        style.theme_use("clam")
+        # style.layout(
+        #     style_name,
+        #     [
+        #         (
+        #             "Horizontal.Progressbar.trough",
+        #             {
+        #                 "children": [
+        #                     (
+        #                         "Horizontal.Progressbar.pbar",
+        #                         {
+        #                             "side": "left",
+        #                             "sticky": "ns",
+        #                         },
+        #                     )
+        #                 ],
+        #                 "sticky": "nswe",
+        #             },
+        #         )
+        #     ],
+        # )
+        # style.theme_use("clam")
 
-        style.configure(
-            style_name,
-            troughcolor=theme.PANEL,
-            background=theme.SUCCESS,
-        )
+        # style.configure(
+        #     style_name,
+        #     troughcolor=theme.PANEL,
+        #     background=theme.SUCCESS,
+        # )
 
         self.progressbar = ttk.Progressbar(
             self.frame,
             orient="horizontal",
             length=180,
             mode="indeterminate",
-            style=style_name,
+            # style=style_name,
         )
 
         self.progressbar.grid(
