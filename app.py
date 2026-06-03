@@ -16,16 +16,16 @@ from src.file_manager import FileManager
 from src.ui_utils import UIutils
 from ui_helpers import EditMode
 
-_real_torch_load = torch.load
+# _real_torch_load = torch.load
 
 
-def _load_cpu(*args, **kwargs):
-    if "map_location" not in kwargs:
-        kwargs["map_location"] = "cpu"
-    return _real_torch_load(*args, **kwargs)
+# def _load_cpu(*args, **kwargs):
+#    if "map_location" not in kwargs:
+#        kwargs["map_location"] = "cpu"
+#    return _real_torch_load(*args, **kwargs)
+#
 
-
-torch.load = _load_cpu
+# torch.load = _load_cpu
 
 
 @dataclass
