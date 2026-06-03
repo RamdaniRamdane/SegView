@@ -97,31 +97,10 @@ class Sidebarleft:
         # ==========================
         # SCROLLABLE FILES FRAME
         # ==========================
-        self.files_container = tk.Frame(
-            self.frame,
-            bg=theme.PANEL,
-            width=200,
-            bd=0,
-        )
-
-        self.files_container.grid(
-            row=2,
-            column=0,
-            sticky="nsew",
-            padx=(0, 0),
-            pady=0,
-        )
-
-        self.files_container.grid_rowconfigure(
-            0,
-            weight=1,
-        )
-
-        self.files_container.grid_columnconfigure(
-            0,
-            weight=1,
-        )
-
+        self.files_container = tk.Frame(self.frame, bg=theme.PANEL, width=200, bd=0)
+        self.files_container.grid(row=2, column=0, sticky="nsew", padx=(0, 0), pady=0)
+        self.files_container.grid_rowconfigure(0, weight=1)
+        self.files_container.grid_columnconfigure(0, weight=1)
         # Canvas
         self.files_canvas = tk.Canvas(
             self.files_container,
@@ -225,9 +204,30 @@ class Sidebarleft:
             "units",
         )
 
+    def button_on_view(self, btn):
+        self.root.update_idletasks()
+        # je capture la position du bouton dans le frame scrolable
+        widget_top = btn.winfo_y()
+        widget_bottom = widget_top + btn.winfo_height()
+        # la partie visible actuel du canvas
+        canvas_top = self.files_canvas.canvasy(0)
+        canvas_bottom = canvas_top + self.files_canvas.winfo_height()
+
+        frame_height = self.files_status_frame.winfo_height()
+        print(frame_height)
+
+        # si il est au dessus de la zone visible
+        if widget_top < canvas_top:
+            self.files_canvas.yview_moveto(widget_top / frame_height)
+        elif widget_bottom > canvas_bottom:
+            self.files_canvas.yview_moveto(
+                (widget_bottom - self.files_canvas.winfo_height()) / frame_height
+            )
+
     # ==========================
     # FILES LIST
     # ==========================
+
     def show_files_list(self):
         if self.ui.state:
             # Clean old widgets
@@ -292,15 +292,12 @@ class Sidebarleft:
         filemanager = FileManager(self.ui)
         parent = self.ui.state.path_out
         index = 0
-        print("update color called")
         if parent:
             for i in self.ui.state.files:
                 filepath = os.path.join(
                     parent,
                     i,
                 )
-                print(filepath)
-                print(filemanager.status(filepath))
                 if filemanager.status(filepath) == 1:
                     for btn in self.file_buttons:
                         if btn.file_index == index:
@@ -353,7 +350,6 @@ class Sidebarleft:
         return True
 
     def toggl_determinate_mode(self, progressbar):
-        print("call determinate")
 
         progressbar.stop()
         progressbar.config(mode="determinate")

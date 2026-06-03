@@ -65,8 +65,6 @@ class FileManager:
             filename,
         )
         path_out = os.path.join(self.ui.state.path_out, filename)
-        print("path valide:", path_val)
-        print("path refused:", path_ref)
         if os.path.isfile(path_val):
             return 1
 
@@ -88,10 +86,6 @@ class FileManager:
         parent = os.path.dirname(out_path)
         valid_path = os.path.join(parent, "Valide")
         self.ui.state.path_out_valide = valid_path
-        print(
-            "changed self.ui.state.path_out_valide line 71 src/file_manager.py : ",
-            self.ui.state.path_out_valide,
-        )
         invalid_path = os.path.join(parent, "NON-valide")
         os.makedirs(valid_path, exist_ok=True)
         os.makedirs(invalid_path, exist_ok=True)
@@ -134,7 +128,6 @@ class FileManager:
         if not path_dir:
             return
         if not os.path.isdir(path_dir):
-            print("dagui : ", path_dir)
             messagebox.showerror(
                 title="Not found",
                 message="directory not found",
@@ -146,7 +139,6 @@ class FileManager:
             tif_files = [f for f in files if f.lower().endswith(".tif")]
 
             if not tif_files:
-                print("no tif file", path_dir)
                 messagebox.showerror(
                     title="Not found",
                     message="no tif file in this dir",
@@ -210,7 +202,6 @@ class FileManager:
                 paths = os.path.join(path_dir, "model")
                 list_model = os.listdir(paths)
                 path_files = [f for f in list_model if f.lower().endswith(".pth")]
-                print(path_files)
                 if not path_files:
                     messagebox.showerror(
                         title="No Model Provided",
@@ -281,6 +272,7 @@ class FileManager:
         path = os.path.join(self.state.path_dir, filename)
         self.open_file(path)
         self.ui.sidebarleft.file_buttons[i].config(bg="#555")
+        self.ui.sidebarleft.button_on_view(self.ui.sidebarleft.file_buttons[i])
         for j in range(len(self.state.files)):
             if not j == i:
                 self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
