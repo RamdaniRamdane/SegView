@@ -214,7 +214,6 @@ class Sidebarleft:
         canvas_bottom = canvas_top + self.files_canvas.winfo_height()
 
         frame_height = self.files_status_frame.winfo_height()
-        print(frame_height)
 
         # si il est au dessus de la zone visible
         if widget_top < canvas_top:

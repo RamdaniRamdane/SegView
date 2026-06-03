@@ -268,6 +268,7 @@ class FileManager:
         self.ui_handel.update_display()
 
     def sidebarleft_handl_file(self, i):
+        self.state.index = i
         filename = self.state.files[i]
         path = os.path.join(self.state.path_dir, filename)
         self.open_file(path)
