@@ -201,6 +201,7 @@ class SegViewApp:
                         log=self.state.path_log,
                         dir_in=self.state.path_dir,
                         dir_out=self.state.path_out,
+                        skip_preprocessing=false,
                     )
 
         except Exception as e:
