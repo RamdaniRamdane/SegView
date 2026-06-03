@@ -120,13 +120,22 @@ class UIutils:
             return
         if direction == "NEXT":
             self.state.index = (self.state.index + 1) % len(self.state.files)
+            self.ui.sidebarleft.button_on_view(
+                self.ui.sidebarleft.file_buttons[self.state.index]
+            )
 
         elif direction == "PREV":
             self.state.index = (self.state.index - 1) % len(self.state.files)
+            self.ui.sidebarleft.button_on_view(
+                self.ui.sidebarleft.file_buttons[self.state.index]
+            )
         self.ui.sidebarleft.file_buttons[self.state.index].config(bg="#555")
         for j in range(len(self.state.files)):
             if not j == self.state.index:
                 self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
+                self.ui.sidebarleft.button_on_view(
+                    self.ui.sidebarleft.file_buttons[self.state.index]
+                )
         file_path = os.path.join(
             self.state.path_dir,
             self.state.files[self.state.index],

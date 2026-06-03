@@ -137,7 +137,6 @@ class SegViewApp:
     # load config for fine tuning :
 
     def make_config_fine_tuning(self):
-        print(" call state :", self.state.path_out_valide)
         self.state.config_path = auto_config_preprocess(
             img_path=self.state.path_dir,
             msk_path=self.state.path_out,
@@ -153,14 +152,12 @@ class SegViewApp:
 
     def run_fine_tuning(self):
         if not torch.cuda.is_available() and not torch.backends.mps.is_available():
-            print("no gpu")
             messagebox.showerror("Error", "No GPU detected in your machine")
             return
         fine = train(
             config=self.state.config_path,
             path=self.state.path_log,
         )
-        print(fine)
 
     # sidebarleft handle
 
@@ -186,7 +183,6 @@ class SegViewApp:
     def _worker(self):
         try:
             if not torch.cuda.is_available() and not torch.backends.mps.is_available():
-                print("no gpu")
                 messagebox.showerror("Warninig", "No GPU detected in your machine")
                 self.result = self.biopred_simulation()
             else:

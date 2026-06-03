@@ -17,7 +17,6 @@ class TopBar:
         self.frame.grid_rowconfigure(0, weight=0)
         for i in range(3):
             self.frame.grid_columnconfigure(i, weight=0)
-            print(i)
 
         self.predict_icon = image_utils.load_icon(IMG_DIR, "predict.png", (10, 10))
         self.pred_btn = tk.Button(
