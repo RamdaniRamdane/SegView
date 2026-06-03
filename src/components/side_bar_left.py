@@ -46,7 +46,7 @@ class Sidebarleft:
         # ==========================
         style = ttk.Style(self.root)
 
-        style_name = "custom"
+        style_name = "Horizontal.Progressbar.trough"
 
         style.layout(
             style_name,
