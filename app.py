@@ -183,6 +183,7 @@ class SegViewApp:
     def _worker(self):
         try:
             if not torch.cuda.is_available() and not torch.backends.mps.is_available():
+                print(torch.cuda.is_available())
                 messagebox.showerror("Warninig", "No GPU detected in your machine")
                 self.result = self.biopred_simulation()
             else:
