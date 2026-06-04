@@ -152,6 +152,7 @@ class SegViewApp:
         )
 
     def run_fine_tuning(self):
+        #problem with windows a regler et a tester avec mac 
         if not torch.cuda.is_available() and not torch.backends.mps.is_available():
             messagebox.showerror("Error", "No GPU detected in your machine")
             return
@@ -165,6 +166,7 @@ class SegViewApp:
     # for test
 
     def biopred_simulation(self):
+       # a enlever 
         path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/out3/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
         sleep(10)
         os.mkdir(
@@ -183,6 +185,7 @@ class SegViewApp:
 
     def _worker(self):
         try:
+		# problem avec windows et mac 
             if not torch.cuda.is_available() and not torch.backends.mps.is_available():
                 print(torch.cuda.is_available())
                 messagebox.showerror("Warninig", "No GPU detected in your machine")

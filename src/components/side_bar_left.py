@@ -33,7 +33,7 @@ class Sidebarleft:
         )
 
         self.titel = None
-        self.title = "prediction info"
+        self.title = "Prediction info"
 
         self.progressbartext = UIutils.sidebar_label(
             self.frame,
@@ -44,8 +44,7 @@ class Sidebarleft:
         style = ttk.Style(self.root)
         style.theme_use("clam")
 
-        # ==========================
-        # PROGRESS BAR Refactor it later
+        # PROGRESS BAR Refactor it later (enleve a cause de problem avec windows et affichage toujour en problem )
         # ==========================
         # style = ttk.Style(self.root)
 
