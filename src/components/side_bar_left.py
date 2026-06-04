@@ -33,7 +33,7 @@ class Sidebarleft:
         )
 
         self.titel = None
-        self.title = "prediction info"
+        self.title = "Prediction info"
 
         self.progressbartext = UIutils.sidebar_label(
             self.frame,
@@ -41,47 +41,49 @@ class Sidebarleft:
             0,
         )
 
-        # ==========================
-        # PROGRESS BAR Refactor it later
-        # ==========================
         style = ttk.Style(self.root)
-
-        style_name = "custom"
-
-        style.layout(
-            style_name,
-            [
-                (
-                    "Horizontal.Progressbar.trough",
-                    {
-                        "children": [
-                            (
-                                "Horizontal.Progressbar.pbar",
-                                {
-                                    "side": "left",
-                                    "sticky": "ns",
-                                },
-                            )
-                        ],
-                        "sticky": "nswe",
-                    },
-                )
-            ],
-        )
         style.theme_use("clam")
 
-        style.configure(
-            style_name,
-            troughcolor=theme.PANEL,
-            background=theme.SUCCESS,
-        )
+        # PROGRESS BAR Refactor it later (enleve a cause de problem avec windows et affichage toujour en problem )
+        # ==========================
+        # style = ttk.Style(self.root)
+
+        # style_name = "Horizontal.Progressbar.trough"
+
+        # style.layout(
+        #     style_name,
+        #     [
+        #         (
+        #             "Horizontal.Progressbar.trough",
+        #             {
+        #                 "children": [
+        #                     (
+        #                         "Horizontal.Progressbar.pbar",
+        #                         {
+        #                             "side": "left",
+        #                             "sticky": "ns",
+        #                         },
+        #                     )
+        #                 ],
+        #                 "sticky": "nswe",
+        #             },
+        #         )
+        #     ],
+        # )
+        # style.theme_use("clam")
+
+        # style.configure(
+        #     style_name,
+        #     troughcolor=theme.PANEL,
+        #     background=theme.SUCCESS,
+        # )
 
         self.progressbar = ttk.Progressbar(
             self.frame,
             orient="horizontal",
             length=180,
             mode="indeterminate",
-            style=style_name,
+            # style=style_name,
         )
 
         self.progressbar.grid(
