@@ -210,7 +210,6 @@ class FileManager:
                     return
                 self.state.path_log = path_dir
                 self.ui.sidebarright.get_model.config(bg="orange")
-                self.ui.sidebarright.pred.grid()
             else:
                 messagebox.showerror(
                     title="No Model Provided",

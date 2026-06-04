@@ -107,9 +107,7 @@ class SegViewApp:
             state=tk.DISABLED,
             command=lambda: self.file_manager.open_dir("PATH_LOG"),
         )
-        # self.ui.sidebarright.get_folder_out.config(
-        #    command=lambda: self.open_dir("PATH_PRED")
-        # )
+        self.ui.sidebarright.get_folder_out.config(command=self.get_out_path)
         self.ui.sidebarright.pred.config(command=self.run_prediction)
         self.ui.sidebarright.get_predictions_path.config(
             command=lambda: self.file_manager.open_dir("PATH_PRED")
@@ -152,7 +150,7 @@ class SegViewApp:
         )
 
     def run_fine_tuning(self):
-        #problem with windows a regler et a tester avec mac 
+        # problem with windows a regler et a tester avec mac
         if not torch.cuda.is_available() and not torch.backends.mps.is_available():
             messagebox.showerror("Error", "No GPU detected in your machine")
             return
@@ -166,7 +164,7 @@ class SegViewApp:
     # for test
 
     def biopred_simulation(self):
-       # a enlever 
+        # a enlever
         path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/out3/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
         sleep(10)
         os.mkdir(
@@ -185,7 +183,7 @@ class SegViewApp:
 
     def _worker(self):
         try:
-		# problem avec windows et mac 
+            # problem avec windows et mac
             if not torch.cuda.is_available() and not torch.backends.mps.is_available():
                 print(torch.cuda.is_available())
                 messagebox.showerror("Warninig", "No GPU detected in your machine")
@@ -199,13 +197,13 @@ class SegViewApp:
                         path_out=self.state.path_out,
                         skip_preprocessing=false,
                     )
-                elif "dir_in" in sig.parameters:
-                    self.result = pred(
-                        log=self.state.path_log,
-                        dir_in=self.state.path_dir,
-                        dir_out=self.state.path_out,
-                        skip_preprocessing=false,
-                    )
+        # elif "dir_in" in sig.parameters:
+        #     self.result = pred(
+        #         log=self.state.path_log,
+        #         dir_in=self.state.path_dir,
+        #         dir_out=self.state.path_out,
+        #         skip_preprocessing=false,
+        #     )
 
         except Exception as e:
             self.result = e
@@ -261,18 +259,24 @@ class SegViewApp:
             messagebox.showinfo("Done", f"prediction saved here: {self.result}")
             self.state.predStarted = False
 
-    def run_prediction(self, path_out=None):
+    def get_out_path(self):
+        out = filedialog.askdirectory(title="Destination for model predictions")
+        self.state.path_out = out
+        self.ui.sidebarright.pred.grid()
+        return out
+
+    def run_prediction(self):
         if not self.state.path_log:
             messagebox.showerror("Error", "No model selected")
             return
         if not self.state.path_dir:
             messagebox.showerror("Error", "No input folder selected")
             return
-        out = filedialog.askdirectory(title="Destination for model predictions")
-        self.state.path_out = out
-        if not out:
+        # out = filedialog.askdirectory(title="Destination for model predictions")
+        if not self.state.path_out:
             messagebox.showerror("Error", "No output folder selected")
             return
+        # self.state.path_out = path_out
         self.worker = threading.Thread(target=self._worker, daemon=True)
         self.worker.start()
         self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
@@ -322,6 +326,7 @@ class SegViewApp:
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.pred_frame.grid()
+        self.ui.sidebarright.get_folder_out.grid()
         self.ui.sidebarright.rev_Frame.grid_remove()
 
     def go_to_review(self, path=None):

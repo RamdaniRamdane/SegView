@@ -180,14 +180,14 @@ class Sidebarright:
             text_color=theme.TEXT,
             pady_top=6,
         )
-        #        self.get_folder_out = UIutils.make_btn(
-        #            self.pred_frame,
-        #            "OUT FOlDER",
-        #            1,
-        #            color=theme.MUTED,
-        #            text_color=theme.TEXT,
-        #            pady_top=6,
-        #        )
+        self.get_folder_out = UIutils.make_btn(
+            self.pred_frame,
+            "OUT FOlDER",
+            1,
+            color=theme.MUTED,
+            text_color=theme.TEXT,
+            pady_top=6,
+        )
         self.pred = UIutils.make_btn(
             self.pred_frame,
             "Predict",
@@ -197,6 +197,7 @@ class Sidebarright:
             pady_top=6,
         )
         self.pred.grid_remove()
+        self.get_folder_out.grid_remove()
 
         # quit button (pinned bottom)
 
