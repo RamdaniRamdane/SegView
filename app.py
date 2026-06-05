@@ -191,6 +191,7 @@ class SegViewApp:
             else:
                 sig = inspect.signature(pred)
                 if "path_in" in sig.parameters:
+                    print(sig.parameters)
                     self.result = pred(
                         log=self.state.path_log,
                         path_in=self.state.path_dir,
@@ -198,6 +199,7 @@ class SegViewApp:
                         skip_preprocessing=False,
                     )
                 elif "dir_in" in sig.parameters:
+                    print(sig.parameters)
                     self.result = pred(
                         log=self.state.path_log,
                         dir_in=self.state.path_dir,
