@@ -3,10 +3,13 @@
 [  *   ] export numbers (calc to get clean progress bar)
 [  *   ] add numbers to the progress bar make it more clean
 [  *   ] can edit in paralel of prediction 
-[ TODO ] first try fine tuning 
-[ TODO ] problem : no validation if prediction not get + validation to go to fine tune 
-[ TODO ] problem : ordre des files et pas de open file direct sur celui qui est pret 
-[ TODO ] try to give the user the ability to see the predicted files before ending
+[  *   ] first try fine tuning 
+[  *   ] problem : no validation if prediction not get + validation to go to fine tune 
+[  NO  ] problem : ordre des files et pas de open file direct sur celui qui est pret 
+[  *   ] try to give the user the ability to see the predicted files before ending
+
+[ TODO ] regle problem de review a fine tuning manque le model 
 [ TODO ] improve designe
 [ TODO ] read about pyInstaller
 [ TODO ] create top level folder on out , solution for confilict
+
