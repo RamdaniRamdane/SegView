@@ -195,15 +195,15 @@ class SegViewApp:
                         log=self.state.path_log,
                         path_in=self.state.path_dir,
                         path_out=self.state.path_out,
-                        skip_preprocessing=false,
+                        skip_preprocessing=False,
                     )
-        # elif "dir_in" in sig.parameters:
-        #     self.result = pred(
-        #         log=self.state.path_log,
-        #         dir_in=self.state.path_dir,
-        #         dir_out=self.state.path_out,
-        #         skip_preprocessing=false,
-        #     )
+                elif "dir_in" in sig.parameters:
+                    self.result = pred(
+                        log=self.state.path_log,
+                        dir_in=self.state.path_dir,
+                        dir_out=self.state.path_out,
+                        skip_preprocessing=False,
+                    )
 
         except Exception as e:
             self.result = e
