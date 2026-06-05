@@ -1,4 +1,3 @@
-import inspect
 import os
 import shutil
 import threading
@@ -189,23 +188,12 @@ class SegViewApp:
                 messagebox.showerror("Warninig", "No GPU detected in your machine")
                 self.result = self.biopred_simulation()
             else:
-                sig = inspect.signature(pred)
-                if "path_in" in sig.parameters:
-                    print(sig.parameters)
-                    self.result = pred(
-                        log=self.state.path_log,
-                        path_in=self.state.path_dir,
-                        path_out=self.state.path_out,
-                        skip_preprocessing=False,
-                    )
-                elif "dir_in" in sig.parameters:
-                    print(sig.parameters)
-                    self.result = pred(
-                        log=self.state.path_log,
-                        dir_in=self.state.path_dir,
-                        dir_out=self.state.path_out,
-                        # why there is no skip processing in windows ? skip_preprocessing=False,
-                    )
+                self.result = pred(
+                    log=self.state.path_log,
+                    path_in=self.state.path_dir,
+                    path_out=self.state.path_out,
+                    skip_preprocessing=False,
+                )
 
         except Exception as e:
             self.result = e
