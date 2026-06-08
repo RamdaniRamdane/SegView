@@ -28,3 +28,5 @@ if we go from reveiw for example there is missing model
 and if we go directly on fine turning we dont have any information
 or any config files so i have to hundle it 
 
+problem when predicting ( windows ) the correction have a little bug at the begening i dont know why so check it later
+
