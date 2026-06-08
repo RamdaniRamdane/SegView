@@ -12,4 +12,19 @@
 [ TODO ] improve designe
 [ TODO ] read about pyInstaller
 [ TODO ] create top level folder on out , solution for confilict
+08/06/2026 - first working version of SegView 
+workflow :
+prediction -> upload raw folder -> upload model -> upload out -> predict ->
+review -> all vlide -> start fine tuning 
+
+on this main workflow we had somme problems like the user dont know
+at first steps to do 
+so we have to make it more ludique or make them learn how th process work
+
+and when we want to review and then fine tune , we miss the model so when i go to fine
+tune i have to handle it and add missing informations 
+like give me this and this if it goes from predict we have x y z
+if we go from reveiw for example there is missing model
+and if we go directly on fine turning we dont have any information
+or any config files so i have to hundle it 
 

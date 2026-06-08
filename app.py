@@ -157,6 +157,7 @@ class SegViewApp:
             config=self.state.config_path,
             path=self.state.path_log,
         )
+        print(fine)
 
     # sidebarleft handle
 
@@ -182,7 +183,6 @@ class SegViewApp:
 
     def _worker(self):
         try:
-            # problem avec windows et mac
             if not torch.cuda.is_available() and not torch.backends.mps.is_available():
                 print(torch.cuda.is_available())
                 messagebox.showerror("Warninig", "No GPU detected in your machine")
