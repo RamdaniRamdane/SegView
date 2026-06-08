@@ -344,6 +344,6 @@ class SegViewApp:
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.pred_frame.grid_remove()
         self.ui.sidebarright.rev_Frame.grid_remove()
-        self.make_config_fine_tuning()
+        # self.make_config_fine_tuning()
         # on change son appel ...
-        self.run_fine_tuning()
+        # self.run_fine_tuning()
