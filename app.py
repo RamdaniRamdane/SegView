@@ -157,7 +157,7 @@ class SegViewApp:
             config=self.state.config_path,
             path=self.state.path_log,
         )
-        print(fine)
+        print(dir(fine))
 
     # sidebarleft handle
 
