@@ -16,17 +16,6 @@ from src.file_manager import FileManager
 from src.ui_utils import UIutils
 from ui_helpers import EditMode
 
-# _real_torch_load = torch.load
-
-
-# def _load_cpu(*args, **kwargs):
-#    if "map_location" not in kwargs:
-#        kwargs["map_location"] = "cpu"
-#    return _real_torch_load(*args, **kwargs)
-#
-
-# torch.load = _load_cpu
-
 
 @dataclass
 class AppState:
@@ -251,8 +240,28 @@ class SegViewApp:
 
     def get_out_path(self):
         out = filedialog.askdirectory(title="Destination for model predictions")
-        self.state.path_out = out
-        self.ui.sidebarright.pred.grid()
+        if out:
+            ls = os.listdir(out)
+
+        if out and not ls:
+            self.state.path_out = out
+            self.ui.sidebarright.pred.grid()
+            self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+        else:
+            user_response = messagebox.askquestion(
+                title="Error",
+                message="problem occurred , path not found or the folder is not empty \n -> Do you want to empty it before?",
+                type="yesno",
+            )
+            if user_response and out:
+                for item in ls:
+                    if os.path.isfile(os.path.join(out, item)):
+                        os.remove(os.path.join(out, item))
+                    else:
+                        shutil.rmtree(os.path.join(out, item))
+                self.state.path_out = out
+                self.ui.sidebarright.pred.grid()
+                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
         return out
 
     def run_prediction(self):
@@ -335,6 +344,5 @@ class SegViewApp:
         self.ui.sidebarright.pred_frame.grid_remove()
         self.ui.sidebarright.rev_Frame.grid_remove()
         self.make_config_fine_tuning()
-        builder = self.run_fine_tuning()
-        # puis ca retourn un builder
-        # comment l utuliser pour avoir un model?
+        # on change son appel ...
+        self.run_fine_tuning()

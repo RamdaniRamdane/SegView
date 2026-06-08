@@ -293,8 +293,9 @@ class Sidebarleft:
         filemanager = FileManager(self.ui)
         parent = self.ui.state.path_out
         index = 0
-        if parent:
+        if parent and os.listdir(parent):
             for i in self.ui.state.files:
+                print(i)
                 filepath = os.path.join(
                     parent,
                     i,
@@ -311,8 +312,10 @@ class Sidebarleft:
                     for btn in self.file_buttons:
                         if btn.file_index == index:
                             btn.config(fg=theme.WARNING)
-
                 index += 1
+        else:
+            for btn in self.file_buttons:
+                btn.config(fg=theme.TEXT)
 
     # ==========================
     # PROGRESS BAR METHODS

@@ -37,6 +37,7 @@ class FileManager:
                 self.ui.status.flag_text,
                 st,
             )
+
             return pred, pred_path, True
         else:
             self.ui.sidebarright.refuse_but.grid_remove()
@@ -66,6 +67,7 @@ class FileManager:
         )
         path_out = os.path.join(self.ui.state.path_out, filename)
         if os.path.isfile(path_val):
+            print(path_val)
             return 1
 
         if os.path.isfile(path_ref):
@@ -149,11 +151,11 @@ class FileManager:
                 self.state.files = tif_files
                 self.ui.sidebarleft.show_files_list()
                 self.ui.set_state(self.state)
-                self.ui.sidebarleft.update_color_text_file()
                 for i in range(len(self.ui.sidebarleft.file_buttons)):
                     self.ui.sidebarleft.file_buttons[i].config(
                         command=lambda idx=i: self.sidebarleft_handl_file(idx)
                     )
+                self.ui.sidebarleft.update_color_text_file()
                 self.ui.sidebarleft.file_buttons[0].config(bg="#555")
                 for j in range(len(self.state.files)):
                     if not j == 0:
