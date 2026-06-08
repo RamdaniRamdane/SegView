@@ -190,6 +190,7 @@ class FileManager:
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
+                self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
                 if self.ui.st == 2:
                     self.ui.sidebarright.correct_but.grid()
                 else:

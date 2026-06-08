@@ -247,6 +247,7 @@ class SegViewApp:
             self.state.path_out = out
             self.ui.sidebarright.pred.grid()
             self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+            self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
         else:
             user_response = messagebox.askquestion(
                 title="Error",
