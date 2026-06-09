@@ -14,17 +14,19 @@ print(IMG_DIR)
 class Sidebarright:
     def __init__(self, parent, root):
         self.root = root
-        self.frame = tk.Frame(root, bg=theme.PANEL, width=200)
-        self.frame.grid_propagate(False)
+        # side bar containter
+        self.container = tk.Frame(root, bg=theme.PANEL, width=200)
+        self.container.grid_propagate(False)
         # grid rows reserved to replicate original layout
         for i in range(11):
-            self.frame.grid_rowconfigure(i, weight=0)
-        self.frame.grid_columnconfigure(1, weight=1)
+            self.container.grid_rowconfigure(i, weight=0)
+        self.container.grid_columnconfigure(1, weight=1)
 
         # INPUT label + Import button
-        UIutils.sidebar_label(self.frame, "INPUT", 0)
+        UIutils.sidebar_label(self.container, "INPUT", 0)
+
         self.btn = UIutils.make_btn(
-            self.frame,
+            self.container,
             "Import Folder RAW",
             1,
             color=theme.MUTED,
@@ -33,9 +35,11 @@ class Sidebarright:
         )
 
         # review frame (import predictions + nav + validate/refuse/correct)
-        self.rev_Frame = tk.Frame(self.frame, bg=theme.PANEL, width=200, height=100)
+        self.review_container = tk.Frame(
+            self.container, bg=theme.PANEL, width=200, height=100
+        )
         self.get_predictions_path = tk.Button(
-            self.rev_Frame,
+            self.review_container,
             text="Import Predictions Folder",
             font=(theme.MONO, 6),
             bg=theme.MUTED,
@@ -46,7 +50,7 @@ class Sidebarright:
         )
         # navigation
         self.navigateFrame = tk.Frame(
-            self.rev_Frame, bg=theme.PANEL, width=200, height=100
+            self.review_container, bg=theme.PANEL, width=200, height=100
         )
         self.next_btn = tk.Button(
             self.navigateFrame,
@@ -73,7 +77,7 @@ class Sidebarright:
         self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)
 
         self.validate_but = UIutils.make_btn(
-            self.rev_Frame,
+            self.review_container,
             "Validate",
             2,
             color=theme.SUCCESS,
@@ -81,7 +85,7 @@ class Sidebarright:
             pady_top=4,
         )
         self.refuse_but = UIutils.make_btn(
-            self.rev_Frame,
+            self.review_container,
             "Refuse",
             3,
             color=theme.DANGER,
@@ -89,7 +93,7 @@ class Sidebarright:
             pady_top=4,
         )
         self.unreview_but = UIutils.make_btn(
-            self.rev_Frame,
+            self.review_container,
             "unreview",
             4,
             color=theme.WARNING,
@@ -97,7 +101,7 @@ class Sidebarright:
             pady_top=4,
         )
         self.correct_but = UIutils.make_btn(
-            self.rev_Frame,
+            self.review_container,
             "correct imperfections",
             5,
             color=theme.ACCENT,
@@ -107,7 +111,7 @@ class Sidebarright:
 
         # edit subframe (brush/eraser/save)
         self.edit_frame = tk.Frame(
-            self.rev_Frame, bg=theme.PANEL, width=200, height=100
+            self.review_container, bg=theme.PANEL, width=200, height=100
         )
         for i in range(2):
             self.edit_frame.grid_rowconfigure(i, weight=0)
@@ -162,7 +166,7 @@ class Sidebarright:
         self.edit_frame.grid(row=6, column=0)
 
         # keep frames hidden by default (same behavior as original)
-        self.rev_Frame.grid_remove()
+        self.review_container.grid_remove()
         self.validate_but.grid_remove()
         self.unreview_but.grid_remove()
         self.refuse_but.grid_remove()
@@ -173,9 +177,11 @@ class Sidebarright:
         self.changes_state_label.grid_remove()
 
         # predictions frame
-        self.pred_frame = tk.Frame(self.frame, bg=theme.PANEL, width=200, height=100)
+        self.pred_container = tk.Frame(
+            self.container, bg=theme.PANEL, width=200, height=100
+        )
         self.get_model = UIutils.make_btn(
-            self.pred_frame,
+            self.pred_container,
             "Import Biom3d Model",
             0,
             color=theme.MUTED,
@@ -183,7 +189,7 @@ class Sidebarright:
             pady_top=6,
         )
         self.get_folder_out = UIutils.make_btn(
-            self.pred_frame,
+            self.pred_container,
             "OUT FOlDER",
             1,
             color=theme.MUTED,
@@ -191,7 +197,7 @@ class Sidebarright:
             pady_top=6,
         )
         self.pred = UIutils.make_btn(
-            self.pred_frame,
+            self.pred_container,
             "Predict",
             2,
             color=theme.SUCCESS,
@@ -201,22 +207,27 @@ class Sidebarright:
         self.pred.grid_remove()
         self.get_folder_out.grid_remove()
 
-        # quit button (pinned bottom)
+        # fine tuning route
+        # ajouter un bouton pour valide path
+        self.fine_container = tk.Frame(
+            self.container, bg=theme.PANEL, width=200, height=100
+        )
+        self.get_valid_masks = UIutils.make_btn(
+            self.fine_container,
+            "Valide Masks",
+            0,
+            color=theme.MUTED,
+            text_color=theme.TEXT,
+            pady_top=6,
+        )
+        self.make_config_file = UIutils.make_btn(
+            self.fine_container,
+            "Make Config",
+            1,
+            color=theme.MUTED,
+            text_color=theme.TEXT,
+            pady_top=6,
+        )
 
-
-#        self.quit_btn = tk.Button(
-#            self.frame,
-#            text="Quit",
-#            font=(theme.SANS, 8),
-#            bg=theme.MUTED,
-#            fg=theme.TEXT_DIM,
-#            activebackground=theme.DANGER,
-#            activeforeground=theme.PANEL,
-#            relief="flat",
-#            bd=0,
-#            pady=4,
-#            cursor="hand2",
-#            command=root.destroy,
-#            compound="left",
-#        )
-#        self.quit_btn.grid(row=10, column=0, sticky="sew", padx=12, pady=(0, 10))
+        self.get_valid_masks.grid_remove()
+        self.make_config_file.grid_remove()

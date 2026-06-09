@@ -292,9 +292,11 @@ class SegViewApp:
         self.ui.topbar.pred_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.sidebarright.pred_frame.grid()
+        self.ui.sidebarright.pred_container.grid()
         self.ui.sidebarright.get_folder_out.grid()
-        self.ui.sidebarright.rev_Frame.grid_remove()
+        self.ui.sidebarright.review_container.grid_remove()
+        self.ui.sidebarright.get_valid_masks.grid_remove()
+        self.ui.sidebarright.make_config_file.grid_remove()
 
     def go_to_review(self, path=None):
         if path:
@@ -302,15 +304,21 @@ class SegViewApp:
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.rev_btn.config(bg="white", fg="black")
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.sidebarright.rev_Frame.grid()
-        self.ui.sidebarright.pred_frame.grid_remove()
+        self.ui.sidebarright.review_container.grid()
+        self.ui.sidebarright.pred_container.grid_remove()
+        self.ui.sidebarright.get_valid_masks.grid_remove()
+        self.ui.sidebarright.make_config_file.grid_remove()
 
     def go_to_fine(self):
         self.ui.topbar.fine_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.sidebarright.pred_frame.grid_remove()
-        self.ui.sidebarright.rev_Frame.grid_remove()
+        self.ui.sidebarright.pred_container.grid_remove()
+        self.ui.sidebarright.review_container.grid_remove()
+        self.ui.sidebarright.get_model.grid()
+        self.ui.sidebarright.get_valid_masks.grid()
+        self.ui.sidebarright.make_config_file.grid()
+
         # self.make_config_fine_tuning()
         # on change son appel ...
         # self.run_fine_tuning()
