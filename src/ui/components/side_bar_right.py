@@ -212,6 +212,10 @@ class Sidebarright:
         self.fine_container = tk.Frame(
             self.container, bg=theme.PANEL, width=200, height=100
         )
+
+        for i in range(2):
+            self.edit_frame.grid_columnconfigure(i, weight=0)
+        self.edit_frame.grid_rowconfigure(0, weight=0)
         self.get_valid_masks = UIutils.make_btn(
             self.fine_container,
             "Valide Masks",
@@ -229,5 +233,6 @@ class Sidebarright:
             pady_top=6,
         )
 
+        self.fine_container.grid_remove()
         self.get_valid_masks.grid_remove()
         self.make_config_file.grid_remove()

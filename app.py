@@ -297,6 +297,7 @@ class SegViewApp:
         self.ui.sidebarright.review_container.grid_remove()
         self.ui.sidebarright.get_valid_masks.grid_remove()
         self.ui.sidebarright.make_config_file.grid_remove()
+        self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_review(self, path=None):
         if path:
@@ -308,6 +309,7 @@ class SegViewApp:
         self.ui.sidebarright.pred_container.grid_remove()
         self.ui.sidebarright.get_valid_masks.grid_remove()
         self.ui.sidebarright.make_config_file.grid_remove()
+        self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_fine(self):
         self.ui.topbar.fine_btn.config(bg="white", fg="black")
@@ -318,6 +320,7 @@ class SegViewApp:
         self.ui.sidebarright.get_model.grid()
         self.ui.sidebarright.get_valid_masks.grid()
         self.ui.sidebarright.make_config_file.grid()
+        self.ui.sidebarright.fine_container.grid()
 
         # self.make_config_fine_tuning()
         # on change son appel ...

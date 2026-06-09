@@ -36,7 +36,7 @@ class UIutils:
             row=row,
             column=col,
             sticky="ew",
-            padx=12,
+            padx=0,
             pady=(pady_top, 0),
         )
 
