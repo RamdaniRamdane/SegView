@@ -2,9 +2,9 @@ import os
 import tkinter as tk
 from tkinter import ttk
 
-import theme
-from src.file_manager import FileManager
-from src.ui_utils import UIutils
+import src.ui.theme as theme
+from src.services.file_manager import FileManager
+from src.ui.helpers.ui_utils import UIutils
 
 
 class Sidebarleft:

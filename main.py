@@ -2,7 +2,7 @@
 import tkinter as tk
 
 from app import SegViewApp
-from src.ui import SegViewUI
+from src.ui.ui import SegViewUI
 
 
 def main():

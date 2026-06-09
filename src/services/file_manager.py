@@ -5,8 +5,8 @@ from tkinter import filedialog, messagebox
 
 import tifffile
 
-import theme
-from src.ui_utils import UIutils
+import src.ui.theme as theme
+from src.ui.helpers.ui_utils import UIutils
 
 
 class FileManager:

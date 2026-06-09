@@ -1,11 +1,11 @@
 import os
 import tkinter as tk
 
-import src.image_utils as image_utils
-import theme
+import src.services.image_utils as image_utils
+import src.ui.theme as theme
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMG_DIR = os.path.join(BASE_DIR, "..", "..", "images")
+IMG_DIR = os.path.join(BASE_DIR, "..", "..", "..", "images")
 
 
 class TopBar:

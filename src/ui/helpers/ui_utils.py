@@ -1,8 +1,8 @@
 import os
 import tkinter as tk
 
-import theme
-from src.image_utils import display
+import src.ui.theme as theme
+from src.services.image_utils import display
 
 
 class UIutils:

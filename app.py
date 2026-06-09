@@ -11,10 +11,10 @@ from biom3d.pred import pred
 from biom3d.preprocess import auto_config_preprocess
 from biom3d.train import train
 
-import theme
-from src.file_manager import FileManager
-from src.ui_utils import UIutils
-from ui_helpers import EditMode
+import src.ui.theme as theme
+from src.services.file_manager import FileManager
+from src.ui.helpers.edit_mode import EditMode
+from src.ui.helpers.ui_utils import UIutils
 
 
 @dataclass
