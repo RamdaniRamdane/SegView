@@ -41,7 +41,7 @@ class SegViewUI:
 
         # sidebarright
         self.sidebarright = Sidebarright(self.root, self.root)
-        self.sidebarright.frame.grid(
+        self.sidebarright.container.grid(
             row=1, column=2, rowspan=4, sticky="nsew", padx=(0, 0), pady=0
         )
 
