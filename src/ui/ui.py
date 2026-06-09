@@ -1,6 +1,6 @@
 import tkinter as tk
 
-import theme
+import src.ui.theme as theme
 
 from .components.extra import CanvasView, SliderRow, StatusStrip, Toolbar
 from .components.side_bar_left import Sidebarleft

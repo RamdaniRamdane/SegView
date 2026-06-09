@@ -5,8 +5,8 @@ from tkinter import filedialog, messagebox
 
 import tifffile
 
-import theme
-from src.ui_utils import UIutils
+import src.ui.theme as theme
+from src.ui.helpers.ui_utils import UIutils
 
 
 class FileManager:
@@ -190,6 +190,8 @@ class FileManager:
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
+                self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
+                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
                 if self.ui.st == 2:
                     self.ui.sidebarright.correct_but.grid()
                 else:

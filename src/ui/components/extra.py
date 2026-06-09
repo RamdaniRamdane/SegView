@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import Canvas
 
-import theme
+import src.ui.theme as theme
 
 
 class Toolbar:

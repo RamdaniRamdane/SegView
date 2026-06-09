@@ -1,12 +1,14 @@
 import os
 import tkinter as tk
 
-import src.image_utils as image_utils
-import theme
-from src.ui_utils import UIutils
+import src.services.image_utils as image_utils
+import src.ui.theme as theme
+from src.ui.helpers.ui_utils import UIutils
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMG_DIR = os.path.join(BASE_DIR, "..", "..", "images")
+print(BASE_DIR)
+IMG_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "..", "..", "images"))
+print(IMG_DIR)
 
 
 class Sidebarright:
