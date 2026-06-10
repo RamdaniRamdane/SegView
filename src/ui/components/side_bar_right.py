@@ -216,7 +216,7 @@ class Sidebarright:
         # fine tuning route
         # ajouter un bouton pour valide path
         self.fine_container = tk.Frame(
-            self.container, bg=theme.SUCCESS, width=200, height=100
+            self.container, bg=theme.PANEL, width=200, height=100
         )
 
         for i in range(3):

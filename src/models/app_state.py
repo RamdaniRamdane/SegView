@@ -31,4 +31,5 @@ class AppState:
     edit_tool: str = ""
 
     edited: int = 0
-    config_path = str = ""
+    config_path: str = ""
+    rout: str = ""

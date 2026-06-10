@@ -122,6 +122,7 @@ class FileManager:
         valid_masks = os.listdir(self.state.path_out_valide)
         valid_len = len(valid_masks)
         if valid_len == len(self.state.files):
+            self.ui.sidebarright.get_valid_masks.config(bg="white", fg="black")
             self.app.go_to_fine()
 
     def open_dir(self, action, path_dir=None):
@@ -213,7 +214,12 @@ class FileManager:
                     )
                     return
                 self.state.path_log = path_dir
-                self.ui.sidebarright.get_model.config(bg="orange")
+                self.ui.sidebarright.get_model.config(
+                    bg="white", fg="black", text="Change Model"
+                )
+                self.ui.sidebarright.get_model_fine.config(
+                    bg="white", fg="black", text="Change Model"
+                )
             else:
                 messagebox.showerror(
                     title="No Model Provided",

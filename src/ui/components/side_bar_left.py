@@ -295,7 +295,6 @@ class Sidebarleft:
         index = 0
         if parent and os.listdir(parent):
             for i in self.ui.state.files:
-                print(i)
                 filepath = os.path.join(
                     parent,
                     i,

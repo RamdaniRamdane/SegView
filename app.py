@@ -123,7 +123,6 @@ class SegViewApp:
             config=self.state.config_path,
             path=self.state.path_log,
         )
-        print(fine.model_dir)
 
     # sidebarleft handle
 
@@ -132,7 +131,7 @@ class SegViewApp:
     def biopred_simulation(self):
         # a enlever
         path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/out3/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
-        sleep(10)
+        sleep(1)
         os.mkdir(
             "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/testprogress/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/"
         )
@@ -143,14 +142,13 @@ class SegViewApp:
         for file in files_out:
             src_tocopy = os.path.join(src, file)
             shutil.copy(src_tocopy, dist)
-            sleep(3)
+            sleep(1)
 
         return path_to_return
 
     def _worker(self):
         try:
             if not torch.cuda.is_available() and not torch.backends.mps.is_available():
-                print(torch.cuda.is_available())
                 messagebox.showerror("Warninig", "No GPU detected in your machine")
                 self.result = self.biopred_simulation()
             else:
@@ -183,7 +181,7 @@ class SegViewApp:
                             self.state.predStarted = True
                 else:
                     files_out = os.listdir(self.state.path_out)
-                    if len(files_out) == 1:
+                    if len(files_out) >= 1 and not self.state.rout == "review":
                         self.go_to_review(self.state.path_out)
                     if len(files_out) > len(self.state.files_out):
                         test = self.ui.sidebarleft.progressbar["mode"]
@@ -217,7 +215,9 @@ class SegViewApp:
 
     def get_out_path(self):
         out = filedialog.askdirectory(title="Destination for model predictions")
-        if out:
+        if not out:
+            return
+        else:
             ls = os.listdir(out)
 
         if out and not ls:
@@ -231,7 +231,7 @@ class SegViewApp:
                 message="problem occurred , path not found or the folder is not empty \n -> Do you want to empty it before?",
                 type="yesno",
             )
-            if user_response and out:
+            if user_response == "yes" and out:
                 for item in ls:
                     if os.path.isfile(os.path.join(out, item)):
                         os.remove(os.path.join(out, item))
@@ -240,6 +240,8 @@ class SegViewApp:
                 self.state.path_out = out
                 self.ui.sidebarright.pred.grid()
                 self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+            else:
+                out = None
         return out
 
     def run_prediction(self):
@@ -299,6 +301,7 @@ class SegViewApp:
             self.go_to_fine()
 
     def go_to_prediction(self):
+        self.rout = "prediction"
         self.ui.topbar.pred_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
@@ -308,6 +311,7 @@ class SegViewApp:
         self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_review(self, path=None):
+        self.rout = "review"
         if path:
             self.file_manager.open_dir("PATH_PRED", path)
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
@@ -318,6 +322,7 @@ class SegViewApp:
         self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_fine(self):
+        self.state.rout = "fine"
         self.ui.topbar.fine_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
