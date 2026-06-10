@@ -184,7 +184,7 @@ class Sidebarright:
 
         # predictions frame
         self.pred_container = tk.Frame(
-            self.container, bg=theme.PANEL, width=200, height=100
+            self.container, bg=theme.PANEL, width=200, height=200
         )
         self.get_model = UIutils.make_btn(
             self.pred_container,
@@ -216,7 +216,7 @@ class Sidebarright:
         # fine tuning route
         # ajouter un bouton pour valide path
         self.fine_container = tk.Frame(
-            self.container, bg=theme.PANEL, width=200, height=100
+            self.container, bg=theme.SUCCESS, width=200, height=100
         )
 
         for i in range(3):
@@ -230,7 +230,6 @@ class Sidebarright:
             text_color=theme.TEXT,
             pady_top=6,
         )
-
         self.get_valid_masks = UIutils.make_btn(
             self.fine_container,
             "Valide Masks",

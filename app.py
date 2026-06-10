@@ -95,7 +95,7 @@ class SegViewApp:
         )
         self.ui.sidebarright.start_fine_tuning.config(command=self.run_fine_tuning)
         self.ui.sidebarright.get_model_fine.config(
-            command=lambda: self.file_manager.open_dir("PATH_LOG"),
+            command=lambda: self.file_manager.open_dir("PATH_LOG")
         )
 
     # load config for fine tuning :
@@ -305,8 +305,6 @@ class SegViewApp:
         self.ui.sidebarright.pred_container.grid()
         self.ui.sidebarright.get_folder_out.grid()
         self.ui.sidebarright.review_container.grid_remove()
-        self.ui.sidebarright.get_valid_masks.grid_remove()
-        self.ui.sidebarright.make_config_file.grid_remove()
         self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_review(self, path=None):
@@ -317,8 +315,6 @@ class SegViewApp:
         self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.review_container.grid()
         self.ui.sidebarright.pred_container.grid_remove()
-        self.ui.sidebarright.get_valid_masks.grid_remove()
-        self.ui.sidebarright.make_config_file.grid_remove()
         self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_fine(self):
@@ -327,11 +323,12 @@ class SegViewApp:
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.pred_container.grid_remove()
         self.ui.sidebarright.review_container.grid_remove()
-        self.ui.sidebarright.get_model.grid()
+
+        self.ui.sidebarright.fine_container.grid()
+        self.ui.sidebarright.get_model_fine.grid()
         self.ui.sidebarright.get_valid_masks.grid()
         self.ui.sidebarright.make_config_file.grid()
         self.ui.sidebarright.start_fine_tuning.grid()
-        self.ui.sidebarright.fine_container.grid()
 
         # self.make_config_fine_tuning()
         # on change son appel ...
