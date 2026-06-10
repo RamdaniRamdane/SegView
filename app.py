@@ -87,6 +87,13 @@ class SegViewApp:
             "<B1-Motion>",
             self.edit_mode_utils.on_mouse_drag,
         )
+        self.ui.sidebarright.get_valid_masks.config(
+            command=lambda: self.file_manager.open_dir("PATH_PRED")
+        )
+        self.ui.sidebarright.make_config_file.config(
+            command=self.make_config_fine_tuning
+        )
+        self.ui.sidebarright.start_fine_tuning.config(command=self.run_fine_tuning)
 
     # load config for fine tuning :
 
