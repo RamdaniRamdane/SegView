@@ -16,10 +16,13 @@ class EditMode:
             self.app.ui.sidebarright.edit_frame.grid_remove()
 
     def toggle_tool(self, tool):
-        if self.app.state.edit_tool != tool:
-            self.app.state.edit_tool = tool
-        else:
+        if tool == "deactivate":
             self.app.state.edit_tool = ""
+        else:
+            if self.app.state.edit_tool != tool:
+                self.app.state.edit_tool = tool
+            else:
+                self.app.state.edit_tool = ""
         self.change_bg_tool()
 
     def change_bg_tool(self):

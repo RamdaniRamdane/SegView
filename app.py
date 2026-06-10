@@ -301,6 +301,7 @@ class SegViewApp:
             self.go_to_fine()
 
     def go_to_prediction(self):
+        self.edit_mode_utils.toggle_tool("deactivate")
         self.rout = "prediction"
         self.ui.topbar.pred_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
@@ -322,6 +323,7 @@ class SegViewApp:
         self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_fine(self):
+        self.edit_mode_utils.toggle_tool("deactivate")
         self.state.rout = "fine"
         self.ui.topbar.fine_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
