@@ -232,7 +232,16 @@ class Sidebarright:
             text_color=theme.TEXT,
             pady_top=6,
         )
+        self.start_fine_tuning = UIutils.make_btn(
+            self.fine_container,
+            "Start Fine Tuning",
+            2,
+            color=theme.MUTED,
+            text_color=theme.TEXT,
+            pady_top=6,
+        )
 
         self.fine_container.grid_remove()
         self.get_valid_masks.grid_remove()
         self.make_config_file.grid_remove()
+        self.start_fine_tuning.grid_remove()

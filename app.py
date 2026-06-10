@@ -320,6 +320,7 @@ class SegViewApp:
         self.ui.sidebarright.get_model.grid()
         self.ui.sidebarright.get_valid_masks.grid()
         self.ui.sidebarright.make_config_file.grid()
+        self.ui.sidebarright.start_fine_tuning.grid()
         self.ui.sidebarright.fine_container.grid()
 
         # self.make_config_fine_tuning()
