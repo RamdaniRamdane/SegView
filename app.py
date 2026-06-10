@@ -94,6 +94,9 @@ class SegViewApp:
             command=self.make_config_fine_tuning
         )
         self.ui.sidebarright.start_fine_tuning.config(command=self.run_fine_tuning)
+        self.ui.sidebarright.get_model_fine.config(
+            command=lambda: self.file_manager.open_dir("PATH_LOG"),
+        )
 
     # load config for fine tuning :
 

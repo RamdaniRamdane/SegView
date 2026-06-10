@@ -27,7 +27,7 @@ class Sidebarright:
 
         self.btn = UIutils.make_btn(
             self.container,
-            "Import Folder RAW",
+            "Import Raw Data Folder",
             1,
             color=theme.MUTED,
             text_color=theme.TEXT_HI,
@@ -40,13 +40,15 @@ class Sidebarright:
         )
         self.get_predictions_path = tk.Button(
             self.review_container,
-            text="Import Predictions Folder",
-            font=(theme.MONO, 6),
+            text="Import Masks Folder",
+            font=(theme.MONO, 8),
             bg=theme.MUTED,
             fg=theme.TEXT_HI,
             relief="flat",
             cursor="hand2",
             compound="left",
+            pady=10,
+            padx=10,
         )
         # navigation
         self.navigateFrame = tk.Frame(
@@ -61,6 +63,8 @@ class Sidebarright:
             relief="flat",
             cursor="hand2",
             compound="right",
+            pady=10,
+            padx=10,
         )
         self.prev_btn = tk.Button(
             self.navigateFrame,
@@ -71,6 +75,8 @@ class Sidebarright:
             relief="flat",
             cursor="hand2",
             compound="left",
+            pady=10,
+            padx=10,
         )
         self.navigateFrame.grid(row=1, column=0)
         self.next_btn.grid(row=0, column=1, sticky="en", padx=2, pady=2)
@@ -162,7 +168,7 @@ class Sidebarright:
         )
         self.changes_state_label.grid(row=1, column=0, columnspan=2)
 
-        self.get_predictions_path.grid(row=0, column=0)
+        self.get_predictions_path.grid(row=0, column=0, pady=10)
         self.edit_frame.grid(row=6, column=0)
 
         # keep frames hidden by default (same behavior as original)
@@ -182,7 +188,7 @@ class Sidebarright:
         )
         self.get_model = UIutils.make_btn(
             self.pred_container,
-            "Import Biom3d Model",
+            "Import Model",
             0,
             color=theme.MUTED,
             text_color=theme.TEXT,
@@ -213,13 +219,22 @@ class Sidebarright:
             self.container, bg=theme.PANEL, width=200, height=100
         )
 
-        for i in range(2):
+        for i in range(3):
             self.edit_frame.grid_columnconfigure(i, weight=0)
         self.edit_frame.grid_rowconfigure(0, weight=0)
+        self.get_model_fine = UIutils.make_btn(
+            self.fine_container,
+            "Import Model",
+            0,
+            color=theme.MUTED,
+            text_color=theme.TEXT,
+            pady_top=6,
+        )
+
         self.get_valid_masks = UIutils.make_btn(
             self.fine_container,
             "Valide Masks",
-            0,
+            1,
             color=theme.MUTED,
             text_color=theme.TEXT,
             pady_top=6,
@@ -227,7 +242,7 @@ class Sidebarright:
         self.make_config_file = UIutils.make_btn(
             self.fine_container,
             "Make Config",
-            1,
+            2,
             color=theme.MUTED,
             text_color=theme.TEXT,
             pady_top=6,
@@ -235,7 +250,7 @@ class Sidebarright:
         self.start_fine_tuning = UIutils.make_btn(
             self.fine_container,
             "Start Fine Tuning",
-            2,
+            3,
             color=theme.MUTED,
             text_color=theme.TEXT,
             pady_top=6,
@@ -245,3 +260,4 @@ class Sidebarright:
         self.get_valid_masks.grid_remove()
         self.make_config_file.grid_remove()
         self.start_fine_tuning.grid_remove()
+        self.get_model_fine.grid_remove()
