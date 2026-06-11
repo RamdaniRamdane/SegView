@@ -125,6 +125,7 @@ class FileManager:
             self.ui.sidebarright.get_valid_masks.config(bg="white", fg="black")
             self.app.go_to_fine()
 
+    # hhhh i must refactore this sh*t
     def open_dir(self, action, path_dir=None):
         if not path_dir:
             path_dir = filedialog.askdirectory(title=action)
@@ -136,7 +137,7 @@ class FileManager:
                 message="directory not found",
             )
             return
-        if action in ["PATH_RAW", "PATH_PRED"]:
+        if action in ["PATH_RAW", "PATH_PRED", "PATH_VALID"]:
             files = os.listdir(path_dir)
 
             tif_files = [f for f in files if f.lower().endswith(".tif")]
@@ -200,6 +201,32 @@ class FileManager:
                 self.state.edit_mode = False
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
+            elif action == "PATH_VALID":
+                self.state.path_out_valide = path_dir
+                self.state.path_out = path_dir
+                self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
+                self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
+                (
+                    self.state.prediction,
+                    self.state.prediction_path_file,
+                    self.state.has_prediction,
+                ) = self.get_prediction(
+                    self.state.file_path,
+                    self.state.path_out,
+                )
+
+                self.ui.sidebarleft.update_color_text_file()
+                self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
+                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+                self.ui.sidebarright.get_valid_masks.config(bg="white", fg="black")
+                if self.ui.st == 2:
+                    self.ui.sidebarright.correct_but.grid()
+                else:
+                    self.ui.sidebarright.correct_but.grid_remove()
+                self.state.edit_mode = False
+                self.ui.sidebarright.edit_frame.grid_remove()
+                self.ui_handel.update_display()
+
         else:
             # verrify that the path containe a model special biom3d pour l instant
             list_log = os.listdir(path_dir)

@@ -88,7 +88,7 @@ class SegViewApp:
             self.edit_mode_utils.on_mouse_drag,
         )
         self.ui.sidebarright.get_valid_masks.config(
-            command=lambda: self.file_manager.open_dir("PATH_PRED")
+            command=lambda: self.file_manager.open_dir("PATH_VALID")
         )
         self.ui.sidebarright.make_config_file.config(
             command=self.make_config_fine_tuning
@@ -101,9 +101,19 @@ class SegViewApp:
     # load config for fine tuning :
 
     def make_config_fine_tuning(self):
+        if (
+            not self.state.path_dir
+            or not self.state.path_out_valide
+            or not self.state.path_log
+        ):
+            messagebox.showerror(
+                "Error",
+                "make sure you have all folders are uploaded : \n 1-Raw\n 2-Model\n 3-Valid masks",
+            )
+            return
         self.state.config_path = auto_config_preprocess(
             img_path=self.state.path_dir,
-            msk_path=self.state.path_out,
+            msk_path=self.state.path_out_valide,
             num_classes=1,
             config_dir="configs",
             base_config=None,
@@ -113,6 +123,9 @@ class SegViewApp:
             num_epochs=1,
             is_2d=False,
         )
+        if self.state.config_path:
+            self.ui.sidebarright.start_fine_tuning.grid()
+            self.ui.sidebarright.make_config_file.config(bg="white", fg="black")
 
     def run_fine_tuning(self):
         # problem with windows a regler et a tester avec mac
@@ -335,7 +348,6 @@ class SegViewApp:
         self.ui.sidebarright.get_model_fine.grid()
         self.ui.sidebarright.get_valid_masks.grid()
         self.ui.sidebarright.make_config_file.grid()
-        self.ui.sidebarright.start_fine_tuning.grid()
 
         # self.make_config_fine_tuning()
         # on change son appel ...
