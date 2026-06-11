@@ -3,8 +3,9 @@ import tifffile
 
 
 class EditMode:
-    def __init__(self, app):
+    def __init__(self, app, state):
         self.app = app
+        self.state = state
 
     def toggle_edit_mode(self):
         self.app.state.edit_mode = not self.app.state.edit_mode
@@ -91,7 +92,7 @@ class EditMode:
         iy = int((y - offset_y) / scale)
         if ix < 0 or iy < 0 or ix >= w or iy >= h:
             return
-        r = 2
+        r = self.state.edit_tool_size
         yy, xx = np.ogrid[:h, :w]
         mask = ((yy - iy) ** 2 + (xx - ix) ** 2) <= r * r
         bit = 1 if tool == "Brush" else 0

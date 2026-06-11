@@ -23,7 +23,7 @@ class SegViewApp:
         self.state = AppState()
         self.ui.set_state(self.state)
         self.file_manager = FileManager(ui, self.state, self)
-        self.edit_mode_utils = EditMode(self)
+        self.edit_mode_utils = EditMode(self, self.state)
         self.ui_handel = UIutils(self.ui, self.state, self.file_manager)
         self.worker = None
         self.result = None
@@ -97,6 +97,11 @@ class SegViewApp:
         self.ui.sidebarright.get_model_fine.config(
             command=lambda: self.file_manager.open_dir("PATH_LOG")
         )
+        self.ui.sidebarright.tool_size_slider.config(command=self.on_change)
+
+    def on_change(self, value):
+        print("size is", int(float(value)))
+        self.state.edit_tool_size = int(float(value))
 
     # load config for fine tuning :
 

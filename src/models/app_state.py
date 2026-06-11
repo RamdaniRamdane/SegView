@@ -29,6 +29,7 @@ class AppState:
 
     edit_mode: bool = False
     edit_tool: str = ""
+    edit_tool_size: int = 2
 
     edited: int = 0
     config_path: str = ""

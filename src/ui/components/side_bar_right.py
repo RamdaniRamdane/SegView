@@ -116,10 +116,11 @@ class Sidebarright:
         )
 
         # edit subframe (brush/eraser/save)
+        # ici
         self.edit_frame = tk.Frame(
             self.review_container, bg=theme.PANEL, width=200, height=100
         )
-        for i in range(2):
+        for i in range(3):
             self.edit_frame.grid_rowconfigure(i, weight=0)
             self.edit_frame.grid_columnconfigure(i, weight=0)
 
@@ -127,7 +128,7 @@ class Sidebarright:
         self.brush = UIutils.make_btn(
             self.edit_frame,
             "",
-            0,
+            1,
             color="#555",
             text_color=theme.MUTED,
             pady_top=4,
@@ -138,7 +139,7 @@ class Sidebarright:
         self.ereaser = UIutils.make_btn(
             self.edit_frame,
             "",
-            0,
+            1,
             color=theme.MUTED,
             text_color=theme.MUTED,
             pady_top=4,
@@ -149,7 +150,7 @@ class Sidebarright:
         self.save_changes = UIutils.make_btn(
             self.edit_frame,
             "",
-            1,
+            2,
             color=theme.SUCCESS,
             text_color="white",
             pady_top=4,
@@ -166,7 +167,27 @@ class Sidebarright:
             padx=10,
             pady=10,
         )
-        self.changes_state_label.grid(row=1, column=0, columnspan=2)
+        self.tool_size_slider = tk.Scale(
+            self.edit_frame,
+            from_=1,
+            to=20,
+            orient="horizontal",
+            length=100,
+            showvalue=True,
+            font=(theme.MONO, 8),
+            bg=theme.PANEL,
+            fg=theme.TEXT_DIM,
+            troughcolor=theme.BORDER,
+            activebackground=theme.DANGER,
+            highlightthickness=0,
+            bd=0,
+            sliderlength=15,
+            sliderrelief="flat",
+            width=6,
+        )
+        self.tool_size_slider.set(2)
+        self.tool_size_slider.grid(row=0, column=0, columnspan=2)
+        self.changes_state_label.grid(row=2, column=0, columnspan=2)
 
         self.get_predictions_path.grid(row=0, column=0, pady=10)
         self.edit_frame.grid(row=6, column=0)
