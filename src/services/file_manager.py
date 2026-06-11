@@ -91,7 +91,7 @@ class FileManager:
         invalid_path = os.path.join(parent, "NON-valide")
         os.makedirs(valid_path, exist_ok=True)
         os.makedirs(invalid_path, exist_ok=True)
-        src = file_path
+        src = os.path.join(out_path, filename)
         if action == "validate":
             dst = os.path.join(valid_path, filename)
             old = os.path.join(
