@@ -2,7 +2,6 @@ import os
 import shutil
 import threading
 import tkinter as tk
-from time import sleep
 from tkinter import filedialog, messagebox
 
 import torch
@@ -10,9 +9,9 @@ from biom3d.pred import pred
 from biom3d.preprocess import auto_config_preprocess
 from biom3d.train import train
 
-import src.ui.theme as theme
 from src.models.app_state import AppState
 from src.services.file_manager import FileManager
+from src.services.route import Route
 from src.ui.helpers.edit_mode import EditMode
 from src.ui.helpers.ui_utils import UIutils
 
@@ -25,14 +24,15 @@ class SegViewApp:
         self.file_manager = FileManager(ui, self.state, self)
         self.edit_mode_utils = EditMode(self, self.state)
         self.ui_handel = UIutils(self.ui, self.state, self.file_manager)
+        self.route = Route(self.ui, self.file_manager, self.edit_mode_utils, self.state)
         self.worker = None
         self.result = None
 
     def bind_events(self):
 
-        self.ui.topbar.pred_btn.config(command=lambda: self.route("prediction"))
-        self.ui.topbar.rev_btn.config(command=lambda: self.route("review"))
-        self.ui.topbar.fine_btn.config(command=lambda: self.route("fineTune"))
+        self.ui.topbar.pred_btn.config(command=lambda: self.route.route("prediction"))
+        self.ui.topbar.rev_btn.config(command=lambda: self.route.route("review"))
+        self.ui.topbar.fine_btn.config(command=lambda: self.route.route("fineTune"))
         self.ui.sidebarright.btn.config(
             command=lambda: self.file_manager.open_dir("PATH_RAW")
         )
@@ -136,54 +136,58 @@ class SegViewApp:
 
     def run_fine_tuning(self):
         # problem with windows a regler et a tester avec mac
-        if not torch.cuda.is_available() and not torch.backends.mps.is_available():
-            messagebox.showerror("Error", "No GPU detected in your machine")
-            return
-        fine = train(
-            config=self.state.config_path,
-            path=self.state.path_log,
+        self.worker_fine = threading.Thread(
+            target=self._worker, args=("fine",), daemon=True
         )
+        self.worker_fine.start()
+        self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
+        self._check("fine")
 
     # sidebarleft handle
 
-    # for test
-
-    def biopred_simulation(self):
-        # a enlever
-        path_to_return = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/out3/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/nuclei_20.tif"
-        sleep(1)
-        os.mkdir(
-            "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/testprogress/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/"
-        )
-        src = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/fg_out/"
-        dist = "/home/rey/FRSTUDIES/stage/dev/tkinter1/TEST/testprogress/20260331-170607-Fluo-C3DL-MDA231_02_ST_20epochs_fold0/"
-        files_out = os.listdir(src)
-
-        for file in files_out:
-            src_tocopy = os.path.join(src, file)
-            shutil.copy(src_tocopy, dist)
-            sleep(1)
-
-        return path_to_return
-
-    def _worker(self):
+    def _worker(self, action):
         try:
             if not torch.cuda.is_available() and not torch.backends.mps.is_available():
-                messagebox.showerror("Warninig", "No GPU detected in your machine")
-                self.result = self.biopred_simulation()
+                if action == "pred":
+                    user_response = messagebox.askquestion(
+                        title="Warning",
+                        message="Warning: No GPU detected , prediciton will slowdown\ncontinue anyway?",
+                        type="yesno",
+                    )
+                    if user_response == "yes":
+                        self.result = pred(
+                            log=self.state.path_log,
+                            path_in=self.state.path_dir,
+                            path_out=self.state.path_out,
+                            skip_preprocessing=False,
+                        )
+                    else:
+                        return
+                elif action == "fine":
+                    messagebox.showerror(
+                        title="Error",
+                        message="NO GPU detected , fine tuning dont work on ur desktop",
+                    )
+
             else:
-                self.result = pred(
-                    log=self.state.path_log,
-                    path_in=self.state.path_dir,
-                    path_out=self.state.path_out,
-                    skip_preprocessing=False,
-                )
+                if action == "pred":
+                    self.result = pred(
+                        log=self.state.path_log,
+                        path_in=self.state.path_dir,
+                        path_out=self.state.path_out,
+                        skip_preprocessing=False,
+                    )
+                elif action == "fine":
+                    self.state.new_model_path = train(
+                        config=self.state.config_path,
+                        path=self.state.path_log,
+                    )
 
         except Exception as e:
             self.result = e
 
-    def _check(self):
-        if self.worker.is_alive():
+    def _check(self, action):
+        if self.worker.is_alive() and action == "pred":
             try:
                 if not self.state.predStarted:
                     out_list = os.listdir(self.state.path_out)
@@ -201,8 +205,8 @@ class SegViewApp:
                             self.state.predStarted = True
                 else:
                     files_out = os.listdir(self.state.path_out)
-                    if len(files_out) >= 1 and not self.state.rout == "review":
-                        self.go_to_review(self.state.path_out)
+                    if len(files_out) >= 1 and not self.state.route == "review":
+                        self.route.go_to_review(self.state.path_out)
                     if len(files_out) > len(self.state.files_out):
                         test = self.ui.sidebarleft.progressbar["mode"]
                         if str(test) == "indeterminate":
@@ -218,14 +222,14 @@ class SegViewApp:
                     self.state.files_out = os.listdir(self.state.path_out)
             except Exception as e:
                 print("Erreur lors du listing:", e)
-            self.ui.root.after(1000, self._check)
+            self.ui.root.after(1000, lambda: self._check(action))
             return
 
-        if isinstance(self.result, Exception):
+        if isinstance(self.result, Exception) and action == "pred":
             messagebox.showerror("Error", str(self.state.path_out))
             print(Exception)
             print("result", self.result)
-        else:
+        elif not isinstance(self.result, Exception) and action == "pred":
             self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
             self.ui.sidebarleft.progressbar_handler(
                 self.ui.sidebarleft.progressbar, "RESET"
@@ -276,10 +280,10 @@ class SegViewApp:
             messagebox.showerror("Error", "No output folder selected")
             return
         # self.state.path_out = path_out
-        self.worker = threading.Thread(target=self._worker, daemon=True)
+        self.worker = threading.Thread(target=self._worker, args=("pred",), daemon=True)
         self.worker.start()
         self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
-        self._check()
+        self._check("pred")
 
     def save(self, action):
         if not self.state.file_path:
@@ -311,51 +315,3 @@ class SegViewApp:
             self.ui.sidebarright.changes_state_label.grid()
 
         self.ui.sidebarleft.update_color_text_file()
-
-    def route(self, route):
-        if route == "prediction":
-            self.go_to_prediction()
-        elif route == "review":
-            self.go_to_review()
-        elif route == "fineTune":
-            self.go_to_fine()
-
-    def go_to_prediction(self):
-        self.edit_mode_utils.toggle_tool("deactivate")
-        self.rout = "prediction"
-        self.ui.topbar.pred_btn.config(bg="white", fg="black")
-        self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.sidebarright.pred_container.grid()
-        self.ui.sidebarright.get_folder_out.grid()
-        self.ui.sidebarright.review_container.grid_remove()
-        self.ui.sidebarright.fine_container.grid_remove()
-
-    def go_to_review(self, path=None):
-        self.rout = "review"
-        if path:
-            self.file_manager.open_dir("PATH_PRED", path)
-        self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.topbar.rev_btn.config(bg="white", fg="black")
-        self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.sidebarright.review_container.grid()
-        self.ui.sidebarright.pred_container.grid_remove()
-        self.ui.sidebarright.fine_container.grid_remove()
-
-    def go_to_fine(self):
-        self.edit_mode_utils.toggle_tool("deactivate")
-        self.state.rout = "fine"
-        self.ui.topbar.fine_btn.config(bg="white", fg="black")
-        self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.sidebarright.pred_container.grid_remove()
-        self.ui.sidebarright.review_container.grid_remove()
-
-        self.ui.sidebarright.fine_container.grid()
-        self.ui.sidebarright.get_model_fine.grid()
-        self.ui.sidebarright.get_valid_masks.grid()
-        self.ui.sidebarright.make_config_file.grid()
-
-        # self.make_config_fine_tuning()
-        # on change son appel ...
-        # self.run_fine_tuning()
