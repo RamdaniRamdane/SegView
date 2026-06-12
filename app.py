@@ -130,7 +130,9 @@ class SegViewApp:
         )
         if self.state.config_path:
             self.ui.sidebarright.start_fine_tuning.grid()
-            self.ui.sidebarright.make_config_file.config(bg="white", fg="black")
+            self.ui.sidebarright.make_config_file.config(
+                bg="white", fg="black", text="Remake Config"
+            )
 
     def run_fine_tuning(self):
         # problem with windows a regler et a tester avec mac
