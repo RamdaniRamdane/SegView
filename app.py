@@ -22,14 +22,17 @@ class SegViewApp:
         self.result = None
 
     def bind_events(self):
-
+        # top bar binds
+        # ============================================================================
         self.ui.topbar.pred_btn.config(command=lambda: self.route.route("prediction"))
         self.ui.topbar.rev_btn.config(command=lambda: self.route.route("review"))
         self.ui.topbar.fine_btn.config(command=lambda: self.route.route("fineTune"))
+        # sidebarright binds
+        # =============================================================================
         self.ui.sidebarright.btn.config(
             command=lambda: self.file_manager.open_dir("PATH_RAW")
         )
-
+        # review
         self.ui.sidebarright.refuse_but.config(
             command=lambda: self.file_manager.save("refuse"),
         )
@@ -39,10 +42,6 @@ class SegViewApp:
         self.ui.sidebarright.unreview_but.config(
             command=lambda: self.file_manager.save("unreview"),
         )
-        self.ui.zoom_slider.config(
-            state=tk.DISABLED,
-            command=self.ui_handel.change_z,
-        )
         self.ui.sidebarright.next_btn.config(
             state=tk.DISABLED,
             command=lambda: self.ui_handel.navigate("NEXT"),
@@ -51,17 +50,8 @@ class SegViewApp:
             state=tk.DISABLED,
             command=lambda: self.ui_handel.navigate("PREV"),
         )
-        self.ui.sidebarright.get_model.config(
-            state=tk.DISABLED,
-            command=lambda: self.file_manager.open_dir("PATH_LOG"),
-        )
-        self.ui.sidebarright.get_folder_out.config(
-            command=self.file_manager.get_out_path
-        )
-        self.ui.sidebarright.pred.config(command=self.b3d.run_prediction)
-        self.ui.sidebarright.get_predictions_path.config(
-            command=lambda: self.file_manager.open_dir("PATH_PRED")
-        )
+        # edit mode
+
         self.ui.sidebarright.correct_but.config(
             command=self.edit_mode_utils.toggle_edit_mode
         )
@@ -74,14 +64,23 @@ class SegViewApp:
         self.ui.sidebarright.save_changes.config(
             command=self.edit_mode_utils.save_changes
         )
-        self.ui.canvas.bind(
-            "<ButtonPress-1>",
-            self.edit_mode_utils.on_mouse_down,
+        self.ui.sidebarright.tool_size_slider.config(
+            command=self.edit_mode_utils.on_change_tool_size
         )
-        self.ui.canvas.bind(
-            "<B1-Motion>",
-            self.edit_mode_utils.on_mouse_drag,
+        # pred
+
+        self.ui.sidebarright.get_model.config(
+            state=tk.DISABLED,
+            command=lambda: self.file_manager.open_dir("PATH_LOG"),
         )
+        self.ui.sidebarright.get_folder_out.config(
+            command=self.file_manager.get_out_path
+        )
+        self.ui.sidebarright.pred.config(command=self.b3d.run_prediction)
+        self.ui.sidebarright.get_predictions_path.config(
+            command=lambda: self.file_manager.open_dir("PATH_PRED")
+        )
+        # fine tuning
         self.ui.sidebarright.get_valid_masks.config(
             command=lambda: self.file_manager.open_dir("PATH_VALID")
         )
@@ -92,6 +91,19 @@ class SegViewApp:
         self.ui.sidebarright.get_model_fine.config(
             command=lambda: self.file_manager.open_dir("PATH_LOG")
         )
-        self.ui.sidebarright.tool_size_slider.config(
-            command=self.edit_mode_utils.on_change_tool_size
+
+        # canvas handel
+        # ==============================================================================
+        self.ui.zoom_slider.config(
+            state=tk.DISABLED,
+            command=self.ui_handel.change_z,
+        )
+
+        self.ui.canvas.bind(
+            "<ButtonPress-1>",
+            self.edit_mode_utils.on_mouse_down,
+        )
+        self.ui.canvas.bind(
+            "<B1-Motion>",
+            self.edit_mode_utils.on_mouse_drag,
         )
