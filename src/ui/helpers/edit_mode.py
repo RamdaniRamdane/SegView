@@ -120,3 +120,6 @@ class EditMode:
         self.app.state.edited = 0
         self.app.ui.sidebarright.save_changes.grid_remove()
         self.app.ui.sidebarright.changes_state_label.grid()
+
+    def on_change_tool_size(self, value):
+        self.state.edit_tool_size = int(float(value))

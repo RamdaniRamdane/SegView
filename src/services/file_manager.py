@@ -313,3 +313,66 @@ class FileManager:
         for j in range(len(self.state.files)):
             if not j == i:
                 self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
+
+    def get_out_path(self):
+        out = filedialog.askdirectory(title="Destination for model predictions")
+        if not out:
+            return
+        else:
+            ls = os.listdir(out)
+
+        if out and not ls:
+            self.state.path_out = out
+            self.ui.sidebarright.pred.grid()
+            self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+            self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
+        else:
+            # mybe problem here
+            user_response = messagebox.askquestion(
+                title="Error",
+                message="problem occurred , path not found or the folder is not empty \n -> Do you want to empty it before?",
+                type="yesno",
+            )
+            if user_response == "yes" and out:
+                for item in ls:
+                    if os.path.isfile(os.path.join(out, item)):
+                        os.remove(os.path.join(out, item))
+                    else:
+                        shutil.rmtree(os.path.join(out, item))
+                self.state.path_out = out
+                self.ui.sidebarright.pred.grid()
+                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+            else:
+                out = None
+        return out
+
+    def save(self, action):
+        if not self.state.file_path:
+            return
+        self.save_choice(
+            self.state.file_path,
+            self.state.path_out,
+            action,
+        )
+        if action == "validate":
+            st = 1
+        elif action == "refuse":
+            st = 2
+        else:
+            st = 3
+        UIutils.set_flag(
+            self.ui.status.flag_sign,
+            self.ui.status.flag_text,
+            st,
+        )
+
+        if st == 2:
+            self.ui.sidebarright.correct_but.grid()
+        else:
+            self.ui.sidebarright.correct_but.grid_remove()
+        if self.state.edited:
+            self.ui.sidebarright.changes_state_label.grid_remove()
+        else:
+            self.ui.sidebarright.changes_state_label.grid()
+
+        self.ui.sidebarleft.update_color_text_file()

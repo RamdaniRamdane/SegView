@@ -1,7 +1,4 @@
-import os
-import shutil
 import tkinter as tk
-from tkinter import filedialog, messagebox
 
 from src.models.app_state import AppState
 from src.services.b3d import B3d
@@ -34,13 +31,13 @@ class SegViewApp:
         )
 
         self.ui.sidebarright.refuse_but.config(
-            command=lambda: self.save("refuse"),
+            command=lambda: self.file_manager.save("refuse"),
         )
         self.ui.sidebarright.validate_but.config(
-            command=lambda: self.save("validate"),
+            command=lambda: self.file_manager.save("validate"),
         )
         self.ui.sidebarright.unreview_but.config(
-            command=lambda: self.save("unreview"),
+            command=lambda: self.file_manager.save("unreview"),
         )
         self.ui.zoom_slider.config(
             state=tk.DISABLED,
@@ -58,7 +55,9 @@ class SegViewApp:
             state=tk.DISABLED,
             command=lambda: self.file_manager.open_dir("PATH_LOG"),
         )
-        self.ui.sidebarright.get_folder_out.config(command=self.get_out_path)
+        self.ui.sidebarright.get_folder_out.config(
+            command=self.file_manager.get_out_path
+        )
         self.ui.sidebarright.pred.config(command=self.b3d.run_prediction)
         self.ui.sidebarright.get_predictions_path.config(
             command=lambda: self.file_manager.open_dir("PATH_PRED")
@@ -93,70 +92,6 @@ class SegViewApp:
         self.ui.sidebarright.get_model_fine.config(
             command=lambda: self.file_manager.open_dir("PATH_LOG")
         )
-        self.ui.sidebarright.tool_size_slider.config(command=self.on_change)
-
-    def on_change(self, value):
-        print("size is", int(float(value)))
-        self.state.edit_tool_size = int(float(value))
-
-    def get_out_path(self):
-        out = filedialog.askdirectory(title="Destination for model predictions")
-        if not out:
-            return
-        else:
-            ls = os.listdir(out)
-
-        if out and not ls:
-            self.state.path_out = out
-            self.ui.sidebarright.pred.grid()
-            self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
-            self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
-        else:
-            user_response = messagebox.askquestion(
-                title="Error",
-                message="problem occurred , path not found or the folder is not empty \n -> Do you want to empty it before?",
-                type="yesno",
-            )
-            if user_response == "yes" and out:
-                for item in ls:
-                    if os.path.isfile(os.path.join(out, item)):
-                        os.remove(os.path.join(out, item))
-                    else:
-                        shutil.rmtree(os.path.join(out, item))
-                self.state.path_out = out
-                self.ui.sidebarright.pred.grid()
-                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
-            else:
-                out = None
-        return out
-
-    def save(self, action):
-        if not self.state.file_path:
-            return
-        self.file_manager.save_choice(
-            self.state.file_path,
-            self.state.path_out,
-            action,
+        self.ui.sidebarright.tool_size_slider.config(
+            command=self.edit_mode_utils.on_change_tool_size
         )
-        if action == "validate":
-            st = 1
-        elif action == "refuse":
-            st = 2
-        else:
-            st = 3
-        UIutils.set_flag(
-            self.ui.status.flag_sign,
-            self.ui.status.flag_text,
-            st,
-        )
-
-        if st == 2:
-            self.ui.sidebarright.correct_but.grid()
-        else:
-            self.ui.sidebarright.correct_but.grid_remove()
-        if self.state.edited:
-            self.ui.sidebarright.changes_state_label.grid_remove()
-        else:
-            self.ui.sidebarright.changes_state_label.grid()
-
-        self.ui.sidebarleft.update_color_text_file()
