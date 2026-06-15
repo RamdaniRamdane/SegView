@@ -197,9 +197,21 @@ class FileManager:
                 self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
                 if self.ui.st == 2:
                     self.ui.sidebarright.correct_but.grid()
-                else:
+                    self.ui.sidebarright.refuse_but.grid_remove()
+                    self.ui.sidebarright.validate_but.grid()
+                    self.ui.sidebarright.unreview_but.grid()
+                elif self.ui.st == 1:
                     self.ui.sidebarright.correct_but.grid_remove()
                     self.edit_mode_utils.toggle_tool("deactivate")
+                    self.ui.sidebarright.refuse_but.grid()
+                    self.ui.sidebarright.unreview_but.grid()
+                    self.ui.sidebarright.validate_but.grid_remove()
+                elif self.ui.st == 3:
+                    self.ui.sidebarright.correct_but.grid_remove()
+                    self.edit_mode_utils.toggle_tool("deactivate")
+                    self.ui.sidebarright.refuse_but.grid()
+                    self.ui.sidebarright.unreview_but.grid_remove()
+                    self.ui.sidebarright.validate_but.grid()
                 self.state.edit_mode = False
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
@@ -295,9 +307,21 @@ class FileManager:
         self.ui.sidebarleft.update_color_text_file()
         if self.ui.st == 2:
             self.ui.sidebarright.correct_but.grid()
-        else:
+            self.ui.sidebarright.refuse_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid()
+            self.ui.sidebarright.unreview_but.grid()
+        elif self.ui.st == 1:
             self.ui.sidebarright.correct_but.grid_remove()
             self.edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid()
+            self.ui.sidebarright.unreview_but.grid()
+            self.ui.sidebarright.validate_but.grid_remove()
+        elif self.ui.st == 3:
+            self.ui.sidebarright.correct_but.grid_remove()
+            self.edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid()
+            self.ui.sidebarright.unreview_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid()
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
@@ -368,11 +392,23 @@ class FileManager:
             self.ui.status.flag_text,
             st,
         )
-
         if st == 2:
             self.ui.sidebarright.correct_but.grid()
-        else:
+            self.ui.sidebarright.refuse_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid()
+            self.ui.sidebarright.unreview_but.grid()
+        elif st == 1:
             self.ui.sidebarright.correct_but.grid_remove()
+            self.edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid()
+            self.ui.sidebarright.unreview_but.grid()
+            self.ui.sidebarright.validate_but.grid_remove()
+        elif st == 3:
+            self.ui.sidebarright.correct_but.grid_remove()
+            self.edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid()
+            self.ui.sidebarright.unreview_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid()
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
