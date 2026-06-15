@@ -10,7 +10,7 @@ from src.ui.helpers.ui_utils import UIutils
 
 
 class FileManager:
-    def __init__(self, ui=None, state=None, app=None):
+    def __init__(self, ui=None, state=None, app=None, edit_mode_utils=None):
         if ui:
             self.ui = ui
         if state:
@@ -19,6 +19,8 @@ class FileManager:
             self.app = app
         if ui and state:
             self.ui_handel = UIutils(ui, state)
+        if edit_mode_utils:
+            self.edit_mode_utils = edit_mode_utils
 
     def get_prediction(self, file_path, out_path):
         if not file_path or not out_path:
@@ -67,7 +69,6 @@ class FileManager:
         )
         path_out = os.path.join(self.ui.state.path_out, filename)
         if os.path.isfile(path_val):
-            print(path_val)
             return 1
 
         if os.path.isfile(path_ref):
@@ -198,6 +199,7 @@ class FileManager:
                     self.ui.sidebarright.correct_but.grid()
                 else:
                     self.ui.sidebarright.correct_but.grid_remove()
+                    self.edit_mode_utils.toggle_tool("deactivate")
                 self.state.edit_mode = False
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
@@ -295,6 +297,7 @@ class FileManager:
             self.ui.sidebarright.correct_but.grid()
         else:
             self.ui.sidebarright.correct_but.grid_remove()
+            self.edit_mode_utils.toggle_tool("deactivate")
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
