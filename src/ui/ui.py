@@ -10,7 +10,7 @@ from .components.top_bar import TopBar
 
 class SegViewUI:
     def __init__(self, root):
-        self.st = 3
+        self.st = 4
         self.state = None
 
         self.root = root
