@@ -403,12 +403,16 @@ class FileManager:
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.unreview_but.grid()
             self.ui.sidebarright.validate_but.grid_remove()
+            self.ui.sidebarright.edit_frame.grid_remove()
+            self.state.edit_mode = False
         elif st == 3:
             self.ui.sidebarright.correct_but.grid_remove()
             self.edit_mode_utils.toggle_tool("deactivate")
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.unreview_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
+            self.ui.sidebarright.edit_frame.grid_remove()
+            self.state.edit_mode = False
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
