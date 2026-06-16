@@ -353,6 +353,7 @@ class FileManager:
             self.ui.sidebarright.pred.grid()
             self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
             self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
+            print("out folder when its emty:", out)
         else:
             # mybe problem here
             user_response = messagebox.askquestion(
@@ -367,6 +368,7 @@ class FileManager:
                     else:
                         shutil.rmtree(os.path.join(out, item))
                 self.state.path_out = out
+                print("out folder when we empty it us", out)
                 self.ui.sidebarright.pred.grid()
                 self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
             else:

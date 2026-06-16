@@ -19,7 +19,6 @@ class SegViewApp:
         self.route = Route(self.ui, self.file_manager, self.edit_mode_utils, self.state)
         self.b3d = B3d(self.state, self.ui, self.route)
         self.worker = None
-        self.result = None
 
     def bind_events(self):
         # top bar binds

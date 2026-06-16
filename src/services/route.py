@@ -28,6 +28,7 @@ class Route:
         self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_review(self, path=None):
+        print("route ligne 31 :", path)
         self.state.route = "review"
         if path:
             self.file_manager.open_dir("PATH_PRED", path)
