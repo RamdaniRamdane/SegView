@@ -33,4 +33,5 @@ class AppState:
 
     edited: int = 0
     config_path: str = ""
-    rout: str = ""
+    route: str = ""
+    new_model_path: str = ""

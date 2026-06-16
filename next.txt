@@ -31,3 +31,7 @@ or any config files so i have to hundle it
 problem when predicting ( windows ) the correction have a little bug at the begening i dont know why so check it later
 
 after finish the fine tuning make sure to make the display as begin
+
+
+fix new bug : on predicting sucpect : on clear or on predict
+

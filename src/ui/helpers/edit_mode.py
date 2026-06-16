@@ -14,10 +14,12 @@ class EditMode:
             self.app.ui.sidebarright.ereaser.grid()
             self.app.ui.sidebarright.brush.grid()
         else:
+            self.toggle_tool("deactivate")
             self.app.ui.sidebarright.edit_frame.grid_remove()
 
     def toggle_tool(self, tool):
         if tool == "deactivate":
+            print("all tools deactivated")
             self.app.state.edit_tool = ""
         else:
             if self.app.state.edit_tool != tool:
@@ -120,3 +122,6 @@ class EditMode:
         self.app.state.edited = 0
         self.app.ui.sidebarright.save_changes.grid_remove()
         self.app.ui.sidebarright.changes_state_label.grid()
+
+    def on_change_tool_size(self, value):
+        self.state.edit_tool_size = int(float(value))
