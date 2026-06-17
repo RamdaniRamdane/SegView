@@ -259,10 +259,6 @@ class Sidebarleft:
         else:
             print("state dont exite")
 
-    # ==========================
-    # TOGGLE BUTTON
-    # ==========================
-
     def update_color_text_file(self):
         filemanager = FileManager(self.ui)
         parent = self.ui.state.path_out
@@ -277,6 +273,7 @@ class Sidebarleft:
                     for btn in self.file_buttons:
                         if btn.file_index == index:
                             btn.config(fg=theme.SUCCESS)
+                            self.ui.sidebarright.fine_btn.grid()
                 elif filemanager.status(filepath) == 2:
                     for btn in self.file_buttons:
                         if btn.file_index == index:
@@ -289,10 +286,6 @@ class Sidebarleft:
         else:
             for btn in self.file_buttons:
                 btn.config(fg=theme.TEXT)
-
-    # ==========================
-    # PROGRESS BAR METHODS
-    # ==========================
 
     def progressbar_handler(
         self,

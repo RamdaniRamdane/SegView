@@ -25,9 +25,7 @@ class SegViewApp:
         # ============================================================================
         self.ui.topbar.pred_btn.config(command=lambda: self.route.route("prediction"))
         self.ui.topbar.rev_btn.config(command=lambda: self.route.route("review"))
-        self.ui.sidebarright.fine_btn.config(
-            command=lambda: self.route.route("fineTune")
-        )
+        self.ui.sidebarright.fine_btn.config(command=lambda: self.b3d.run_fine_tuning())
         # sidebarright binds
         # =============================================================================
         self.ui.sidebarright.btn.config(

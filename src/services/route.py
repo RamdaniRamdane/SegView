@@ -35,18 +35,3 @@ class Route:
         self.ui.sidebarright.review_container.grid()
         self.ui.sidebarright.pred_container.grid_remove()
         self.ui.sidebarright.fine_container.grid_remove()
-
-    def go_to_fine(self):
-        self.edit_mode_utils.toggle_tool("deactivate")
-        self.state.route = "fine"
-        self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.sidebarright.pred_container.grid_remove()
-        self.ui.sidebarright.review_container.grid_remove()
-
-        self.ui.sidebarright.fine_container.grid()
-        self.ui.sidebarright.get_model_fine.grid()
-        self.ui.sidebarright.get_num_epoch.grid()
-        self.ui.sidebarright.start_fine_tuning.grid()
-        # self.ui.sidebarright.get_valid_masks.grid()
-        # self.ui.sidebarright.make_config_file.grid()
