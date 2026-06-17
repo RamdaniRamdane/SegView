@@ -215,6 +215,7 @@ class Sidebarright:
         )
 
         self.fine_btn.grid(row=7, column=0)
+        self.fine_btn.grid_remove()
         # predictions frame
         self.pred_container = tk.Frame(
             self.container, bg=theme.PANEL, width=200, height=200

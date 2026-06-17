@@ -19,10 +19,10 @@ class B3d:
         )
 
     def run_prediction(self):
-        if self.b3d_Threading.worker_pred and self.b3d_Threading.worker_pred.is_alive():
+        if self.b3d_Threading.worker_fine and self.b3d_Threading.worker_fine.is_alive():
             messagebox.showwarning(
-                "Warning",
-                "Prediction already running.",
+                "Busy",
+                "Fine tuning is currently running.\nPlease wait until it finishes.",
             )
             return
 
@@ -79,8 +79,8 @@ class B3d:
     def run_fine_tuning(self):
         if self.b3d_Threading.worker_pred and self.b3d_Threading.worker_pred.is_alive():
             messagebox.showwarning(
-                "Warning",
-                "Prediction is still running.",
+                "Busy",
+                "Prediction is currently running.\nPlease wait until it finishes.",
             )
             return
         if self.b3d_Threading.worker_fine and self.b3d_Threading.worker_fine.is_alive():

@@ -122,11 +122,13 @@ class FileManager:
         self.ui.sidebarleft.update_color_text_file()
         valid_masks = os.listdir(self.state.path_out_valide)
         valid_len = len(valid_masks)
-        if valid_len == len(self.state.files):
-            self.ui.sidebarright.get_valid_masks.config(bg="white", fg="black")
-            self.app.route.go_to_fine()
+        if valid_len >= 1:
+            self.ui.sidebarright.fine_btn.grid()
+        else:
+            self.ui.sidebarright.fine_btn.grid_remove()
 
     # hhhh i must refactore this sh*t
+
     def open_dir(self, action, path_dir=None):
         if not path_dir:
             path_dir = filedialog.askdirectory(title=action)
