@@ -35,3 +35,6 @@ after finish the fine tuning make sure to make the display as begin
 
 fix new bug : on predicting sucpect : on clear or on predict
 
+- out folder change after fine tuning 
+
+- add epoch choose
