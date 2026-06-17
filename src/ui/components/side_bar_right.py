@@ -203,6 +203,18 @@ class Sidebarright:
         self.save_changes.grid_remove()
         self.changes_state_label.grid_remove()
 
+        self.fine_btn = tk.Button(
+            self.review_container,
+            text="Fine Tuning",
+            font=(theme.MONO, 8),
+            bg=theme.MUTED,
+            fg=theme.TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+            compound="left",
+        )
+
+        self.fine_btn.grid(row=7, column=0)
         # predictions frame
         self.pred_container = tk.Frame(
             self.container, bg=theme.PANEL, width=200, height=200

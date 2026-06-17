@@ -43,20 +43,8 @@ class TopBar:
             image=self.review_icon,
             compound="left",
         )
-        self.fine_icon = image_utils.load_icon(IMG_DIR, "fine.png", (10, 10))
-        self.fine_btn = tk.Button(
-            self.frame,
-            text="Fine Tuning",
-            font=(theme.MONO, 8),
-            bg=theme.MUTED,
-            fg=theme.TEXT_HI,
-            relief="flat",
-            cursor="hand2",
-            image=self.fine_icon,
-            compound="left",
-        )
-        self.pred_btn.grid(row=0, column=0)
-        self.rev_btn.grid(row=0, column=1)
-        self.fine_btn.grid(row=0, column=2)
+
+        self.pred_btn.grid(row=0, column=0, sticky="e")
+        self.rev_btn.grid(row=0, column=1, sticky="e")
 
         self.frame.grid_propagate(False)

@@ -30,7 +30,7 @@ class SegViewUI:
         self.root.grid_columnconfigure(2, weight=0)
 
         self.topbar = TopBar(self.root)
-        self.topbar.frame.grid(row=0, column=0, columnspan=3)
+        self.topbar.frame.grid(row=0, column=0, columnspan=3, sticky="w")
         # instantiate components
         self.toolbar = Toolbar(self.root)
         self.toolbar.frame.grid(row=1, column=1, sticky="ew")

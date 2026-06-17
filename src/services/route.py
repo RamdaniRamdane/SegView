@@ -21,7 +21,6 @@ class Route:
         self.state.route = "prediction"
         self.ui.topbar.pred_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.pred_container.grid()
         self.ui.sidebarright.get_folder_out.grid()
         self.ui.sidebarright.review_container.grid_remove()
@@ -33,7 +32,6 @@ class Route:
             self.file_manager.open_dir("PATH_PRED", path)
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.rev_btn.config(bg="white", fg="black")
-        self.ui.topbar.fine_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.review_container.grid()
         self.ui.sidebarright.pred_container.grid_remove()
         self.ui.sidebarright.fine_container.grid_remove()
@@ -41,7 +39,6 @@ class Route:
     def go_to_fine(self):
         self.edit_mode_utils.toggle_tool("deactivate")
         self.state.route = "fine"
-        self.ui.topbar.fine_btn.config(bg="white", fg="black")
         self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.pred_container.grid_remove()
