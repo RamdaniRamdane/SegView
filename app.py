@@ -80,12 +80,12 @@ class SegViewApp:
             command=lambda: self.file_manager.open_dir("PATH_PRED")
         )
         # fine tuning
-        self.ui.sidebarright.get_valid_masks.config(
-            command=lambda: self.file_manager.open_dir("PATH_VALID")
-        )
-        self.ui.sidebarright.make_config_file.config(
-            command=self.b3d.make_config_fine_tuning
-        )
+        # self.ui.sidebarright.get_valid_masks.config(
+        #    command=lambda: self.file_manager.open_dir("PATH_VALID")
+        # )
+        # self.ui.sidebarright.make_config_file.config(
+        #    command=self.b3d.make_config_fine_tuning
+        # )
         self.ui.sidebarright.start_fine_tuning.config(command=self.b3d.run_fine_tuning)
         self.ui.sidebarright.get_model_fine.config(
             command=lambda: self.file_manager.open_dir("PATH_LOG")

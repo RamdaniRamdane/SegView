@@ -251,22 +251,27 @@ class Sidebarright:
             text_color=theme.TEXT,
             pady_top=6,
         )
-        self.get_valid_masks = UIutils.make_btn(
-            self.fine_container,
-            "Valide Masks",
-            1,
-            color=theme.MUTED,
-            text_color=theme.TEXT,
-            pady_top=6,
+        # self.get_valid_masks = UIutils.make_btn(
+        #    self.fine_container,
+        #    "Valide Masks",
+        #    1,
+        #    color=theme.MUTED,
+        #    text_color=theme.TEXT,
+        #    pady_top=6,
+        # )
+        # self.make_config_file = UIutils.make_btn(
+        #    self.fine_container,
+        #    "Make Config",
+        #    2,
+        #    color=theme.MUTED,
+        #    text_color=theme.TEXT,
+        #    pady_top=6,
+        # )
+        self.num_epochs_var = tk.IntVar(value=1)
+        self.get_num_epoch = tk.Spinbox(
+            parent, from_=1, to=1000, textvariable=self.num_epochs_var
         )
-        self.make_config_file = UIutils.make_btn(
-            self.fine_container,
-            "Make Config",
-            2,
-            color=theme.MUTED,
-            text_color=theme.TEXT,
-            pady_top=6,
-        )
+        self.get_num_epoch.grid(row=2, column=0)
         self.start_fine_tuning = UIutils.make_btn(
             self.fine_container,
             "Start Fine Tuning",
@@ -277,7 +282,7 @@ class Sidebarright:
         )
 
         self.fine_container.grid_remove()
-        self.get_valid_masks.grid_remove()
-        self.make_config_file.grid_remove()
+        # self.get_valid_masks.grid_remove()
+        # self.make_config_file.grid_remove()
         self.start_fine_tuning.grid_remove()
         self.get_model_fine.grid_remove()

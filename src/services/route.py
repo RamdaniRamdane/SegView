@@ -28,7 +28,6 @@ class Route:
         self.ui.sidebarright.fine_container.grid_remove()
 
     def go_to_review(self, path=None):
-        print("route ligne 31 :", path)
         self.state.route = "review"
         if path:
             self.file_manager.open_dir("PATH_PRED", path)
@@ -50,5 +49,7 @@ class Route:
 
         self.ui.sidebarright.fine_container.grid()
         self.ui.sidebarright.get_model_fine.grid()
-        self.ui.sidebarright.get_valid_masks.grid()
-        self.ui.sidebarright.make_config_file.grid()
+        self.ui.sidebarright.get_num_epoch.grid()
+        self.ui.sidebarright.start_fine_tuning.grid()
+        # self.ui.sidebarright.get_valid_masks.grid()
+        # self.ui.sidebarright.make_config_file.grid()

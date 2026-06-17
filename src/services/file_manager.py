@@ -124,7 +124,7 @@ class FileManager:
         valid_len = len(valid_masks)
         if valid_len == len(self.state.files):
             self.ui.sidebarright.get_valid_masks.config(bg="white", fg="black")
-            self.app.go_to_fine()
+            self.app.route.go_to_fine()
 
     # hhhh i must refactore this sh*t
     def open_dir(self, action, path_dir=None):

@@ -38,3 +38,5 @@ fix new bug : on predicting sucpect : on clear or on predict
 - out folder change after fine tuning 
 
 - add epoch choose
+- liber validated apre fine tuning 
+

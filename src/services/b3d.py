@@ -12,20 +12,57 @@ class B3d:
         self.state = state
         self.ui = ui
         self.route = route
-        self.b3d_Threading = BiomThreading(self.state, self.ui, self.route)
+        self.b3d_Threading = BiomThreading(
+            self.state,
+            self.ui,
+            self.route,
+        )
 
     def run_prediction(self):
+        if self.b3d_Threading.worker_pred and self.b3d_Threading.worker_pred.is_alive():
+            messagebox.showwarning(
+                "Warning",
+                "Prediction already running.",
+            )
+            return
+
+        if self.b3d_Threading.worker_fine and self.b3d_Threading.worker_fine.is_alive():
+            messagebox.showwarning(
+                "Warning",
+                "Fine tuning is currently running.",
+            )
+            return
+
         if not self.state.path_log:
-            messagebox.showerror("Error", "No model selected")
+            messagebox.showerror(
+                "Error",
+                "No model selected",
+            )
             return
 
         if not self.state.path_dir:
-            messagebox.showerror("Error", "No input folder selected")
+            messagebox.showerror(
+                "Error",
+                "No input folder selected",
+            )
             return
 
         if not self.state.path_out:
-            messagebox.showerror("Error", "No output folder selected")
+            messagebox.showerror(
+                "Error",
+                "No output folder selected",
+            )
             return
+
+        self.b3d_Threading.result = None
+
+        self.state.predStarted = False
+        self.state.files_out = []
+
+        if os.path.exists(self.state.path_out):
+            self.state.path_out_list = os.listdir(self.state.path_out)
+        else:
+            self.state.path_out_list = []
 
         self.b3d_Threading.worker_pred = threading.Thread(
             target=self.b3d_Threading._worker,
@@ -37,19 +74,30 @@ class B3d:
 
         self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
 
-        self.b3d_Threading.result = None
-        self.state.predStarted = False
-        self.state.files_out = []
-
-        if os.path.exists(self.state.path_out):
-            self.state.path_out_list = os.listdir(self.state.path_out)
-        else:
-            self.state.path_out_list = []
-
         self.b3d_Threading._check("pred")
 
     def run_fine_tuning(self):
-        self.b3d_Threading.worker_fine = threading.Thread(  # rey
+        if self.b3d_Threading.worker_pred and self.b3d_Threading.worker_pred.is_alive():
+            messagebox.showwarning(
+                "Warning",
+                "Prediction is still running.",
+            )
+            return
+        if self.b3d_Threading.worker_fine and self.b3d_Threading.worker_fine.is_alive():
+            messagebox.showwarning(
+                "Warning",
+                "Fine tuning already running.",
+            )
+            return
+
+        self.make_config_fine_tuning()
+
+        if not getattr(self.state, "config_path", None):
+            return
+
+        self.b3d_Threading.result = None
+
+        self.b3d_Threading.worker_fine = threading.Thread(
             target=self.b3d_Threading._worker,
             args=("fine",),
             daemon=True,
@@ -59,7 +107,7 @@ class B3d:
 
         self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
 
-        self.b3d_Threading._check("pred")
+        self.b3d_Threading._check("fine")
 
     def make_config_fine_tuning(self):
         if (
@@ -69,7 +117,10 @@ class B3d:
         ):
             messagebox.showerror(
                 "Error",
-                "make sure you have all folders are uploaded : \n 1-Raw\n 2-Model\n 3-Valid masks",
+                "Make sure all folders are provided:\n\n"
+                "1 - Raw images\n"
+                "2 - Model\n"
+                "3 - Valid masks (review step required)",
             )
             return
 
@@ -86,9 +137,9 @@ class B3d:
             is_2d=False,
         )
 
-        if self.state.config_path:
-            self.ui.sidebarright.start_fine_tuning.grid()
-            self.ui.sidebarright.make_config_file.config(
-                bg="white", fg="black", text="Remake Config"
-            )
+        print(
+            "Generated config:",
+            self.state.config_path,
+        )
 
+        return self.state.config_path

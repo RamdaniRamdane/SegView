@@ -22,9 +22,10 @@ class BiomThreading:
                 if action == "pred":
                     user_response = messagebox.askquestion(
                         title="Warning",
-                        message="Warning: No GPU detected , prediciton will slowdown\ncontinue anyway?",
+                        message="Warning: No GPU detected, prediction will be slow.\nContinue anyway?",
                         type="yesno",
                     )
+
                     if user_response == "yes":
                         self.result = pred(
                             log=self.state.path_log,
@@ -33,13 +34,17 @@ class BiomThreading:
                             skip_preprocessing=False,
                         )
                     else:
+                        self.result = "CANCELLED"
                         return
 
                 elif action == "fine":
+                    self.result = "NO_GPU"
+
                     messagebox.showerror(
                         title="Error",
-                        message="NO GPU detected , fine tuning dont work on ur desktop",
+                        message="No GPU detected, fine tuning is disabled.",
                     )
+                    return
 
             else:
                 if action == "pred":
@@ -56,20 +61,14 @@ class BiomThreading:
                         path=self.state.path_log,
                     )
 
+                    self.result = self.state.new_model_path
+
         except Exception as e:
             self.result = e
 
     def _check(self, action):
-        print("check action=", action)
-        print("self.worker_pred=", self.worker_pred)
-
-        if self.worker_pred:
-            print("self.worker_pred.is_alive=", self.worker_pred.is_alive())
-
         if action == "pred" and self.worker_pred and self.worker_pred.is_alive():
             try:
-                print("self.state.predStarted:", self.state.predStarted)
-
                 if not self.state.predStarted:
                     if os.path.exists(self.state.path_out):
                         out_list = os.listdir(self.state.path_out)
@@ -80,8 +79,6 @@ class BiomThreading:
 
                     diff = list(set(out_list) - set(self.state.path_out_list))
 
-                    print("out fold:", diff)
-
                     if diff:
                         candidate = None
 
@@ -90,7 +87,10 @@ class BiomThreading:
                                 candidate = el
 
                         if candidate:
-                            new_path = os.path.join(self.state.path_out, candidate)
+                            new_path = os.path.join(
+                                self.state.path_out,
+                                candidate,
+                            )
 
                             if os.path.isdir(new_path):
                                 self.state.path_out = new_path
@@ -100,17 +100,13 @@ class BiomThreading:
                 else:
                     files_out = os.listdir(self.state.path_out)
 
-                    print("self.state.path_out = ", self.state.path_out)
-                    print("files_out = ", files_out)
-                    print("route = ", self.state.route)
-
                     if len(files_out) >= 1 and self.state.route != "review":
-                        print("biom thread ligne 80", files_out)
                         self.route.go_to_review(self.state.path_out)
 
                     if len(files_out) > len(self.state.files_out):
-                        test = self.ui.sidebarleft.progressbar["mode"]
-                        if str(test) == "indeterminate":
+                        mode = self.ui.sidebarleft.progressbar["mode"]
+
+                        if str(mode) == "indeterminate":
                             self.ui.sidebarleft.toggl_determinate_mode(
                                 self.ui.sidebarleft.progressbar
                             )
@@ -123,29 +119,92 @@ class BiomThreading:
 
                         self.ui.sidebarleft.update_color_text_file()
 
-                    self.state.files_out = os.listdir(self.state.path_out)
+                    self.state.files_out = files_out
 
             except Exception as e:
-                print("Erreur lors du listing:", e)
+                print("Listing error:", e)
 
-            self.ui.root.after(1000, lambda: self._check(action))
+            self.ui.root.after(
+                1000,
+                lambda: self._check(action),
+            )
             return
 
         if self.result is None:
-            self.ui.root.after(1000, lambda: self._check(action))
+            self.ui.root.after(
+                1000,
+                lambda: self._check(action),
+            )
             return
 
-        if isinstance(self.result, Exception) and action == "pred":
-            messagebox.showerror("Error", str(self.result))
-            return
-
-        elif action == "pred":
+        if self.result == "CANCELLED":
             self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
 
             self.ui.sidebarleft.progressbar_handler(
-                self.ui.sidebarleft.progressbar, "RESET"
+                self.ui.sidebarleft.progressbar,
+                "RESET",
             )
 
-            messagebox.showinfo("Done", f"prediction saved here: {self.result}")
+            self.state.predStarted = False
+            self.worker_pred = None
+
+            return
+        if self.result == "NO_GPU":
+            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+
+            self.ui.sidebarleft.progressbar_handler(
+                self.ui.sidebarleft.progressbar,
+                "RESET",
+            )
+
+            self.worker_fine = None
+            return
+
+        if isinstance(self.result, Exception):
+            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+
+            self.ui.sidebarleft.progressbar_handler(
+                self.ui.sidebarleft.progressbar,
+                "RESET",
+            )
+
+            messagebox.showerror(
+                "Error",
+                str(self.result),
+            )
+
+            self.worker_pred = None
+            self.worker_fine = None
+
+            return
+
+        if action == "pred":
+            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+
+            self.ui.sidebarleft.progressbar_handler(
+                self.ui.sidebarleft.progressbar,
+                "RESET",
+            )
+
+            messagebox.showinfo(
+                "Done",
+                f"Prediction saved here:\n{self.result}",
+            )
 
             self.state.predStarted = False
+            self.worker_pred = None
+
+        elif action == "fine":
+            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+
+            self.ui.sidebarleft.progressbar_handler(
+                self.ui.sidebarleft.progressbar,
+                "RESET",
+            )
+
+            self.worker_fine = None
+
+            messagebox.showinfo(
+                "Done",
+                "Fine tuning completed.",
+            )
