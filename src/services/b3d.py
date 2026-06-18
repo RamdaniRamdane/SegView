@@ -5,7 +5,7 @@ from tkinter import messagebox
 from biom3d.preprocess import auto_config_preprocess
 
 from src.services.utils.biom_thread import BiomThreading
-from ui.helpers.ui_utils import UIutils
+from src.ui.helpers.ui_utils import UIutils
 
 
 class B3d:
