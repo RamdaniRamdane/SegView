@@ -170,6 +170,8 @@ class UIutils:
         label.pack(padx=20, pady=20)
         button = tk.Button(modal, text="Close", command=modal.destroy)
         button.pack(pady=10)
+        modal.transient(root)  # try to make the popup on the root
+        modal.focus_set()
         modal.grab_set()  # Make the pop-up modal
         root.wait_window(modal)  # Wait until the pop-up is closed
         print("Modal dialog closed.")
