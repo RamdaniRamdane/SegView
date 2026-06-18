@@ -183,23 +183,23 @@ class UIutils:
         )
         frame.pack(padx=12, pady=12, fill="both", expand=True)
 
+        for i in range(len(needs) + 2):
+            frame.grid_rowconfigure(i, weight=0)
+        frame.grid_columnconfigure(0, weight=1)
         label = tk.Label(
             frame,
-            text="This is a modal dialog.",
+            text="number of opochs ?",
             bg=theme.CARD,
             fg=theme.TEXT_HI,
             font=(theme.MONO, 11),
         )
-        label.pack(padx=16, pady=(12, 8))
+        label.grid(row=0, col=0)
 
-        for i in range(len(needs)):
-            frame.grid_rowconfigure(i, weight=0)
-        frame.grid_columnconfigure(0, weight=1)
         self.num_epochs_var = tk.IntVar(value=1)
         self.get_num_epoch = tk.Spinbox(
             frame, from_=1, to=1000, textvariable=self.num_epochs_var
         )
-        self.get_num_epoch.grid(row=0, column=0)
+        self.get_num_epoch.grid(row=1, column=0)
 
         widgets = []
         k = 0
