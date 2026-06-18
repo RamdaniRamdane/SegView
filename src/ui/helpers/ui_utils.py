@@ -202,7 +202,7 @@ class UIutils:
         self.get_num_epoch.grid(row=1, column=0)
 
         widgets = []
-        k = 2
+        k = 0
         for i in needs:
             widgets.append(
                 tk.Button(
@@ -217,7 +217,7 @@ class UIutils:
                     pady=6,
                 )
             )
-            widgets[k].grid(row=k, column=0)
+            widgets[k].grid(row=k + 22, column=0)
             k += 1
 
         root.update_idletasks()
