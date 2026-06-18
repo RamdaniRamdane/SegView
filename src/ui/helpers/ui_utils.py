@@ -207,7 +207,7 @@ class UIutils:
             widgets.append(
                 tk.Button(
                     frame,
-                    text=i.label,
+                    text=i,
                     command=modal.destroy,
                     bg=theme.ACCENT,
                     fg=theme.TEXT_HI,
