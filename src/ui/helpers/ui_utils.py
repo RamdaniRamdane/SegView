@@ -164,12 +164,15 @@ class UIutils:
             display(self.ui.canvas, img)
 
     def open_popup(self, root):
-        popup = tk.Toplevel(root)
-        popup.title("Simple Pop-up")
-        label = tk.Label(popup, text="This is a pop-up window.")
+        modal = tk.Toplevel(root)
+        modal.title("Modal Pop-up")
+        label = tk.Label(modal, text="This is a modal dialog.")
         label.pack(padx=20, pady=20)
-        button = tk.Button(popup, text="Close", command=popup.destroy)
+        button = tk.Button(modal, text="Close", command=modal.destroy)
         button.pack(pady=10)
+        modal.grab_set()  # Make the pop-up modal
+        root.wait_window(modal)  # Wait until the pop-up is closed
+        print("Modal dialog closed.")
 
     def change_z(self, val):
         self.state.zoom = int(float(val))
