@@ -166,14 +166,55 @@ class UIutils:
     def open_popup(self, root):
         modal = tk.Toplevel(root)
         modal.title("Modal Pop-up")
-        label = tk.Label(modal, text="This is a modal dialog.")
-        label.pack(padx=20, pady=20)
-        button = tk.Button(modal, text="Close", command=modal.destroy)
-        button.pack(pady=10)
-        modal.transient(root)  # try to make the popup on the root
+        modal.configure(bg=theme.PANEL)
+        modal.resizable(False, False)
+
+        modal.transient(root)
+        modal.grab_set()
         modal.focus_set()
-        modal.grab_set()  # Make the pop-up modal
-        root.wait_window(modal)  # Wait until the pop-up is closed
+
+        frame = tk.Frame(
+            modal,
+            bg=theme.CARD,
+            bd=1,
+            relief="solid",
+            highlightbackground=theme.BORDER,
+            highlightthickness=1,
+        )
+        frame.pack(padx=12, pady=12, fill="both", expand=True)
+
+        label = tk.Label(
+            frame,
+            text="This is a modal dialog.",
+            bg=theme.CARD,
+            fg=theme.TEXT_HI,
+            font=(theme.MONO, 11),
+        )
+        label.pack(padx=16, pady=(12, 8))
+
+        button = tk.Button(
+            frame,
+            text="Close",
+            command=modal.destroy,
+            bg=theme.ACCENT if "ACCENT" in globals() else "#4F7EFF",
+            fg=theme.TEXT_HI,
+            activebackground=theme.ACCENT,
+            relief="flat",
+            padx=12,
+            pady=6,
+        )
+        button.pack(pady=(0, 12))
+
+        root.update_idletasks()
+        rw, rh = root.winfo_width(), root.winfo_height()
+        rx, ry = root.winfo_rootx(), root.winfo_rooty()
+        modal.update_idletasks()
+        pw, ph = modal.winfo_reqwidth(), modal.winfo_reqheight()
+        x = rx + max(0, (rw - pw) // 2)
+        y = ry + max(0, (rh - ph) // 2)
+        modal.geometry(f"+{x}+{y}")
+
+        root.wait_window(modal)
         print("Modal dialog closed.")
 
     def change_z(self, val):
