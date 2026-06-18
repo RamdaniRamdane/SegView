@@ -163,6 +163,14 @@ class UIutils:
         else:
             display(self.ui.canvas, img)
 
+    def open_popup(self, root):
+        popup = tk.Toplevel(root)
+        popup.title("Simple Pop-up")
+        label = tk.Label(popup, text="This is a pop-up window.")
+        label.pack(padx=20, pady=20)
+        button = tk.Button(popup, text="Close", command=popup.destroy)
+        button.pack(pady=10)
+
     def change_z(self, val):
         self.state.zoom = int(float(val))
         self.update_display()

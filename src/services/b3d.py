@@ -5,6 +5,7 @@ from tkinter import messagebox
 from biom3d.preprocess import auto_config_preprocess
 
 from src.services.utils.biom_thread import BiomThreading
+from ui.helpers.ui_utils import UIutils
 
 
 class B3d:
@@ -17,6 +18,7 @@ class B3d:
             self.ui,
             self.route,
         )
+        self.ui_uitils = UIutils()
 
     def run_prediction(self):
         if self.b3d_Threading.worker_fine and self.b3d_Threading.worker_fine.is_alive():
@@ -110,20 +112,20 @@ class B3d:
         self.b3d_Threading._check("fine")
 
     def make_config_fine_tuning(self):
-        if (
-            not self.state.path_dir
-            or not self.state.path_out_valide
-            or not self.state.path_log
-        ):
-            messagebox.showerror(
-                "Error",
-                "Make sure all folders are provided:\n\n"
-                "1 - Raw images\n"
-                "2 - Model\n"
-                "3 - Valid masks (review step required)",
-            )
-            return
-
+        self.ui_uitils.open_popup(self.ui.root)
+        # if (
+        #     not self.state.path_dir
+        #     or not self.state.path_out_valide
+        #     or not self.state.path_log
+        # ):
+        #     messagebox.showerror(
+        #         "Error",
+        #         "Make sure all folders are provided:\n\n"
+        #         "1 - Raw images\n"
+        #         "2 - Model\n"
+        #         "3 - Valid masks (review step required)",
+        #     )
+        #     return
         self.state.config_path = auto_config_preprocess(
             img_path=self.state.path_dir,
             msk_path=self.state.path_out_valide,
