@@ -203,12 +203,22 @@ class UIutils:
 
         widgets = []
         k = 0
+        if "PATH_VALID" not in needs:
+            warning_label = tk.Label(
+                frame,
+                text="you have to review before",
+                bg=theme.DANGER,
+                fg="white",
+                font=(theme.MONO, 13),
+            )
+            warning_label.grid(raw=len(needs) + 3, column=0)
+            needs.remove("PATH_VALID")
         for i in needs:
             widgets.append(
                 tk.Button(
                     frame,
                     text=i,
-                    command=modal.destroy,
+                    command=lambda: self.file_manager.open_dir(i),
                     bg=theme.ACCENT,
                     fg=theme.TEXT_HI,
                     activebackground=theme.ACCENT,

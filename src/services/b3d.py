@@ -114,9 +114,11 @@ class B3d:
     def make_config_fine_tuning(self):
         needs = []
         if not self.state.path_dir:
-            needs.append("RAW")
+            needs.append("PATH_RAW")
         elif not self.state.path_log:
-            needs.append("LOG")
+            needs.append("PATH_LOG")
+        elif not self.state.path_out_valide:
+            needs.append("PATH_VALID")
         self.ui_uitils.open_popup(self.ui.root, needs)
         # if (
         #     not self.state.path_dir
