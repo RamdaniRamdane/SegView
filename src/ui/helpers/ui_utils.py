@@ -163,7 +163,7 @@ class UIutils:
         else:
             display(self.ui.canvas, img)
 
-    def open_popup(self, root):
+    def open_popup(self, root, needs):
         modal = tk.Toplevel(root)
         modal.title("Modal Pop-up")
         modal.configure(bg=theme.PANEL)
@@ -192,18 +192,32 @@ class UIutils:
         )
         label.pack(padx=16, pady=(12, 8))
 
-        button = tk.Button(
-            frame,
-            text="Close",
-            command=modal.destroy,
-            bg=theme.ACCENT if "ACCENT" in globals() else "#4F7EFF",
-            fg=theme.TEXT_HI,
-            activebackground=theme.ACCENT,
-            relief="flat",
-            padx=12,
-            pady=6,
+        for i in range(len(needs)):
+            frame.grid_rowconfigure(i, weight=0)
+        frame.grid_columnconfigure(0, weight=1)
+        self.num_epochs_var = tk.IntVar(value=1)
+        self.get_num_epoch = tk.Spinbox(
+            frame, from_=1, to=1000, textvariable=self.num_epochs_var
         )
-        button.pack(pady=(0, 12))
+        self.get_num_epoch.grid(row=0, column=0)
+
+        widgets = []
+        k = 0
+        for i in needs:
+            widgets.append(
+                tk.Button(
+                    frame,
+                    text=i.label,
+                    command=modal.destroy,
+                    bg=theme.ACCENT,
+                    fg=theme.TEXT_HI,
+                    activebackground=theme.ACCENT,
+                    relief="flat",
+                    padx=12,
+                    pady=6,
+                )
+            )
+            widgets[k].grid(row=k, col=0)
 
         root.update_idletasks()
         rw, rh = root.winfo_width(), root.winfo_height()

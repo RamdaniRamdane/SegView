@@ -112,7 +112,12 @@ class B3d:
         self.b3d_Threading._check("fine")
 
     def make_config_fine_tuning(self):
-        self.ui_uitils.open_popup(self.ui.root)
+        needs = []
+        if not self.state.path_dir:
+            needs.append("RAW")
+        elif not self.state.path_log:
+            needs.append("LOG")
+        self.ui_uitils.open_popup(self.ui.root, needs)
         # if (
         #     not self.state.path_dir
         #     or not self.state.path_out_valide

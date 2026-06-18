@@ -280,11 +280,6 @@ class Sidebarright:
         #    text_color=theme.TEXT,
         #    pady_top=6,
         # )
-        self.num_epochs_var = tk.IntVar(value=1)
-        self.get_num_epoch = tk.Spinbox(
-            parent, from_=1, to=1000, textvariable=self.num_epochs_var
-        )
-        self.get_num_epoch.grid(row=2, column=0)
         self.start_fine_tuning = UIutils.make_btn(
             self.fine_container,
             "Start Fine Tuning",
