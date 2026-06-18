@@ -193,7 +193,7 @@ class UIutils:
             fg=theme.TEXT_HI,
             font=(theme.MONO, 11),
         )
-        label.grid(row=0, col=0)
+        label.grid(row=0, column=0)
 
         self.num_epochs_var = tk.IntVar(value=1)
         self.get_num_epoch = tk.Spinbox(
@@ -217,7 +217,7 @@ class UIutils:
                     pady=6,
                 )
             )
-            widgets[k].grid(row=k, col=0)
+            widgets[k].grid(row=k, column=0)
 
         root.update_idletasks()
         rw, rh = root.winfo_width(), root.winfo_height()
