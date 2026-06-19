@@ -119,7 +119,7 @@ class B3d:
             needs.append("PATH_LOG")
         elif not self.state.path_out_valide:
             needs.append("PATH_VALID")
-        self.ui_uitils.open_popup(self.ui.root, needs)
+        self.ui_uitils.open_popup(self.ui.root, needs, self.route.file_manager)
         # if (
         #     not self.state.path_dir
         #     or not self.state.path_out_valide

@@ -163,7 +163,7 @@ class UIutils:
         else:
             display(self.ui.canvas, img)
 
-    def open_popup(self, root, needs):
+    def open_popup(self, root, needs, file_manager):
         modal = tk.Toplevel(root)
         modal.title("Modal Pop-up")
         modal.configure(bg=theme.PANEL)
@@ -204,6 +204,7 @@ class UIutils:
         widgets = []
         k = 0
         # problem a voir comment le regler
+        print(needs)
         if "PATH_VALID" in needs:
             print(needs)
             warning_label = tk.Label(
@@ -221,7 +222,7 @@ class UIutils:
                 tk.Button(
                     frame,
                     text=i,
-                    command=lambda: self.file_manager.open_dir(i),
+                    command=lambda: file_manager.open_dir(i),
                     bg=theme.ACCENT,
                     fg=theme.TEXT_HI,
                     activebackground=theme.ACCENT,
