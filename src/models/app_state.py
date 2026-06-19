@@ -35,3 +35,6 @@ class AppState:
     config_path: str = ""
     route: str = ""
     new_model_path: str = ""
+    do_config: bool = False
+    num_epochs: int = 1
+    num_classes: int = 1

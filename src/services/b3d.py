@@ -119,7 +119,11 @@ class B3d:
             needs.append("PATH_LOG")
         if not self.state.path_out_valide:
             needs.append("PATH_VALID")
-        self.ui_uitils.open_popup(self.ui.root, needs, self.route.file_manager)
+        self.ui_uitils.open_popup(
+            self.ui.root, needs, self.route.file_manager, self.state
+        )
+        if not self.state.do_config:
+            return
         # if (
         #     not self.state.path_dir
         #     or not self.state.path_out_valide
@@ -136,13 +140,13 @@ class B3d:
         self.state.config_path = auto_config_preprocess(
             img_path=self.state.path_dir,
             msk_path=self.state.path_out_valide,
-            num_classes=1,
+            num_classes=self.state.num_classes,
             config_dir="configs",
             base_config=None,
             ct_norm=False,
             desc="unet",
             max_dim=128,
-            num_epochs=1,
+            num_epochs=self.state.num_epochs,
             is_2d=False,
         )
 

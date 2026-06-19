@@ -164,13 +164,11 @@ class UIutils:
         else:
             display(self.ui.canvas, img)
 
-    def open_popup(self, root, needs, file_manager):
+    def open_popup(self, root, needs, file_manager, state):
         modal = tk.Toplevel(root)
         modal.title("Modal Pop-up")
         modal.configure(bg=theme.PANEL)
         modal.resizable(False, False)
-        modal.overrideredirect(True)
-
         modal.transient(root)
         modal.grab_set()
         modal.focus_set()
@@ -239,18 +237,19 @@ class UIutils:
 
         def verrify():
             miss = []
-            if not self.state.path_dir:
+            if not state.path_dir:
                 miss.append("PATH_RAW")
-            if not self.state.path_log:
+            if not state.path_log:
                 miss.append("PATH_LOG")
-            if not self.state.path_out_valide:
+            if not state.path_out_valide:
                 miss.append("PATH_VALID")
             if miss:
                 mes = "\n".join(miss)
                 text = f"missing elements: {mes}"
                 messagebox.showerror(title="missing", message=text)
-                return
-            modal.destroy()
+            else:
+                state.do_config = True
+                state.num_epochs = self.get_num_epoch.get()
 
         confirm = tk.Button(
             frame,
@@ -262,7 +261,7 @@ class UIutils:
             pady=6,
             command=verrify,
         )
-        confirm.grid(row=len(needs) + 4, column=0)
+        confirm.grid(row=len(needs) + 7, column=0)
 
         root.update_idletasks()
         rw, rh = root.winfo_width(), root.winfo_height()
