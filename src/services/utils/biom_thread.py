@@ -62,6 +62,7 @@ class BiomThreading:
                     )
 
                     self.result = self.state.new_model_path
+                    # ou mettre nouveau model ? si on le met dans out on a peur que le user fait une prediction et le supprime , donc je pense a faire un nouveau dossier
 
         except Exception as e:
             self.result = e
