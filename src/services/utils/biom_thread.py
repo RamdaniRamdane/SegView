@@ -64,7 +64,7 @@ class BiomThreading:
 
                     self.result = self.state.new_model_path
                     out_fine_path = os.path.join(
-                        self.state.path_out, "fine_tuned_models_out"
+                        self.state.path_out, "..", "fine_tuned_models_out"
                     )
                     if not os.path.isdir(out_fine_path):
                         os.mkdir(out_fine_path)
