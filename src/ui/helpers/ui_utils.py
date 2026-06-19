@@ -1,5 +1,6 @@
 import os
 import tkinter as tk
+from tkinter import messagebox
 
 import src.ui.theme as theme
 from src.services.image_utils import display
@@ -168,6 +169,7 @@ class UIutils:
         modal.title("Modal Pop-up")
         modal.configure(bg=theme.PANEL)
         modal.resizable(False, False)
+        modal.overrideredirect(True)
 
         modal.transient(root)
         modal.grab_set()
@@ -222,17 +224,45 @@ class UIutils:
                 tk.Button(
                     frame,
                     text=i,
-                    command=lambda: file_manager.open_dir(i),
-                    bg=theme.ACCENT,
+                    bg=theme.PANEL,
                     fg=theme.TEXT_HI,
-                    activebackground=theme.ACCENT,
                     relief="flat",
                     padx=12,
                     pady=6,
                 )
             )
+            widgets[k].config(
+                command=lambda b=widgets[k]: file_manager.open_dir(action=i, btn=b),
+            )
             widgets[k].grid(row=k + 2, column=0)
             k += 1
+
+        def verrify():
+            miss = []
+            if not self.state.path_dir:
+                miss.append("PATH_RAW")
+            if not self.state.path_log:
+                miss.append("PATH_LOG")
+            if not self.state.path_out_valide:
+                miss.append("PATH_VALID")
+            if miss:
+                mes = "\n".join(miss)
+                text = f"missing elements: {mes}"
+                messagebox.showerror(title="missing", message=text)
+                return
+            modal.destroy()
+
+        confirm = tk.Button(
+            frame,
+            text="GO",
+            bg=theme.SUCCESS,
+            fg=theme.TEXT_HI,
+            relief="flat",
+            padx=12,
+            pady=6,
+            command=verrify,
+        )
+        confirm.grid(row=len(needs) + 4, column=0)
 
         root.update_idletasks()
         rw, rh = root.winfo_width(), root.winfo_height()

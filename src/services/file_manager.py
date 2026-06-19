@@ -129,7 +129,7 @@ class FileManager:
 
     # hhhh i must refactore this sh*t
 
-    def open_dir(self, action, path_dir=None):
+    def open_dir(self, action, path_dir=None, btn=None):
         if not path_dir:
             path_dir = filedialog.askdirectory(title=action)
         if not path_dir:
@@ -197,6 +197,8 @@ class FileManager:
                 self.ui.sidebarleft.update_color_text_file()
                 self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
                 self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+                if btn:
+                    btn.config(bg="white", fg="white")
                 if self.ui.st == 2:
                     self.ui.sidebarright.correct_but.grid()
                     self.ui.sidebarright.refuse_but.grid_remove()
