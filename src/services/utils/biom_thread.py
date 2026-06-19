@@ -1,4 +1,5 @@
 import os
+import shutil
 from tkinter import messagebox
 
 import torch
@@ -62,6 +63,14 @@ class BiomThreading:
                     )
 
                     self.result = self.state.new_model_path
+                    out_fine_path = os.path.join(
+                        self.state.path_out, "fine_tuned_models_out"
+                    )
+                    if not os.path.isdir(out_fine_path)
+                    os.mkdir(out_fine_path)
+                    if self.state.new_model_path:
+                        shutil.copytree(
+                            self.state.new_model_path, out_fine_path)
                     # ou mettre nouveau model ? si on le met dans out on a peur que le user fait une prediction et le supprime , donc je pense a faire un nouveau dossier
 
         except Exception as e:
@@ -139,7 +148,8 @@ class BiomThreading:
             return
 
         if self.result == "CANCELLED":
-            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+            self.ui.sidebarleft.remove_progressbar(
+                self.ui.sidebarleft.progressbar)
 
             self.ui.sidebarleft.progressbar_handler(
                 self.ui.sidebarleft.progressbar,
@@ -151,7 +161,8 @@ class BiomThreading:
 
             return
         if self.result == "NO_GPU":
-            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+            self.ui.sidebarleft.remove_progressbar(
+                self.ui.sidebarleft.progressbar)
 
             self.ui.sidebarleft.progressbar_handler(
                 self.ui.sidebarleft.progressbar,
@@ -162,7 +173,8 @@ class BiomThreading:
             return
 
         if isinstance(self.result, Exception):
-            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+            self.ui.sidebarleft.remove_progressbar(
+                self.ui.sidebarleft.progressbar)
 
             self.ui.sidebarleft.progressbar_handler(
                 self.ui.sidebarleft.progressbar,
@@ -180,7 +192,8 @@ class BiomThreading:
             return
 
         if action == "pred":
-            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+            self.ui.sidebarleft.remove_progressbar(
+                self.ui.sidebarleft.progressbar)
 
             self.ui.sidebarleft.progressbar_handler(
                 self.ui.sidebarleft.progressbar,
@@ -198,7 +211,8 @@ class BiomThreading:
             self.worker_pred = None
 
         elif action == "fine":
-            self.ui.sidebarleft.remove_progressbar(self.ui.sidebarleft.progressbar)
+            self.ui.sidebarleft.remove_progressbar(
+                self.ui.sidebarleft.progressbar)
 
             self.ui.sidebarleft.progressbar_handler(
                 self.ui.sidebarleft.progressbar,

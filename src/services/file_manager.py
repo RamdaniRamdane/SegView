@@ -362,14 +362,14 @@ class FileManager:
             # mybe problem here
             user_response = messagebox.askquestion(
                 title="Error",
-                message="problem occurred , path not found or the folder is not empty \n -> Do you want to empty it before?",
+                message="problem occurred , path not found or containes other masks and valid and refuse \n -> Do you want to delet old prediction and valid and refused folders?",
                 type="yesno",
             )
             if user_response == "yes" and out:
                 for item in ls:
                     if os.path.isfile(os.path.join(out, item)):
                         os.remove(os.path.join(out, item))
-                    else:
+                    elif not item == "fine_tuned_models_out":
                         shutil.rmtree(os.path.join(out, item))
                 self.state.path_out = out
                 print("out folder when we empty it us", out)
