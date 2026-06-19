@@ -69,6 +69,9 @@ class BiomThreading:
                     if not os.path.isdir(out_fine_path):
                         os.mkdir(out_fine_path)
                     if self.state.new_model_path:
+                        print("path of new model : ", self.state.new_model_path)
+                        list = os.listdir(self.state.new_model_path)
+                        print(list)
                         shutil.copytree(self.state.new_model_path, out_fine_path)
                     # ou mettre nouveau model ? si on le met dans out on a peur que le user fait une prediction et le supprime , donc je pense a faire un nouveau dossier
 
