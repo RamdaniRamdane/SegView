@@ -74,7 +74,9 @@ class B3d:
 
         self.b3d_Threading.worker_pred.start()
 
-        self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
+        self.ui.sidebarleft.show_progressbar(
+            self.ui.sidebarleft.progressbar, "Predition info"
+        )
 
         self.b3d_Threading._check("pred")
 
@@ -107,7 +109,9 @@ class B3d:
 
         self.b3d_Threading.worker_fine.start()
 
-        self.ui.sidebarleft.show_progressbar(self.ui.sidebarleft.progressbar)
+        self.ui.sidebarleft.show_progressbar(
+            self.ui.sidebarleft.progressbar, "Fine tuning"
+        )
 
         self.b3d_Threading._check("fine")
 

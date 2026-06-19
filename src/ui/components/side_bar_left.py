@@ -330,8 +330,8 @@ class Sidebarleft:
     def remove_progressbar(self, progressbar):
         progressbar.grid_remove()
 
-    def show_progressbar(self, progressbar):
-        progressbar.config(mode="indeterminate")
+    def show_progressbar(self, progressbar, action):
+        progressbar.config(mode="indeterminate", text=action)
         progressbar.start()
         progressbar.grid()
 

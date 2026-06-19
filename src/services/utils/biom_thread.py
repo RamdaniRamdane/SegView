@@ -186,6 +186,8 @@ class BiomThreading:
                 "RESET",
             )
 
+            self.ui.sidebarleft.update_color_text_file()
+
             messagebox.showinfo(
                 "Done",
                 f"Prediction saved here:\n{self.result}",
