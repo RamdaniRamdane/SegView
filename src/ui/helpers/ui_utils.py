@@ -216,7 +216,7 @@ class UIutils:
                 fg="white",
                 font=(theme.MONO, 13),
             )
-            warning_label.grid(raw=len(needs) + 3, column=0)
+            warning_label.grid(row=len(needs) + 3, column=0)
             needs.remove("PATH_VALID")
             print("after remove", needs)
         for i in needs:
