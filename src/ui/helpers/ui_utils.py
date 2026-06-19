@@ -249,7 +249,8 @@ class UIutils:
                 messagebox.showerror(title="missing", message=text)
             else:
                 state.do_config = True
-                state.num_epochs = self.get_num_epoch.get()
+                state.num_epochs = int(self.get_num_epoch.get())
+                modal.destroy()
 
         confirm = tk.Button(
             frame,
