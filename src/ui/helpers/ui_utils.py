@@ -203,7 +203,9 @@ class UIutils:
 
         widgets = []
         k = 0
-        if "PATH_VALID" not in needs:
+        # problem a voir comment le regler
+        if "PATH_VALID" in needs:
+            print(needs)
             warning_label = tk.Label(
                 frame,
                 text="you have to review before",
@@ -213,6 +215,7 @@ class UIutils:
             )
             warning_label.grid(raw=len(needs) + 3, column=0)
             needs.remove("PATH_VALID")
+            print("after remove", needs)
         for i in needs:
             widgets.append(
                 tk.Button(
@@ -227,7 +230,7 @@ class UIutils:
                     pady=6,
                 )
             )
-            widgets[k].grid(row=k + 22, column=0)
+            widgets[k].grid(row=k + 2, column=0)
             k += 1
 
         root.update_idletasks()
