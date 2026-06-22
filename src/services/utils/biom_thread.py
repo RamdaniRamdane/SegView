@@ -79,10 +79,13 @@ class BiomThreading:
                         print("exist=", exist)
                     if self.result:
                         print("result", os.path.dirname(self.result))
+                        final_dest = os.path.join(
+                            out_fine_path, os.path.basename(self.result)
+                        )
                         self.result = os.path.join(
                             os.getcwd(), os.path.dirname(self.result)
                         )
-                        shutil.copytree(self.result, out_fine_path, dirs_exist_ok=True)
+                        shutil.copytree(self.result, final_dest, dirs_exist_ok=True)
                     # ou mettre nouveau model ? si on le met dans out on a peur que le user fait une prediction et le supprime , donc je pense a faire un nouveau dossier
 
         except Exception as e:
