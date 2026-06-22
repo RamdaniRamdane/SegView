@@ -124,25 +124,18 @@ class B3d:
         if not self.state.path_log:
             needs.append("PATH_LOG")
         if not self.state.path_out_valide:
-            needs.append("PATH_VALID")
+            test_if_path = os.path.join(self.state.path_out, "Valide")
+            if os.path.isdir(test_if_path):
+                if os.listdir(test_if_path):
+                    self.state.path_out_valide = test_if_path
+                else:
+                    needs.append("PATH_VALID")
         self.ui_uitils.open_popup(
             self.ui.root, needs, self.route.file_manager, self.state
         )
         if not self.state.do_config:
             return
-        # if (
-        #     not self.state.path_dir
-        #     or not self.state.path_out_valide
-        #     or not self.state.path_log
-        # ):
-        #     messagebox.showerror(
-        #         "Error",
-        #         "Make sure all folders are provided:\n\n"
-        #         "1 - Raw images\n"
-        #         "2 - Model\n"
-        #         "3 - Valid masks (review step required)",
-        #     )
-        #     return
+
         self.state.config_path = auto_config_preprocess(
             img_path=self.state.path_dir,
             msk_path=self.state.path_out_valide,

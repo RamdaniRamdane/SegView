@@ -203,13 +203,12 @@ class UIutils:
 
         widgets = []
         k = 0
-        # problem a voir comment le regler
         print(needs)
         if "PATH_VALID" in needs:
             print(needs)
             warning_label = tk.Label(
                 frame,
-                text="you have to review before",
+                text="you have to review before , you must have at least one valide mask",
                 bg=theme.DANGER,
                 fg="white",
                 font=(theme.MONO, 13),

@@ -93,6 +93,10 @@ class FileManager:
         os.makedirs(valid_path, exist_ok=True)
         os.makedirs(invalid_path, exist_ok=True)
         src = os.path.join(out_path, filename)
+        if self.state.edited > 0:
+            user_input = messagebox.askokcancel(message="save changes ?")
+            print(user_input)
+
         if action == "validate":
             dst = os.path.join(valid_path, filename)
             old = os.path.join(
@@ -127,7 +131,7 @@ class FileManager:
         else:
             self.ui.sidebarright.fine_btn.grid_remove()
 
-    # hhhh i must refactore this sh*t
+    # TODO : refactor
 
     def open_dir(self, action, path_dir=None, btn=None):
         if not path_dir:
@@ -359,7 +363,6 @@ class FileManager:
             self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
             print("out folder when its emty:", out)
         else:
-            # mybe problem here
             user_response = messagebox.askquestion(
                 title="Error",
                 message="problem occurred , path not found or containes other masks and valid and refuse \n -> Do you want to delet old prediction and valid and refused folders?",
