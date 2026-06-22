@@ -122,7 +122,7 @@ class UIutils:
         if self.state.edited > 0:
             user_input = messagebox.askokcancel(message="save changes ?")
             if user_input:
-                self.app.edit_mode_utils.save_changes()
+                self.file_manager.edit_mode_utils.save_changes()
         if direction == "NEXT":
             self.state.index = (self.state.index + 1) % len(self.state.files)
             self.ui.sidebarleft.button_on_view(
