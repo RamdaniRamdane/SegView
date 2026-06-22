@@ -64,14 +64,13 @@ class BiomThreading:
                     )
 
                     self.result = self.state.new_model_path.model_dir
-                    out_fine_path = os.path.join(
-                        self.state.path_out, "..", "fine_tuned_models_out"
-                    )
+                    base = os.path.dirname(self.state.path_out)
+                    out_fine_path = os.path.join(base, "fine_tuned_models_out")
                     print("le nouveau model est la : ", out_fine_path)
                     if not os.path.isdir(out_fine_path):
                         os.mkdir(out_fine_path)
                     if self.result:
-                        print("result", self.result)
+                        print("result", os.path.dirname(self.result))
                         self.result = os.path.join(
                             os.getcwd(), os.path.dirname(self.result)
                         )
