@@ -80,7 +80,8 @@ class BiomThreading:
                     if self.result:
                         print("result", os.path.dirname(self.result))
                         final_dest = os.path.join(
-                            out_fine_path, os.path.basename(self.result)
+                            out_fine_path,
+                            os.path.basename(os.path.dirname(self.result)),
                         )
                         self.result = os.path.join(
                             os.getcwd(), os.path.dirname(self.result)
