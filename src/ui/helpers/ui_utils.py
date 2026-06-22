@@ -7,7 +7,7 @@ from src.services.image_utils import display
 
 
 class UIutils:
-    def __init__(self, ui=None, state=None, file_manager=None):
+    def __init__(self, ui=None, state=None, file_manager=None, app=None):
         if ui:
             self.ui = ui
         if state:
@@ -119,6 +119,10 @@ class UIutils:
     def navigate(self, direction):
         if not self.state.files:
             return
+        if self.state.edited > 0:
+            user_input = messagebox.askokcancel(message="save changes ?")
+            if user_input:
+                self.app.edit_mode_utils.save_changes()
         if direction == "NEXT":
             self.state.index = (self.state.index + 1) % len(self.state.files)
             self.ui.sidebarleft.button_on_view(

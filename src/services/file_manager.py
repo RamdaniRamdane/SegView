@@ -95,7 +95,8 @@ class FileManager:
         src = os.path.join(out_path, filename)
         if self.state.edited > 0:
             user_input = messagebox.askokcancel(message="save changes ?")
-            print(user_input)
+            if user_input:
+                self.edit_mode_utils.save_changes()
 
         if action == "validate":
             dst = os.path.join(valid_path, filename)
@@ -339,6 +340,10 @@ class FileManager:
         self.ui_handel.update_display()
 
     def sidebarleft_handl_file(self, i):
+        if self.state.edited > 0:
+            user_input = messagebox.askokcancel(message="save changes ?")
+            if user_input:
+                self.edit_mode_utils.save_changes()
         self.state.index = i
         filename = self.state.files[i]
         path = os.path.join(self.state.path_dir, filename)
