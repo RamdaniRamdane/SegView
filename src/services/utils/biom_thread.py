@@ -49,6 +49,7 @@ class BiomThreading:
 
             else:
                 if action == "pred":
+                    print("pwd", os.getcwd())
                     self.result = pred(
                         log=self.state.path_log,
                         path_in=self.state.path_dir,
@@ -70,6 +71,7 @@ class BiomThreading:
                         os.mkdir(out_fine_path)
                     if self.result:
                         print("result", self.result)
+                        self.result = os.path.join(os.getcwd(), self.result)
                         shutil.copytree(self.result, out_fine_path)
                     # ou mettre nouveau model ? si on le met dans out on a peur que le user fait une prediction et le supprime , donc je pense a faire un nouveau dossier
 

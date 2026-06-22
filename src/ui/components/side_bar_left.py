@@ -331,7 +331,8 @@ class Sidebarleft:
         progressbar.grid_remove()
 
     def show_progressbar(self, progressbar, action):
-        progressbar.config(mode="indeterminate", text=action)
+        progressbar.config(mode="indeterminate")
+        self.progressbartext.config(text=action)
         progressbar.start()
         progressbar.grid()
 
@@ -339,7 +340,9 @@ class Sidebarleft:
         pourcentage = int(self.progressbar["value"])
 
         pourcentage = pourcentage if pourcentage else "--"
+        base = self.progressbartext.cget("text")
+        base = base.split(" ")
 
-        text = "prediction info  " + str(pourcentage) + "%"
+        text = base[0] + str(pourcentage) + "%"
 
         self.progressbartext.config(text=text)

@@ -21,6 +21,8 @@ class B3d:
         self.ui_uitils = UIutils()
 
     def run_prediction(self):
+
+        print("pwd", os.getcwd())
         if self.b3d_Threading.worker_fine and self.b3d_Threading.worker_fine.is_alive():
             messagebox.showwarning(
                 "Busy",
@@ -110,7 +112,7 @@ class B3d:
         self.b3d_Threading.worker_fine.start()
 
         self.ui.sidebarleft.show_progressbar(
-            self.ui.sidebarleft.progressbar, "Fine tuning"
+            self.ui.sidebarleft.progressbar, "Finetuning info"
         )
 
         self.b3d_Threading._check("fine")
