@@ -67,11 +67,14 @@ class BiomThreading:
                     out_fine_path = os.path.join(
                         self.state.path_out, "..", "fine_tuned_models_out"
                     )
+                    print("le nouveau model est la : ", out_fine_path)
                     if not os.path.isdir(out_fine_path):
                         os.mkdir(out_fine_path)
                     if self.result:
                         print("result", self.result)
-                        self.result = os.path.join(os.getcwd(), self.result)
+                        self.result = os.path.join(
+                            os.getcwd(), os.path.dirname(self.result)
+                        )
                         shutil.copytree(self.result, out_fine_path)
                     # ou mettre nouveau model ? si on le met dans out on a peur que le user fait une prediction et le supprime , donc je pense a faire un nouveau dossier
 
