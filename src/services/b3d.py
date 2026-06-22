@@ -124,7 +124,7 @@ class B3d:
         if not self.state.path_log:
             needs.append("PATH_LOG")
         if not self.state.path_out_valide:
-            test_if_path = os.path.join(self.state.path_out, "Valide")
+            test_if_path = os.path.join(os.path.dirname(self.state.path_out), "Valide")
             if os.path.isdir(test_if_path):
                 if os.listdir(test_if_path):
                     self.state.path_out_valide = test_if_path
