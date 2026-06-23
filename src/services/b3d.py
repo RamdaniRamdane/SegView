@@ -128,6 +128,13 @@ class B3d:
             if os.path.isdir(test_if_path):
                 if os.listdir(test_if_path):
                     self.state.path_out_valide = test_if_path
+
+                    if len(os.listdir(self.state.path_out_valide)) < len(
+                        os.listdir(self.state.path_dir)
+                    ):
+                        print("yas pas asse de valide par raport au raw")
+                    else:
+                        print("cest same pret pour le Finetuning")
                 else:
                     needs.append("PATH_VALID")
         self.ui_uitils.open_popup(
