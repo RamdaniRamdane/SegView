@@ -1,8 +1,10 @@
 import os
+import tempfile
 import threading
 from tkinter import messagebox
 
 from biom3d.preprocess import auto_config_preprocess
+from biom3d.utils import shutil
 
 from src.services.utils.biom_thread import BiomThreading
 from src.ui.helpers.ui_utils import UIutils
@@ -119,16 +121,23 @@ class B3d:
 
     def make_config_fine_tuning(self):
         needs = []
+        msk_pth = ""
+        img_pth = ""
 
         if not self.state.path_dir:
             needs.append("PATH_RAW")
+        else:
+            img_pth = self.state.path_dir
+
         if not self.state.path_log:
             needs.append("PATH_LOG")
+
         if not self.state.path_out_valide:
             test_if_path = os.path.join(os.path.dirname(self.state.path_out), "Valide")
             if os.path.isdir(test_if_path):
                 if os.listdir(test_if_path):
                     self.state.path_out_valide = test_if_path
+                    msk_pth = test_if_path
                     print("valide:", os.listdir(self.state.path_out_valide))
                     print("raw:", os.listdir(self.state.path_dir))
                     if len(os.listdir(self.state.path_out_valide)) < len(
@@ -139,15 +148,24 @@ class B3d:
                         print("cest same pret pour le Finetuning")
                 else:
                     needs.append("PATH_VALID")
+            else:
+                msk_pth = self.state.path_out_valide
         self.ui_uitils.open_popup(
             self.ui.root, needs, self.route.file_manager, self.state
         )
+        if len(os.listdir(msk_pth)) < len(os.listdir(img_pth)):
+            # creer un temp dir pour l utuliser
+            tempdir = tempfile.TemporaryDirectory()
+            for i in os.listdir(msk_pth):
+                src = os.path.join(img_pth, i)
+                shutil.copy2(os.path.join(img_pth, i), tempdir.name)
+            img_pth = tempdir.name
         if not self.state.do_config:
             return
 
         self.state.config_path = auto_config_preprocess(
-            img_path=self.state.path_dir,
-            msk_path=self.state.path_out_valide,
+            img_path=img_pth,
+            msk_path=msk_pth,
             num_classes=self.state.num_classes,
             config_dir="configs",
             base_config=None,
