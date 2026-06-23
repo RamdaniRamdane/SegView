@@ -119,6 +119,7 @@ class B3d:
 
     def make_config_fine_tuning(self):
         needs = []
+
         if not self.state.path_dir:
             needs.append("PATH_RAW")
         if not self.state.path_log:
@@ -128,7 +129,8 @@ class B3d:
             if os.path.isdir(test_if_path):
                 if os.listdir(test_if_path):
                     self.state.path_out_valide = test_if_path
-
+                    print("valide:", os.listdir(self.state.path_out_valide))
+                    print("raw:", os.listdir(self.state.path_dir))
                     if len(os.listdir(self.state.path_out_valide)) < len(
                         os.listdir(self.state.path_dir)
                     ):
