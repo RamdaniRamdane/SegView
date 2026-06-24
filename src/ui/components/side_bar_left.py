@@ -261,7 +261,11 @@ class Sidebarleft:
 
     def update_color_text_file(self):
         filemanager = FileManager(self.ui)
-        parent = self.ui.state.path_out
+        parent = (
+            self.ui.state.path_out_pred
+            if self.ui.state.path_out_pred
+            else self.ui.state.path_out_review
+        )
         index = 0
         if parent and os.listdir(parent):
             for i in self.ui.state.files:
@@ -269,6 +273,8 @@ class Sidebarleft:
                     parent,
                     i,
                 )
+                print(filepath)
+                print(filemanager.status(filepath))
                 if filemanager.status(filepath) == 1:
                     for btn in self.file_buttons:
                         if btn.file_index == index:
@@ -282,6 +288,10 @@ class Sidebarleft:
                     for btn in self.file_buttons:
                         if btn.file_index == index:
                             btn.config(fg=theme.WARNING)
+                else:
+                    for btn in self.file_buttons:
+                        if btn.file_index == index:
+                            btn.config(fg=theme.TEXT_HI)
                 index += 1
         else:
             for btn in self.file_buttons:

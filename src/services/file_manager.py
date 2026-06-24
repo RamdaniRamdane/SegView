@@ -45,6 +45,8 @@ class FileManager:
             self.ui.sidebarright.refuse_but.grid_remove()
             self.ui.sidebarright.validate_but.grid_remove()
             self.ui.sidebarright.unreview_but.grid_remove()
+            self.ui.sidebarright.correct_but.grid_remove()
+            self.ui.sidebarright.edit_frame.grid_remove()
         UIutils.set_flag(
             self.ui.status.flag_sign,
             self.ui.status.flag_text,
@@ -67,13 +69,21 @@ class FileManager:
             "NON-valide",
             filename,
         )
-        path_out = os.path.join(self.ui.state.path_out, filename)
+        path_out_pred = ""
+        path_out_review = ""
+        if self.ui.state.path_out_pred:
+            path_out_pred = os.path.join(self.ui.state.path_out_pred, filename)
+        elif self.ui.state.path_out_review:
+            path_out_review = os.path.join(self.ui.state.path_out_review, filename)
+
         if os.path.isfile(path_val):
             return 1
 
         if os.path.isfile(path_ref):
             return 2
-        if os.path.isfile(path_out):
+        if (path_out_pred or path_out_review) and (
+            os.path.isfile(path_out_pred) or os.path.isfile(path_out_review)
+        ):
             return 3
         return 4
 
@@ -185,52 +195,67 @@ class FileManager:
                     path_dir,
                     tif_files[0],
                 )
-                if self.state.path_log and self.state.path_out:
+                if self.state.path_log and self.state.path_out_pred:
                     self.ui.sidebarright.pred.grid()
 
                 self.open_file(first_path)
 
             elif action == "PATH_PRED":
-                self.state.path_out = path_dir
-                self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
-                self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
+                self.state.path_out_review = path_dir
+                self.state.path_out_pred = ""
+                if os.listdir(self.state.path_out_review):
+                    self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
+                    self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
                 (
                     self.state.prediction,
                     self.state.prediction_path_file,
                     self.state.has_prediction,
                 ) = self.get_prediction(
                     self.state.file_path,
-                    self.state.path_out,
+                    self.state.path_out_review,
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
                 self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
-                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+                self.ui.sidebarright.get_folder_out.config(
+                    bg=theme.PANEL, fg=theme.TEXT_HI
+                )
                 if btn:
                     btn.config(bg="white", fg="white")
-                if self.ui.st == 2:
-                    self.ui.sidebarright.correct_but.grid()
-                    self.ui.sidebarright.refuse_but.grid_remove()
-                    self.ui.sidebarright.validate_but.grid()
-                    self.ui.sidebarright.unreview_but.grid()
-                elif self.ui.st == 1:
-                    self.ui.sidebarright.correct_but.grid_remove()
-                    self.edit_mode_utils.toggle_tool("deactivate")
-                    self.ui.sidebarright.refuse_but.grid()
-                    self.ui.sidebarright.unreview_but.grid()
-                    self.ui.sidebarright.validate_but.grid_remove()
-                elif self.ui.st == 3:
-                    self.ui.sidebarright.correct_but.grid_remove()
-                    self.edit_mode_utils.toggle_tool("deactivate")
-                    self.ui.sidebarright.refuse_but.grid()
-                    self.ui.sidebarright.unreview_but.grid_remove()
-                    self.ui.sidebarright.validate_but.grid()
+                if (
+                    self.state.path_out_pred
+                    and os.path.isdir(self.state.path_out_pred)
+                    and os.listdir(self.state.path_out_pred)
+                ):
+                    if self.ui.st == 2:
+                        self.ui.sidebarright.correct_but.grid()
+                        self.ui.sidebarright.refuse_but.grid_remove()
+                        self.ui.sidebarright.validate_but.grid()
+                        self.ui.sidebarright.unreview_but.grid()
+                    elif self.ui.st == 1:
+                        self.ui.sidebarright.correct_but.grid_remove()
+                        self.edit_mode_utils.toggle_tool("deactivate")
+                        self.ui.sidebarright.refuse_but.grid()
+                        self.ui.sidebarright.unreview_but.grid()
+                        self.ui.sidebarright.validate_but.grid_remove()
+                    elif self.ui.st == 3:
+                        self.ui.sidebarright.correct_but.grid_remove()
+                        self.edit_mode_utils.toggle_tool("deactivate")
+                        self.ui.sidebarright.refuse_but.grid()
+                        self.ui.sidebarright.unreview_but.grid_remove()
+                        self.ui.sidebarright.validate_but.grid()
+                    else:
+                        self.ui.sidebarright.correct_but.grid_remove()
+                        self.edit_mode_utils.toggle_tool("deactivate")
+                        self.ui.sidebarright.refuse_but.grid_remove()
+                        self.ui.sidebarright.unreview_but.grid_remove()
+                        self.ui.sidebarright.validate_but.grid_remove()
                 self.state.edit_mode = False
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
             elif action == "PATH_VALID":
                 self.state.path_out_valide = path_dir
-                self.state.path_out = path_dir
+                self.state.path_out_review = path_dir
                 self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
                 self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
                 (
@@ -239,7 +264,9 @@ class FileManager:
                     self.state.has_prediction,
                 ) = self.get_prediction(
                     self.state.file_path,
-                    self.state.path_out,
+                    self.state.path_out_pred
+                    if self.state.path_out_pred
+                    else self.state.path_out_review,
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
@@ -274,7 +301,7 @@ class FileManager:
                 self.ui.sidebarright.get_model_fine.config(
                     bg="white", fg="black", text="Change Model"
                 )
-                if self.state.path_out and self.state.path_dir:
+                if self.state.path_out_pred and self.state.path_dir:
                     self.ui.sidebarright.pred.grid()
             else:
                 messagebox.showerror(
@@ -311,13 +338,16 @@ class FileManager:
             self.ui.zoom_slider.set(self.state.zoom)
         else:
             self.ui.zoom_slider.config(to=0)
+
         (
             self.state.prediction,
             self.state.prediction_path_file,
             self.state.has_prediction,
         ) = self.get_prediction(
             self.state.file_path,
-            self.state.path_out,
+            self.state.path_out_pred
+            if self.state.path_out_pred
+            else self.state.path_out_review,
         )
         self.ui.sidebarleft.update_color_text_file()
         if self.ui.st == 2:
@@ -337,6 +367,13 @@ class FileManager:
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.unreview_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
+        else:
+            self.ui.sidebarright.correct_but.grid_remove()
+            self.edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid_remove()
+            self.ui.sidebarright.unreview_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid_remove()
+            self.ui.sidebarright.edit_frame.grid_remove()
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
@@ -370,13 +407,24 @@ class FileManager:
             ls = os.listdir(out)
 
         if out and not ls:
-            self.state.path_out = out
+            self.state.path_out_pred = out
+            self.state.path_out_review = ""
+            self.ui.st = 4
+            print("ou and not ls")
+            self.ui.sidebarright.review_container.grid_remove()
+            self.ui.sidebarright.validate_but.grid_remove()
+            self.ui.sidebarright.refuse_but.grid_remove()
+            self.ui.sidebarright.unreview_but.grid_remove()
+            self.ui.sidebarright.edit_frame.grid_remove()
             if self.state.path_log and self.state.path_dir:
                 self.ui.sidebarright.pred.grid()
             self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
-            self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
+            self.ui.sidebarright.get_predictions_path.config(
+                bg=theme.PANEL, fg=theme.TEXT_HI
+            )
             print("out folder when its emty:", out)
         else:
+            print("ou or not ls")
             user_response = messagebox.askquestion(
                 title="Error",
                 message="problem occurred , path not found or containes other masks and valid and refuse \n -> Do you want to delet old prediction and valid and refused folders?",
@@ -388,14 +436,24 @@ class FileManager:
                         os.remove(os.path.join(out, item))
                     elif not item == "fine_tuned_models_out":
                         shutil.rmtree(os.path.join(out, item))
-                self.state.path_out = out
-                print("out folder when we empty it us", out)
+                print("yes for empty")
+                self.state.path_out_pred = out
+                self.state.path_out_review = ""
+                self.ui.sidebarright.review_container.grid_remove()
+                self.ui.sidebarright.validate_but.grid_remove()
+                self.ui.sidebarright.refuse_but.grid_remove()
+                self.ui.sidebarright.unreview_but.grid_remove()
+                self.ui.sidebarright.edit_frame.grid_remove()
 
                 self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+                self.ui.sidebarright.get_predictions_path.config(
+                    bg=theme.PANEL, fg=theme.TEXT_HI
+                )
                 if self.state.path_log and self.state.path_dir:
                     self.ui.sidebarright.pred.grid()
             else:
                 out = None
+        self.ui_handel.update_display()
         return out
 
     def save(self, action):
@@ -403,7 +461,7 @@ class FileManager:
             return
         self.save_choice(
             self.state.file_path,
-            self.state.path_out,
+            self.state.path_out_review,
             action,
         )
         if action == "validate":

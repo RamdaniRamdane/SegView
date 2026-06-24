@@ -210,7 +210,7 @@ class UIutils:
         widgets = []
         k = 0
         print(needs)
-        if "PATH_VALID" in needs:
+        if "Data_Not_Reviewed" in needs:
             print(needs)
             warning_label = tk.Label(
                 frame,
@@ -220,7 +220,7 @@ class UIutils:
                 font=(theme.MONO, 13),
             )
             warning_label.grid(row=len(needs) + 3, column=0)
-            needs.remove("PATH_VALID")
+            needs.remove("Data_Not_Reviewed")
             print("after remove", needs)
         for i in needs:
             widgets.append(
@@ -247,7 +247,7 @@ class UIutils:
             if not state.path_log:
                 miss.append("PATH_LOG")
             if not state.path_out_valide:
-                miss.append("PATH_VALID")
+                miss.append("Data_Not_Reviewed")
             if miss:
                 mes = "\n".join(miss)
                 text = f"missing elements: {mes}"

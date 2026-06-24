@@ -53,7 +53,7 @@ class B3d:
             )
             return
 
-        if not self.state.path_out:
+        if not self.state.path_out_pred:
             messagebox.showerror(
                 "Error",
                 "No output folder selected",
@@ -65,8 +65,8 @@ class B3d:
         self.state.predStarted = False
         self.state.files_out = []
 
-        if os.path.exists(self.state.path_out):
-            self.state.path_out_list = os.listdir(self.state.path_out)
+        if os.path.exists(self.state.path_out_pred):
+            self.state.path_out_list = os.listdir(self.state.path_out_pred)
         else:
             self.state.path_out_list = []
 
@@ -133,7 +133,9 @@ class B3d:
             needs.append("PATH_LOG")
 
         if not self.state.path_out_valide:
-            test_if_path = os.path.join(os.path.dirname(self.state.path_out), "Valide")
+            test_if_path = os.path.join(
+                os.path.dirname(self.state.path_out_review), "Valide"
+            )
             if os.path.isdir(test_if_path):
                 if os.listdir(test_if_path):
                     self.state.path_out_valide = test_if_path
