@@ -139,7 +139,7 @@ class FileManager:
         self.ui.sidebarleft.update_color_text_file()
         valid_masks = os.listdir(self.state.path_out_valide)
         valid_len = len(valid_masks)
-        if valid_len >= 1:
+        if valid_len >= 1 and self.state.path_out_review and self.state.path_dir:
             self.ui.sidebarright.fine_btn.grid()
         else:
             self.ui.sidebarright.fine_btn.grid_remove()
@@ -439,11 +439,13 @@ class FileManager:
                 print("yes for empty")
                 self.state.path_out_pred = out
                 self.state.path_out_review = ""
+                self.ui.st = 4
                 self.ui.sidebarright.review_container.grid_remove()
                 self.ui.sidebarright.validate_but.grid_remove()
                 self.ui.sidebarright.refuse_but.grid_remove()
                 self.ui.sidebarright.unreview_but.grid_remove()
                 self.ui.sidebarright.edit_frame.grid_remove()
+                self.ui.sidebarright.fine_btn.grid_remove()
 
                 self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
                 self.ui.sidebarright.get_predictions_path.config(
