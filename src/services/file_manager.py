@@ -185,6 +185,8 @@ class FileManager:
                     path_dir,
                     tif_files[0],
                 )
+                if self.state.path_log and self.state.path_out:
+                    self.ui.sidebarright.pred.grid()
 
                 self.open_file(first_path)
 
@@ -272,6 +274,8 @@ class FileManager:
                 self.ui.sidebarright.get_model_fine.config(
                     bg="white", fg="black", text="Change Model"
                 )
+                if self.state.path_out and self.state.path_dir:
+                    self.ui.sidebarright.pred.grid()
             else:
                 messagebox.showerror(
                     title="No Model Provided",
@@ -385,8 +389,10 @@ class FileManager:
                         shutil.rmtree(os.path.join(out, item))
                 self.state.path_out = out
                 print("out folder when we empty it us", out)
-                self.ui.sidebarright.pred.grid()
+
                 self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+                if self.state.path_log and self.state.path_dir:
+                    self.ui.sidebarright.pred.grid()
             else:
                 out = None
         return out

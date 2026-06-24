@@ -157,7 +157,6 @@ class B3d:
             # creer un temp dir pour l utuliser
             tempdir = tempfile.TemporaryDirectory()
             for i in os.listdir(msk_pth):
-                src = os.path.join(img_pth, i)
                 shutil.copy2(os.path.join(img_pth, i), tempdir.name)
             img_pth = tempdir.name
         if not self.state.do_config:
