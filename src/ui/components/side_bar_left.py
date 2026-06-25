@@ -261,11 +261,7 @@ class Sidebarleft:
 
     def update_color_text_file(self):
         filemanager = FileManager(self.ui)
-        parent = (
-            self.ui.state.path_out_pred
-            if self.ui.state.path_out_pred
-            else self.ui.state.path_out_review
-        )
+        parent = self.ui.state.path_out
         index = 0
         if parent and os.listdir(parent):
             for i in self.ui.state.files:
