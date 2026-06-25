@@ -135,7 +135,7 @@ class FileManager:
         self.ui.sidebarleft.update_color_text_file()
         valid_masks = os.listdir(self.state.path_out_valide)
         valid_len = len(valid_masks)
-        if valid_len >= 1 and self.state.path_out and self.state.path_dir:
+        if valid_len >= 2 and self.state.path_out and self.state.path_dir:
             self.ui.sidebarright.fine_btn.grid()
         else:
             self.ui.sidebarright.fine_btn.grid_remove()
