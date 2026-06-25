@@ -71,21 +71,15 @@ class FileManager:
             "NON-valide",
             filename,
         )
-        path_out_pred = ""
-        path_out_review = ""
-        if self.ui.state.path_out_pred:
-            path_out_pred = os.path.join(self.ui.state.path_out_pred, filename)
-        elif self.ui.state.path_out_review:
-            path_out_review = os.path.join(self.ui.state.path_out_review, filename)
+        path_out = ""
+        path_out = os.path.join(self.ui.state.path_out, filename)
 
         if os.path.isfile(path_val):
             return 1
 
         if os.path.isfile(path_ref):
             return 2
-        if (path_out_pred or path_out_review) and (
-            os.path.isfile(path_out_pred) or os.path.isfile(path_out_review)
-        ):
+        if path_out and os.path.isfile(path_out):
             return 3
         return 4
 
