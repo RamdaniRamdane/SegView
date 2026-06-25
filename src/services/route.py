@@ -35,5 +35,5 @@ class Route:
         self.ui.sidebarright.review_container.grid()
         self.ui.sidebarright.pred_container.grid_remove()
         self.ui.sidebarright.fine_container.grid_remove()
-        if not self.state.path_out_review:
+        if not self.state.path_out:
             self.ui.sidebarright.correct_but.grid_remove()
