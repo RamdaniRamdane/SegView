@@ -31,7 +31,7 @@ class BiomThreading:
                         self.result = pred(
                             log=self.state.path_log,
                             path_in=self.state.path_dir,
-                            path_out=self.state.path_out_pred,
+                            path_out=self.state.path_out,
                             skip_preprocessing=False,
                         )
                     else:
@@ -53,7 +53,7 @@ class BiomThreading:
                     self.result = pred(
                         log=self.state.path_log,
                         path_in=self.state.path_dir,
-                        path_out=self.state.path_out_pred,
+                        path_out=self.state.path_out,
                         skip_preprocessing=False,
                     )
 
@@ -65,7 +65,7 @@ class BiomThreading:
                     )
 
                     self.result = self.state.new_model_path.model_dir
-                    base = os.path.dirname(self.state.path_out_review)
+                    base = os.path.dirname(self.state.path_out)
                     out_fine_path = os.path.join(base, "fine_tuned_models")
                     print("le nouveau model est la : ", out_fine_path)
                     print("os.path.isdir(out_fine_path)=", os.path.isdir(out_fine_path))
@@ -96,8 +96,8 @@ class BiomThreading:
         if action == "pred" and self.worker_pred and self.worker_pred.is_alive():
             try:
                 if not self.state.predStarted:
-                    if os.path.exists(self.state.path_out_pred):
-                        out_list = os.listdir(self.state.path_out_pred)
+                    if os.path.exists(self.state.path_out):
+                        out_list = os.listdir(self.state.path_out)
                     else:
                         out_list = []
 
@@ -114,24 +114,24 @@ class BiomThreading:
 
                         if candidate:
                             new_path = os.path.join(
-                                self.state.path_out_pred,
+                                self.state.path_out,
                                 candidate,
                             )
 
                             if os.path.isdir(new_path):
-                                self.state.path_out_pred = new_path
+                                self.state.path_out = new_path
                                 self.result = new_path
                                 self.state.predStarted = True
 
                 else:
-                    files_out = os.listdir(self.state.path_out_pred)
+                    files_out = os.listdir(self.state.path_out)
 
                     if len(files_out) >= 1 and self.state.route != "review":
-                        self.state.path_out_review = self.state.path_out_pred
+                        self.state.path_out = self.state.path_out
                         self.ui.sidebarright.get_predictions_path.config(
                             bg="white", fg="black"
                         )
-                        self.route.go_to_review(self.state.path_out_review)
+                        self.route.go_to_review(self.state.path_out)
 
                     if len(files_out) > len(self.state.files_out):
                         mode = self.ui.sidebarleft.progressbar["mode"]

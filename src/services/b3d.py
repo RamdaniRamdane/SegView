@@ -52,7 +52,7 @@ class B3d:
             )
             return
 
-        if not self.state.path_out_pred:
+        if not self.state.path_out:
             messagebox.showerror(
                 "Error",
                 "No output folder selected",
@@ -64,8 +64,8 @@ class B3d:
         self.state.predStarted = False
         self.state.files_out = []
 
-        if os.path.exists(self.state.path_out_pred):
-            self.state.path_out_list = os.listdir(self.state.path_out_pred)
+        if os.path.exists(self.state.path_out):
+            self.state.path_out_list = os.listdir(self.state.path_out)
         else:
             self.state.path_out_list = []
 
@@ -132,9 +132,7 @@ class B3d:
             needs.append("PATH_LOG")
 
         if not self.state.path_out_valide:
-            test_if_path = os.path.join(
-                os.path.dirname(self.state.path_out_review), "Valide"
-            )
+            test_if_path = os.path.join(os.path.dirname(self.state.path_out), "Valide")
             if os.path.isdir(test_if_path):
                 if os.listdir(test_if_path):
                     self.state.path_out_valide = test_if_path
@@ -165,8 +163,8 @@ class B3d:
         if not self.state.do_config:
             return
         if msk_pth and img_pth and self.state.num_classes and self.state.num_epochs:
-            print("path_out_review :", self.state.path_out_review)
-            print("ce qu il yas dans out:", os.listdir(self.state.path_out_review))
+            print("path_out_review :", self.state.path_out)
+            print("ce qu il yas dans out:", os.listdir(self.state.path_out))
             self.state.config_path = auto_config_preprocess(
                 img_path=img_pth,
                 msk_path=msk_pth,

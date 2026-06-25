@@ -141,7 +141,7 @@ class FileManager:
         self.ui.sidebarleft.update_color_text_file()
         valid_masks = os.listdir(self.state.path_out_valide)
         valid_len = len(valid_masks)
-        if valid_len >= 1 and self.state.path_out_review and self.state.path_dir:
+        if valid_len >= 1 and self.state.path_out and self.state.path_dir:
             self.ui.sidebarright.fine_btn.grid()
         else:
             self.ui.sidebarright.fine_btn.grid_remove()
@@ -197,15 +197,14 @@ class FileManager:
                     path_dir,
                     tif_files[0],
                 )
-                if self.state.path_log and self.state.path_out_pred:
+                if self.state.path_log and self.state.path_out:
                     self.ui.sidebarright.pred.grid()
 
                 self.open_file(first_path)
 
             elif action == "PATH_PRED":
-                self.state.path_out_review = path_dir
-                self.state.path_out_pred = ""
-                if os.listdir(self.state.path_out_review):
+                self.state.path_out = path_dir
+                if os.listdir(self.state.path_out):
                     self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
                     self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
                 (
@@ -214,7 +213,7 @@ class FileManager:
                     self.state.has_prediction,
                 ) = self.get_prediction(
                     self.state.file_path,
-                    self.state.path_out_review,
+                    self.state.path_out,
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
@@ -225,9 +224,9 @@ class FileManager:
                 if btn:
                     btn.config(bg="white", fg="white")
                 if (
-                    self.state.path_out_pred
-                    and os.path.isdir(self.state.path_out_pred)
-                    and os.listdir(self.state.path_out_pred)
+                    self.state.path_out
+                    and os.path.isdir(self.state.path_out)
+                    and os.listdir(self.state.path_out)
                 ):
                     if self.ui.st == 2:
                         self.ui.sidebarright.correct_but.grid()
@@ -257,7 +256,7 @@ class FileManager:
                 self.ui_handel.update_display()
             elif action == "PATH_VALID":
                 self.state.path_out_valide = path_dir
-                self.state.path_out_review = path_dir
+                self.state.path_out = path_dir
                 self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
                 self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
                 (
@@ -266,9 +265,7 @@ class FileManager:
                     self.state.has_prediction,
                 ) = self.get_prediction(
                     self.state.file_path,
-                    self.state.path_out_pred
-                    if self.state.path_out_pred
-                    else self.state.path_out_review,
+                    self.state.path_out,
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
@@ -303,7 +300,7 @@ class FileManager:
                 self.ui.sidebarright.get_model_fine.config(
                     bg="white", fg="black", text="Change Model"
                 )
-                if self.state.path_out_pred and self.state.path_dir:
+                if self.state.path_out and self.state.path_dir:
                     self.ui.sidebarright.pred.grid()
             else:
                 messagebox.showerror(
@@ -347,9 +344,7 @@ class FileManager:
             self.state.has_prediction,
         ) = self.get_prediction(
             self.state.file_path,
-            self.state.path_out_pred
-            if self.state.path_out_pred
-            else self.state.path_out_review,
+            self.state.path_out,
         )
         print("######## st ->", self.ui.st)
         if self.ui.st == 2:
@@ -416,8 +411,7 @@ class FileManager:
         if not out:
             return
         out = self.create_segview_out_folder(out)
-        self.state.path_out_pred = out
-        self.state.path_out_review = ""
+        self.state.path_out = out
         self.ui.st = 4
         self.ui.sidebarright.fine_btn.grid_remove()
         self.ui.sidebarright.review_container.grid_remove()
@@ -439,7 +433,7 @@ class FileManager:
             return
         self.save_choice(
             self.state.file_path,
-            self.state.path_out_review,
+            self.state.path_out,
             action,
         )
         if action == "validate":
