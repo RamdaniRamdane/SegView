@@ -6,9 +6,7 @@ import src.ui.theme as theme
 from src.ui.helpers.ui_utils import UIutils
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-print(BASE_DIR)
 IMG_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "..", "..", "images"))
-print(IMG_DIR)
 
 
 class Sidebarright:

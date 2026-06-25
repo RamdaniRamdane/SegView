@@ -24,7 +24,6 @@ class B3d:
 
     def run_prediction(self):
 
-        print("pwd", os.getcwd())
         if self.b3d_Threading.worker_fine and self.b3d_Threading.worker_fine.is_alive():
             messagebox.showwarning(
                 "Busy",
@@ -97,10 +96,10 @@ class B3d:
                 "Fine tuning already running.",
             )
             return
-
         self.make_config_fine_tuning()
 
         if not getattr(self.state, "config_path", None):
+            print("no config")
             return
 
         self.b3d_Threading.result = None
@@ -140,8 +139,6 @@ class B3d:
                 if os.listdir(test_if_path):
                     self.state.path_out_valide = test_if_path
                     msk_pth = test_if_path
-                    print("valide:", os.listdir(self.state.path_out_valide))
-                    print("raw:", os.listdir(self.state.path_dir))
                     if len(os.listdir(self.state.path_out_valide)) < len(
                         os.listdir(self.state.path_dir)
                     ):
@@ -155,7 +152,9 @@ class B3d:
         self.ui_uitils.open_popup(
             self.ui.root, needs, self.route.file_manager, self.state
         )
-        if len(os.listdir(msk_pth)) < len(os.listdir(img_pth)):
+        if (msk_pth and img_pth) and len(os.listdir(msk_pth)) < len(
+            os.listdir(img_pth)
+        ):
             # creer un temp dir pour l utuliser
             tempdir = tempfile.TemporaryDirectory()
             for i in os.listdir(msk_pth):
@@ -163,23 +162,26 @@ class B3d:
             img_pth = tempdir.name
         if not self.state.do_config:
             return
+        if msk_pth and img_pth and self.state.num_classes and self.state.num_epochs:
+            self.state.config_path = auto_config_preprocess(
+                img_path=img_pth,
+                msk_path=msk_pth,
+                num_classes=self.state.num_classes,
+                config_dir="configs",
+                base_config=None,
+                ct_norm=False,
+                desc="unet",
+                max_dim=128,
+                num_epochs=self.state.num_epochs,
+                is_2d=False,
+            )
 
-        self.state.config_path = auto_config_preprocess(
-            img_path=img_pth,
-            msk_path=msk_pth,
-            num_classes=self.state.num_classes,
-            config_dir="configs",
-            base_config=None,
-            ct_norm=False,
-            desc="unet",
-            max_dim=128,
-            num_epochs=self.state.num_epochs,
-            is_2d=False,
-        )
-
-        print(
-            "Generated config:",
-            self.state.config_path,
-        )
+            print(
+                "Generated config:",
+                self.state.config_path,
+            )
+        else:
+            messagebox.showerror(message="problem occured")
+            return
 
         return self.state.config_path

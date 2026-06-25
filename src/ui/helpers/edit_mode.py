@@ -19,7 +19,6 @@ class EditMode:
 
     def toggle_tool(self, tool):
         if tool == "deactivate":
-            print("all tools deactivated")
             self.app.state.edit_tool = ""
         else:
             if self.app.state.edit_tool != tool:

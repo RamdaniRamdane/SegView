@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
 
+import numpy as np
+
 
 @dataclass
 class AppState:
@@ -39,3 +41,18 @@ class AppState:
     do_config: bool = False
     num_epochs: int = 1
     num_classes: int = 1
+
+    def __setattr__(self, name, value):
+        old = getattr(self, name, "<UNSET>")
+
+        changed = True
+
+        if isinstance(old, np.ndarray) or isinstance(value, np.ndarray):
+            changed = False
+        else:
+            changed = old != value
+
+        if changed:
+            print(f"[STATE] {name}: {type(old)} -> {type(value)} -> {value}")
+
+        super().__setattr__(name, value)

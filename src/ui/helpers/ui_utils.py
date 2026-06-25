@@ -209,9 +209,7 @@ class UIutils:
 
         widgets = []
         k = 0
-        print(needs)
         if "Data_Not_Reviewed" in needs:
-            print(needs)
             warning_label = tk.Label(
                 frame,
                 text="you have to review before , you must have at least one valide mask",
@@ -221,7 +219,6 @@ class UIutils:
             )
             warning_label.grid(row=len(needs) + 3, column=0)
             needs.remove("Data_Not_Reviewed")
-            print("after remove", needs)
         for i in needs:
             widgets.append(
                 tk.Button(
@@ -279,7 +276,6 @@ class UIutils:
         modal.geometry(f"+{x}+{y}")
 
         root.wait_window(modal)
-        print("Modal dialog closed.")
 
     def change_z(self, val):
         self.state.zoom = int(float(val))

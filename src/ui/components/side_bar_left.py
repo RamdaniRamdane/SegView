@@ -257,7 +257,7 @@ class Sidebarleft:
                     self.file_buttons.append(btn)
 
         else:
-            print("state dont exite")
+            print("err")
 
     def update_color_text_file(self):
         filemanager = FileManager(self.ui)
@@ -273,8 +273,6 @@ class Sidebarleft:
                     parent,
                     i,
                 )
-                print(filepath)
-                print(filemanager.status(filepath))
                 if filemanager.status(filepath) == 1:
                     for btn in self.file_buttons:
                         if btn.file_index == index:

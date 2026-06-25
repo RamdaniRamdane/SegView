@@ -33,6 +33,7 @@ class FileManager:
             self.ui.sidebarright.unreview_but.grid()
             pred = tifffile.imread(pred_path)
             st = self.status(pred_path)
+            print("status ========= ", st)
             self.ui.st = st
             UIutils.set_flag(
                 self.ui.status.flag_sign,
@@ -349,8 +350,9 @@ class FileManager:
             if self.state.path_out_pred
             else self.state.path_out_review,
         )
-        self.ui.sidebarleft.update_color_text_file()
+        print("######## st ->", self.ui.st)
         if self.ui.st == 2:
+            print("remove refuse but")
             self.ui.sidebarright.correct_but.grid()
             self.ui.sidebarright.refuse_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
@@ -378,6 +380,8 @@ class FileManager:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
             self.ui.sidebarright.changes_state_label.grid()
+
+        self.ui.sidebarleft.update_color_text_file()
         self.state.edit_mode = False
         self.ui.sidebarright.edit_frame.grid_remove()
         self.ui_handel.update_display()
@@ -409,8 +413,8 @@ class FileManager:
         if out and not ls:
             self.state.path_out_pred = out
             self.state.path_out_review = ""
+            self.ui.sidebarright.fine_btn.grid_remove()
             self.ui.st = 4
-            print("ou and not ls")
             self.ui.sidebarright.review_container.grid_remove()
             self.ui.sidebarright.validate_but.grid_remove()
             self.ui.sidebarright.refuse_but.grid_remove()
@@ -422,9 +426,7 @@ class FileManager:
             self.ui.sidebarright.get_predictions_path.config(
                 bg=theme.PANEL, fg=theme.TEXT_HI
             )
-            print("out folder when its emty:", out)
         else:
-            print("ou or not ls")
             user_response = messagebox.askquestion(
                 title="Error",
                 message="problem occurred , path not found or containes other masks and valid and refuse \n -> Do you want to delet old prediction and valid and refused folders?",
@@ -436,7 +438,6 @@ class FileManager:
                         os.remove(os.path.join(out, item))
                     elif not item == "fine_tuned_models_out":
                         shutil.rmtree(os.path.join(out, item))
-                print("yes for empty")
                 self.state.path_out_pred = out
                 self.state.path_out_review = ""
                 self.ui.st = 4
