@@ -164,11 +164,9 @@ class B3d:
             img_pth = tempdir.name
         if not self.state.do_config:
             return
-        print("msk_path : ", msk_pth)
-        print("img_path : ", img_pth)
-        print("num_classes : ", self.state.num_classes)
-        print("num_epochs : ", self.state.num_epochs)
         if msk_pth and img_pth and self.state.num_classes and self.state.num_epochs:
+            print("nombre de raw ####### -> ", len(os.listdir(img_pth)))
+            print("nombre de valid ##### -> ", len(os.listdir(msk_pth)))
             self.state.config_path = auto_config_preprocess(
                 img_path=img_pth,
                 msk_path=msk_pth,
