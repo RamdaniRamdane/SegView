@@ -1,6 +1,7 @@
 import os
 import shutil
 import tkinter as tk
+from datetime import datetime
 from tkinter import filedialog, messagebox
 
 import tifffile
@@ -403,59 +404,33 @@ class FileManager:
             if not j == i:
                 self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
 
+    def create_segview_out_folder(self, base_dir):
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_%f")
+        folder_name = f"SegView_out_{timestamp}"
+        path = os.path.join(base_dir, folder_name)
+        os.makedirs(path, exist_ok=False)
+        return path
+
     def get_out_path(self):
         out = filedialog.askdirectory(title="Destination for model predictions")
         if not out:
             return
-        else:
-            ls = os.listdir(out)
-
-        if out and not ls:
-            self.state.path_out_pred = out
-            self.state.path_out_review = ""
-            self.ui.sidebarright.fine_btn.grid_remove()
-            self.ui.st = 4
-            self.ui.sidebarright.review_container.grid_remove()
-            self.ui.sidebarright.validate_but.grid_remove()
-            self.ui.sidebarright.refuse_but.grid_remove()
-            self.ui.sidebarright.unreview_but.grid_remove()
-            self.ui.sidebarright.edit_frame.grid_remove()
-            if self.state.path_log and self.state.path_dir:
-                self.ui.sidebarright.pred.grid()
-            self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
-            self.ui.sidebarright.get_predictions_path.config(
-                bg=theme.PANEL, fg=theme.TEXT_HI
-            )
-        else:
-            user_response = messagebox.askquestion(
-                title="Error",
-                message="problem occurred , path not found or containes other masks and valid and refuse \n -> Do you want to delet old prediction and valid and refused folders?",
-                type="yesno",
-            )
-            if user_response == "yes" and out:
-                for item in ls:
-                    if os.path.isfile(os.path.join(out, item)):
-                        os.remove(os.path.join(out, item))
-                    elif not item == "fine_tuned_models_out":
-                        shutil.rmtree(os.path.join(out, item))
-                self.state.path_out_pred = out
-                self.state.path_out_review = ""
-                self.ui.st = 4
-                self.ui.sidebarright.review_container.grid_remove()
-                self.ui.sidebarright.validate_but.grid_remove()
-                self.ui.sidebarright.refuse_but.grid_remove()
-                self.ui.sidebarright.unreview_but.grid_remove()
-                self.ui.sidebarright.edit_frame.grid_remove()
-                self.ui.sidebarright.fine_btn.grid_remove()
-
-                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
-                self.ui.sidebarright.get_predictions_path.config(
-                    bg=theme.PANEL, fg=theme.TEXT_HI
-                )
-                if self.state.path_log and self.state.path_dir:
-                    self.ui.sidebarright.pred.grid()
-            else:
-                out = None
+        out = self.create_segview_out_folder(out)
+        self.state.path_out_pred = out
+        self.state.path_out_review = ""
+        self.ui.st = 4
+        self.ui.sidebarright.fine_btn.grid_remove()
+        self.ui.sidebarright.review_container.grid_remove()
+        self.ui.sidebarright.validate_but.grid_remove()
+        self.ui.sidebarright.refuse_but.grid_remove()
+        self.ui.sidebarright.unreview_but.grid_remove()
+        self.ui.sidebarright.edit_frame.grid_remove()
+        if self.state.path_log and self.state.path_dir:
+            self.ui.sidebarright.pred.grid()
+        self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
+        self.ui.sidebarright.get_predictions_path.config(
+            bg=theme.PANEL, fg=theme.TEXT_HI
+        )
         self.ui_handel.update_display()
         return out
 

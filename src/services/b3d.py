@@ -165,8 +165,8 @@ class B3d:
         if not self.state.do_config:
             return
         if msk_pth and img_pth and self.state.num_classes and self.state.num_epochs:
-            print("nombre de raw ####### -> ", len(os.listdir(img_pth)))
-            print("nombre de valid ##### -> ", len(os.listdir(msk_pth)))
+            print("path_out_review :", self.state.path_out_review)
+            print("ce qu il yas dans out:", os.listdir(self.state.path_out_review))
             self.state.config_path = auto_config_preprocess(
                 img_path=img_pth,
                 msk_path=msk_pth,
