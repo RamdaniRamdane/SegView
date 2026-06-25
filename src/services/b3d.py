@@ -149,6 +149,8 @@ class B3d:
                     needs.append("PATH_VALID")
             else:
                 msk_pth = self.state.path_out_valide
+        else:
+            msk_pth = self.state.path_out_valide
         self.ui_uitils.open_popup(
             self.ui.root, needs, self.route.file_manager, self.state
         )
