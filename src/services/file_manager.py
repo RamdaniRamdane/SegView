@@ -282,6 +282,66 @@ class FileManager:
                 if "config.json" in list_seg:
                     self.state.path_seg = path_dir
                     # traitement selon config.json
+                    cfg = self.load_config(
+                        os.path.join(self.state.path_seg, "config.json")
+                    )
+                    pred_name_fold = cfg["pred"]
+
+                    self.state.path_out = os.path.join(
+                        self.state.path_seg, pred_name_fold
+                    )
+                    self.ui.sidebarright.get_segview_folder.config(
+                        bg="white", fg="black"
+                    )
+                    if os.listdir(self.state.path_out):
+                        self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
+                        self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
+                    (
+                        self.state.prediction,
+                        self.state.prediction_path_file,
+                        self.state.has_prediction,
+                    ) = self.get_prediction(
+                        self.state.file_path,
+                        self.state.path_out,
+                    )
+
+                    self.ui.sidebarleft.update_color_text_file()
+                    self.ui.sidebarright.get_folder_out.config(
+                        bg=theme.PANEL, fg=theme.TEXT_HI
+                    )
+                    if btn:
+                        btn.config(bg="white", fg="white")
+                    if (
+                        self.state.path_out
+                        and os.path.isdir(self.state.path_out)
+                        and os.listdir(self.state.path_out)
+                    ):
+                        if self.ui.st == 2:
+                            self.ui.sidebarright.correct_but.grid()
+                            self.ui.sidebarright.refuse_but.grid_remove()
+                            self.ui.sidebarright.validate_but.grid()
+                            self.ui.sidebarright.unreview_but.grid()
+                        elif self.ui.st == 1:
+                            self.ui.sidebarright.correct_but.grid_remove()
+                            self.edit_mode_utils.toggle_tool("deactivate")
+                            self.ui.sidebarright.refuse_but.grid()
+                            self.ui.sidebarright.unreview_but.grid()
+                            self.ui.sidebarright.validate_but.grid_remove()
+                        elif self.ui.st == 3:
+                            self.ui.sidebarright.correct_but.grid_remove()
+                            self.edit_mode_utils.toggle_tool("deactivate")
+                            self.ui.sidebarright.refuse_but.grid()
+                            self.ui.sidebarright.unreview_but.grid_remove()
+                            self.ui.sidebarright.validate_but.grid()
+                        else:
+                            self.ui.sidebarright.correct_but.grid_remove()
+                            self.edit_mode_utils.toggle_tool("deactivate")
+                            self.ui.sidebarright.refuse_but.grid_remove()
+                            self.ui.sidebarright.unreview_but.grid_remove()
+                            self.ui.sidebarright.validate_but.grid_remove()
+                    self.state.edit_mode = False
+                    self.ui.sidebarright.edit_frame.grid_remove()
+                    self.ui_handel.update_display()
                 else:
                     messagebox.showerror(
                         title="No Segview folder Provided",
@@ -475,3 +535,14 @@ class FileManager:
             json.dump(config, f, indent=4)
 
         return config_path
+
+    def load_config(self, folder_path):
+        import json
+
+        config_path = os.path.join(folder_path, "config.json")
+
+        if not os.path.isfile(config_path):
+            return None
+
+        with open(config_path, "r") as f:
+            return json.load(f)
