@@ -290,7 +290,8 @@ class FileManager:
                         os.path.join(self.state.path_seg, "config.json")
                     )
 
-                    pred_name_fold = cfg["pred"] if cfg else "nada"
+                    pred_name_fold = cfg["pred"] if cfg else ""
+                    self.state.out_name_folder = pred_name_fold
 
                     self.state.path_out = os.path.join(
                         self.state.path_seg, pred_name_fold

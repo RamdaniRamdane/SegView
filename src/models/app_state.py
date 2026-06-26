@@ -41,6 +41,7 @@ class AppState:
     do_config: bool = False
     num_epochs: int = 1
     num_classes: int = 1
+    out_name_folder: str = ""
 
     def __setattr__(self, name, value):
         old = getattr(self, name, "<UNSET>")

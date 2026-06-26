@@ -163,7 +163,10 @@ class B3d:
         if not self.state.do_config:
             return
         if msk_pth and img_pth and self.state.num_classes and self.state.num_epochs:
-            list_files_Segview = os.listdir(self.state.path_out)
+            list_files_Segview = os.listdir(self.state.path_seg)
+            for i in list_files_Segview:
+                if i.endswith("_out"):
+                    os.remove(os.path.join(self.state.path_seg, i))
             print("les files dans Segview", list_files_Segview)
             self.state.config_path = auto_config_preprocess(
                 img_path=img_pth,

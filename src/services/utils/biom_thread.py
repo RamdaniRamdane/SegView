@@ -59,6 +59,7 @@ class BiomThreading:
 
                 elif action == "fine":
                     print("finetuning config path :", self.state.config_path)
+
                     self.state.new_model_path = train(
                         config=self.state.config_path,
                         path=self.state.path_log,
