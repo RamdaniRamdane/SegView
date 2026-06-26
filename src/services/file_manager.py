@@ -282,10 +282,15 @@ class FileManager:
                 if "config.json" in list_seg:
                     self.state.path_seg = path_dir
                     # traitement selon config.json
+                    print(
+                        "path de la config :",
+                        os.path.join(self.state.path_seg, "config.json"),
+                    )
                     cfg = self.load_config(
                         os.path.join(self.state.path_seg, "config.json")
                     )
-                    print(cfg)
+
+                    pred_name_fold = cfg["pred"] if cfg else "nada"
 
                     self.state.path_out = os.path.join(
                         self.state.path_seg, pred_name_fold
