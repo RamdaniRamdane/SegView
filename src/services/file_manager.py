@@ -177,8 +177,7 @@ class FileManager:
                 self.ui.sidebarleft.file_buttons[0].config(bg="#555")
                 for j in range(len(self.state.files)):
                     if not j == 0:
-                        self.ui.sidebarleft.file_buttons[j].config(
-                            bg=theme.PANEL)
+                        self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
                 self.ui.sidebarright.navigateFrame.grid()
                 self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
                 self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
@@ -212,8 +211,7 @@ class FileManager:
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
-                self.ui.sidebarright.get_predictions_path.config(
-                    bg="white", fg="black")
+                self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
                 self.ui.sidebarright.get_folder_out.config(
                     bg=theme.PANEL, fg=theme.TEXT_HI
                 )
@@ -252,8 +250,6 @@ class FileManager:
                 self.ui_handel.update_display()
             elif action == "PATH_SEG":
                 print("SEG")
-                if os.listdir(path_dir) and
-                self.state.path_seg = path_dir
 
                 # todo creer un bouton get segview folder et une detection que cest bien lui et puis on a les information de lui pour faire le fine tuning
 
@@ -263,8 +259,7 @@ class FileManager:
             if "model" in list_log:
                 paths = os.path.join(path_dir, "model")
                 list_model = os.listdir(paths)
-                path_files = [
-                    f for f in list_model if f.lower().endswith(".pth")]
+                path_files = [f for f in list_model if f.lower().endswith(".pth")]
                 if not path_files:
                     messagebox.showerror(
                         title="No Model Provided",
@@ -385,8 +380,7 @@ class FileManager:
         return path
 
     def get_out_path(self):
-        out = filedialog.askdirectory(
-            title="Destination for model predictions")
+        out = filedialog.askdirectory(title="Destination for model predictions")
         if not out:
             return
         out = self.create_segview_out_folder(out)
@@ -457,6 +451,7 @@ class FileManager:
 
     def write_config(self, folder_path, extra=None):
         import json
+
         config = {
             "app": "SegView",
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
