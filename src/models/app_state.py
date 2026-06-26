@@ -24,6 +24,7 @@ class AppState:
     index: int = 0
 
     path_dir: str = ""
+    path_seg: str = ""
     path_out: str = ""
     path_out_valide: str = ""
     path_out_list: list = field(default_factory=list)

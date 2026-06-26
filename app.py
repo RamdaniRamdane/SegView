@@ -76,8 +76,8 @@ class SegViewApp:
             command=self.file_manager.get_out_path
         )
         self.ui.sidebarright.pred.config(command=self.b3d.run_prediction)
-        self.ui.sidebarright.get_predictions_path.config(
-            command=lambda: self.file_manager.open_dir("PATH_PRED")
+        self.ui.sidebarright.get_segview_folder.config(
+            command=lambda: self.file_manager.open_dir("PATH_SEG")
         )
         # fine tuning
         # self.ui.sidebarright.get_valid_masks.config(

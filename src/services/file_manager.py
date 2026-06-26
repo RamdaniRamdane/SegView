@@ -177,7 +177,8 @@ class FileManager:
                 self.ui.sidebarleft.file_buttons[0].config(bg="#555")
                 for j in range(len(self.state.files)):
                     if not j == 0:
-                        self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
+                        self.ui.sidebarleft.file_buttons[j].config(
+                            bg=theme.PANEL)
                 self.ui.sidebarright.navigateFrame.grid()
                 self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
                 self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
@@ -211,7 +212,8 @@ class FileManager:
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
-                self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
+                self.ui.sidebarright.get_predictions_path.config(
+                    bg="white", fg="black")
                 self.ui.sidebarright.get_folder_out.config(
                     bg=theme.PANEL, fg=theme.TEXT_HI
                 )
@@ -248,31 +250,12 @@ class FileManager:
                 self.state.edit_mode = False
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
-            elif action == "PATH_VALID":
-                self.state.path_out_valide = path_dir
-                self.state.path_out = path_dir
-                self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
-                self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
-                (
-                    self.state.prediction,
-                    self.state.prediction_path_file,
-                    self.state.has_prediction,
-                ) = self.get_prediction(
-                    self.state.file_path,
-                    self.state.path_out,
-                )
+            elif action == "PATH_SEG":
+                print("SEG")
+                if os.listdir(path_dir) and
+                self.state.path_seg = path_dir
 
-                self.ui.sidebarleft.update_color_text_file()
-                self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
-                self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
-                self.ui.sidebarright.get_valid_masks.config(bg="white", fg="black")
-                if self.ui.st == 2:
-                    self.ui.sidebarright.correct_but.grid()
-                else:
-                    self.ui.sidebarright.correct_but.grid_remove()
-                self.state.edit_mode = False
-                self.ui.sidebarright.edit_frame.grid_remove()
-                self.ui_handel.update_display()
+                # todo creer un bouton get segview folder et une detection que cest bien lui et puis on a les information de lui pour faire le fine tuning
 
         else:
             # verrify that the path containe a model special biom3d pour l instant
@@ -280,7 +263,8 @@ class FileManager:
             if "model" in list_log:
                 paths = os.path.join(path_dir, "model")
                 list_model = os.listdir(paths)
-                path_files = [f for f in list_model if f.lower().endswith(".pth")]
+                path_files = [
+                    f for f in list_model if f.lower().endswith(".pth")]
                 if not path_files:
                     messagebox.showerror(
                         title="No Model Provided",
@@ -401,10 +385,12 @@ class FileManager:
         return path
 
     def get_out_path(self):
-        out = filedialog.askdirectory(title="Destination for model predictions")
+        out = filedialog.askdirectory(
+            title="Destination for model predictions")
         if not out:
             return
         out = self.create_segview_out_folder(out)
+        self.state.path_seg = out
         self.state.path_out = out
         self.ui.st = 4
         self.ui.sidebarright.fine_btn.grid_remove()
@@ -468,3 +454,22 @@ class FileManager:
             self.ui.sidebarright.changes_state_label.grid()
 
         self.ui.sidebarleft.update_color_text_file()
+
+    def write_config(self, folder_path, extra=None):
+        import json
+        config = {
+            "app": "SegView",
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "folder": folder_path,
+            "version": "1.0",
+        }
+
+        if extra:
+            config.update(extra)
+
+        config_path = os.path.join(folder_path, "config.json")
+
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=4)
+
+        return config_path

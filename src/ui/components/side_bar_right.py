@@ -36,9 +36,9 @@ class Sidebarright:
         self.review_container = tk.Frame(
             self.container, bg=theme.PANEL, width=200, height=100
         )
-        self.get_predictions_path = tk.Button(
+        self.get_segview_folder = tk.Button(
             self.review_container,
-            text="Import Masks Folder",
+            text="Import SegView Folder",
             font=(theme.MONO, 8),
             bg=theme.MUTED,
             fg=theme.TEXT_HI,
@@ -187,7 +187,7 @@ class Sidebarright:
         self.tool_size_slider.grid(row=0, column=0, columnspan=2)
         self.changes_state_label.grid(row=2, column=0, columnspan=2)
 
-        self.get_predictions_path.grid(row=0, column=0, pady=10)
+        self.get_segview_folder.grid(row=0, column=0, pady=10)
         self.edit_frame.grid(row=6, column=0)
 
         # keep frames hidden by default (same behavior as original)

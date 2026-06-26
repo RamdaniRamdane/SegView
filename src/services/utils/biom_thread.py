@@ -95,7 +95,9 @@ class BiomThreading:
     def _check(self, action):
         if action == "pred" and self.worker_pred and self.worker_pred.is_alive():
             try:
-                if not self.state.predStarted:
+                if not self.state.predStarted and not (
+                    "config.json" not in os.listdir(self.state.path_out)
+                ):
                     if os.path.exists(self.state.path_out):
                         out_list = os.listdir(self.state.path_out)
                     else:
@@ -117,6 +119,9 @@ class BiomThreading:
                                 self.state.path_out,
                                 candidate,
                             )
+                            self.route.file_manager.write_config(
+                                self.state.path_seg, {"pred": new_path}
+                            )
 
                             if os.path.isdir(new_path):
                                 self.state.path_out = new_path
@@ -126,8 +131,7 @@ class BiomThreading:
                 else:
                     files_out = os.listdir(self.state.path_out)
 
-                    if len(files_out) >= 1 and self.state.route != "review":
-                        self.state.path_out = self.state.path_out
+                    if len(files_out) >= 2 and self.state.route != "review":
                         self.ui.sidebarright.get_predictions_path.config(
                             bg="white", fg="black"
                         )
