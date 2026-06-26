@@ -395,9 +395,6 @@ class FileManager:
         if self.state.path_log and self.state.path_dir:
             self.ui.sidebarright.pred.grid()
         self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
-        self.ui.sidebarright.get_predictions_path.config(
-            bg=theme.PANEL, fg=theme.TEXT_HI
-        )
         self.ui_handel.update_display()
         return out
 
