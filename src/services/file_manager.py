@@ -211,7 +211,6 @@ class FileManager:
                 )
 
                 self.ui.sidebarleft.update_color_text_file()
-                self.ui.sidebarright.get_predictions_path.config(bg="white", fg="black")
                 self.ui.sidebarright.get_folder_out.config(
                     bg=theme.PANEL, fg=theme.TEXT_HI
                 )
