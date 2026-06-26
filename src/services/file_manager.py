@@ -285,7 +285,7 @@ class FileManager:
                     cfg = self.load_config(
                         os.path.join(self.state.path_seg, "config.json")
                     )
-                    pred_name_fold = cfg["pred"]
+                    print(cfg)
 
                     self.state.path_out = os.path.join(
                         self.state.path_seg, pred_name_fold
