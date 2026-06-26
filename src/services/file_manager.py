@@ -247,6 +247,35 @@ class FileManager:
                 self.state.edit_mode = False
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
+
+        else:
+            if action == "PATH_LOG":
+                list_log = os.listdir(path_dir)
+                if "model" in list_log:
+                    paths = os.path.join(path_dir, "model")
+                    list_model = os.listdir(paths)
+                    path_files = [f for f in list_model if f.lower().endswith(".pth")]
+                    if not path_files:
+                        messagebox.showerror(
+                            title="No Model Provided",
+                            message="check if the folder contain model/*.pth , please import correct model",
+                        )
+                        return
+                    self.state.path_log = path_dir
+                    self.ui.sidebarright.get_model.config(
+                        bg="white", fg="black", text="Change Model"
+                    )
+                    self.ui.sidebarright.get_model_fine.config(
+                        bg="white", fg="black", text="Change Model"
+                    )
+                    if self.state.path_out and self.state.path_dir:
+                        self.ui.sidebarright.pred.grid()
+                else:
+                    messagebox.showerror(
+                        title="No Model Provided",
+                        message="check if the folder contain model/*.pth , please import correct model",
+                    )
+                    return
             elif action == "PATH_SEG":
                 self.state.path_seg = path_dir
                 list_seg = os.listdir(path_dir)
@@ -259,35 +288,6 @@ class FileManager:
                         message="check if the folder contain config.json , predictions  , please import correct fodler",
                     )
                     return
-
-        else:
-            # verrify that the path containe a model special biom3d pour l instant
-            list_log = os.listdir(path_dir)
-            if "model" in list_log:
-                paths = os.path.join(path_dir, "model")
-                list_model = os.listdir(paths)
-                path_files = [f for f in list_model if f.lower().endswith(".pth")]
-                if not path_files:
-                    messagebox.showerror(
-                        title="No Model Provided",
-                        message="check if the folder contain model/*.pth , please import correct model",
-                    )
-                    return
-                self.state.path_log = path_dir
-                self.ui.sidebarright.get_model.config(
-                    bg="white", fg="black", text="Change Model"
-                )
-                self.ui.sidebarright.get_model_fine.config(
-                    bg="white", fg="black", text="Change Model"
-                )
-                if self.state.path_out and self.state.path_dir:
-                    self.ui.sidebarright.pred.grid()
-            else:
-                messagebox.showerror(
-                    title="No Model Provided",
-                    message="check if the folder contain model/*.pth , please import correct model",
-                )
-                return
 
     def open_file(self, path):
         if not os.path.isfile(path):
