@@ -1,10 +1,10 @@
 import os
+import shutil
 import tempfile
 import threading
 from tkinter import messagebox
 
 from biom3d.preprocess import auto_config_preprocess
-from biom3d.utils import shutil
 
 from src.services.utils.biom_thread import BiomThreading
 from src.ui.helpers.ui_utils import UIutils
@@ -166,6 +166,8 @@ class B3d:
             list_files_Segview = os.listdir(self.state.path_seg)
             for i in list_files_Segview:
                 if i.endswith("_out"):
+                    print(os.path.join(self.state.path_seg, i))
+                    print(os.path.isfile(os.path.join(self.state.path_seg, i)))
                     os.remove(os.path.join(self.state.path_seg, i))
             print("les files dans Segview", list_files_Segview)
             self.state.config_path = auto_config_preprocess(
