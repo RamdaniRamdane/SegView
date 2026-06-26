@@ -117,9 +117,11 @@ class BiomThreading:
                                 self.state.path_out,
                                 candidate,
                             )
+                            p = os.path.split(new_path)
+                            f = p[-1]
                             if "config.json" not in out_list:
                                 self.route.file_manager.write_config(
-                                    self.state.path_seg, {"pred": new_path}
+                                    self.state.path_seg, {"pred": f}
                                 )
 
                             if os.path.isdir(new_path):
@@ -130,7 +132,7 @@ class BiomThreading:
                 else:
                     files_out = os.listdir(self.state.path_out)
 
-                    if len(files_out) >= 2 and self.state.route != "review":
+                    if len(files_out) >= 1 and self.state.route != "review":
                         self.route.go_to_review(self.state.path_out)
 
                     if len(files_out) > len(self.state.files_out):

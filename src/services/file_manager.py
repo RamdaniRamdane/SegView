@@ -248,9 +248,17 @@ class FileManager:
                 self.ui.sidebarright.edit_frame.grid_remove()
                 self.ui_handel.update_display()
             elif action == "PATH_SEG":
-                print("SEG")
-
-                # todo creer un bouton get segview folder et une detection que cest bien lui et puis on a les information de lui pour faire le fine tuning
+                self.state.path_seg = path_dir
+                list_seg = os.listdir(path_dir)
+                if "config.json" in list_seg:
+                    self.state.path_seg = path_dir
+                    # traitement selon config.json
+                else:
+                    messagebox.showerror(
+                        title="No Segview folder Provided",
+                        message="check if the folder contain config.json , predictions  , please import correct fodler",
+                    )
+                    return
 
         else:
             # verrify that the path containe a model special biom3d pour l instant
@@ -448,10 +456,13 @@ class FileManager:
     def write_config(self, folder_path, extra=None):
         import json
 
+        path = os.path.split(folder_path)
+        filename = path[-1]
+
         config = {
             "app": "SegView",
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "folder": folder_path,
+            "folder": filename,
             "version": "1.0",
         }
 
