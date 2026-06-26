@@ -541,10 +541,8 @@ class FileManager:
 
         return config_path
 
-    def load_config(self, folder_path):
+    def load_config(self, config_path):
         import json
-
-        config_path = os.path.join(folder_path, "config.json")
 
         if not os.path.isfile(config_path):
             return None
