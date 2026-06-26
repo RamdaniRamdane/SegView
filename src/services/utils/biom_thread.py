@@ -131,9 +131,6 @@ class BiomThreading:
                     files_out = os.listdir(self.state.path_out)
 
                     if len(files_out) >= 2 and self.state.route != "review":
-                        self.ui.sidebarright.get_predictions_path.config(
-                            bg="white", fg="black"
-                        )
                         self.route.go_to_review(self.state.path_out)
 
                     if len(files_out) > len(self.state.files_out):
