@@ -265,9 +265,8 @@ class FileManager:
                     self.ui.sidebarright.get_model.config(
                         bg="white", fg="black", text="Change Model"
                     )
-                    self.ui.sidebarright.get_model_fine.config(
-                        bg="white", fg="black", text="Change Model"
-                    )
+                    if btn:
+                        btn.config(bg="white", fg="black")
                     if self.state.path_out and self.state.path_dir:
                         self.ui.sidebarright.pred.grid()
                 else:

@@ -58,7 +58,7 @@ class BiomThreading:
                     )
 
                 elif action == "fine":
-                    print("finetuning config path :", self.state.config_path)
+                    self.ui.sidebarright.review_container.grid_remove()
 
                     self.state.new_model_path = train(
                         config=self.state.config_path,
@@ -238,6 +238,7 @@ class BiomThreading:
             )
 
             self.worker_fine = None
+            self.ui.sidebarright.review_container.grid()
 
             messagebox.showinfo(
                 "Done",
