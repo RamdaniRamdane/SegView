@@ -34,7 +34,6 @@ class FileManager:
             self.ui.sidebarright.unreview_but.grid()
             pred = tifffile.imread(pred_path)
             st = self.status(pred_path)
-            print("status ========= ", st)
             self.ui.st = st
             UIutils.set_flag(
                 self.ui.status.flag_sign,
@@ -142,6 +141,187 @@ class FileManager:
 
     # TODO : refactor
 
+    def handle_raw(self, path_dir, tif_files):
+        self.state.path_dir = path_dir
+        self.state.files = tif_files
+        self.ui.sidebarleft.show_files_list()
+        self.ui.set_state(self.state)
+        for i in range(len(self.ui.sidebarleft.file_buttons)):
+            self.ui.sidebarleft.file_buttons[i].config(
+                command=lambda idx=i: self.sidebarleft_handl_file(idx)
+            )
+        self.ui.sidebarleft.update_color_text_file()
+        self.ui.sidebarleft.file_buttons[0].config(bg="#555")
+        for j in range(len(self.state.files)):
+            if not j == 0:
+                self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
+        self.ui.sidebarright.navigateFrame.grid()
+        self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
+        self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
+        self.ui.zoom_slider.config(state=tk.NORMAL)
+        self.ui.sidebarright.get_model.config(
+            state=tk.NORMAL,
+            fg="white",
+        )
+        self.ui.sidebarright.btn.config(bg="white", fg="black")
+        first_path = os.path.join(
+            path_dir,
+            tif_files[0],
+        )
+        if self.state.path_log and self.state.path_out:
+            self.ui.sidebarright.pred.grid()
+
+        self.open_file(first_path)
+
+    def handle_pred(self, path_dir, btn=None):
+        self.state.path_out = path_dir
+        if os.listdir(self.state.path_out):
+            self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
+            self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
+        (
+            self.state.prediction,
+            self.state.prediction_path_file,
+            self.state.has_prediction,
+        ) = self.get_prediction(
+            self.state.file_path,
+            self.state.path_out,
+        )
+
+        self.ui.sidebarleft.update_color_text_file()
+        self.ui.sidebarright.get_folder_out.config(bg=theme.PANEL, fg=theme.TEXT_HI)
+        if btn:
+            btn.config(bg="white", fg="white")
+        if (
+            self.state.path_out
+            and os.path.isdir(self.state.path_out)
+            and os.listdir(self.state.path_out)
+        ):
+            if self.ui.st == 2:
+                self.ui.sidebarright.correct_but.grid()
+                self.ui.sidebarright.refuse_but.grid_remove()
+                self.ui.sidebarright.validate_but.grid()
+                self.ui.sidebarright.unreview_but.grid()
+            elif self.ui.st == 1:
+                self.ui.sidebarright.correct_but.grid_remove()
+                self.edit_mode_utils.toggle_tool("deactivate")
+                self.ui.sidebarright.refuse_but.grid()
+                self.ui.sidebarright.unreview_but.grid()
+                self.ui.sidebarright.validate_but.grid_remove()
+            elif self.ui.st == 3:
+                self.ui.sidebarright.correct_but.grid_remove()
+                self.edit_mode_utils.toggle_tool("deactivate")
+                self.ui.sidebarright.refuse_but.grid()
+                self.ui.sidebarright.unreview_but.grid_remove()
+                self.ui.sidebarright.validate_but.grid()
+            else:
+                self.ui.sidebarright.correct_but.grid_remove()
+                self.edit_mode_utils.toggle_tool("deactivate")
+                self.ui.sidebarright.refuse_but.grid_remove()
+                self.ui.sidebarright.unreview_but.grid_remove()
+                self.ui.sidebarright.validate_but.grid_remove()
+        self.state.edit_mode = False
+        self.ui.sidebarright.edit_frame.grid_remove()
+        self.ui_handel.update_display()
+
+    def handle_model(self, path_dir, btn=None):
+        # handle PATH_LOG
+        list_log = os.listdir(path_dir)
+        if "model" in list_log:
+            paths = os.path.join(path_dir, "model")
+            list_model = os.listdir(paths)
+            path_files = [f for f in list_model if f.lower().endswith(".pth")]
+            if not path_files:
+                messagebox.showerror(
+                    title="No Model Provided",
+                    message="check if the folder contain model/*.pth , please import correct model",
+                )
+                return
+            self.state.path_log = path_dir
+            self.ui.sidebarright.get_model.config(
+                bg="white", fg="black", text="Change Model"
+            )
+            if btn:
+                btn.config(bg="white", fg="black")
+            if self.state.path_out and self.state.path_dir:
+                self.ui.sidebarright.pred.grid()
+        else:
+            messagebox.showerror(
+                title="No Model Provided",
+                message="check if the folder contain model/*.pth , please import correct model",
+            )
+            return
+
+    def handle_segview_folder(self, path_dir, btn=None):
+        self.state.path_seg = path_dir
+        list_seg = os.listdir(path_dir)
+        if "config.json" in list_seg:
+            self.state.path_seg = path_dir
+            # traitement selon config.json
+            print(
+                "path de la config :",
+                os.path.join(self.state.path_seg, "config.json"),
+            )
+            cfg = self.load_config(os.path.join(self.state.path_seg, "config.json"))
+
+            pred_name_fold = cfg["pred"] if cfg else ""
+            self.state.out_name_folder = pred_name_fold
+
+            self.state.path_out = os.path.join(self.state.path_seg, pred_name_fold)
+            self.ui.sidebarright.get_segview_folder.config(bg="white", fg="black")
+            if os.listdir(self.state.path_out):
+                self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
+                self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
+            (
+                self.state.prediction,
+                self.state.prediction_path_file,
+                self.state.has_prediction,
+            ) = self.get_prediction(
+                self.state.file_path,
+                self.state.path_out,
+            )
+
+            self.ui.sidebarleft.update_color_text_file()
+            self.ui.sidebarright.get_folder_out.config(bg=theme.PANEL, fg=theme.TEXT_HI)
+            if btn:
+                btn.config(bg="white", fg="white")
+            if (
+                self.state.path_out
+                and os.path.isdir(self.state.path_out)
+                and os.listdir(self.state.path_out)
+            ):
+                if self.ui.st == 2:
+                    self.ui.sidebarright.correct_but.grid()
+                    self.ui.sidebarright.refuse_but.grid_remove()
+                    self.ui.sidebarright.validate_but.grid()
+                    self.ui.sidebarright.unreview_but.grid()
+                elif self.ui.st == 1:
+                    self.ui.sidebarright.correct_but.grid_remove()
+                    self.edit_mode_utils.toggle_tool("deactivate")
+                    self.ui.sidebarright.refuse_but.grid()
+                    self.ui.sidebarright.unreview_but.grid()
+                    self.ui.sidebarright.validate_but.grid_remove()
+                elif self.ui.st == 3:
+                    self.ui.sidebarright.correct_but.grid_remove()
+                    self.edit_mode_utils.toggle_tool("deactivate")
+                    self.ui.sidebarright.refuse_but.grid()
+                    self.ui.sidebarright.unreview_but.grid_remove()
+                    self.ui.sidebarright.validate_but.grid()
+                else:
+                    self.ui.sidebarright.correct_but.grid_remove()
+                    self.edit_mode_utils.toggle_tool("deactivate")
+                    self.ui.sidebarright.refuse_but.grid_remove()
+                    self.ui.sidebarright.unreview_but.grid_remove()
+                    self.ui.sidebarright.validate_but.grid_remove()
+            self.state.edit_mode = False
+            self.ui.sidebarright.edit_frame.grid_remove()
+            self.ui_handel.update_display()
+        else:
+            messagebox.showerror(
+                title="No Segview folder Provided",
+                message="check if the folder contain config.json , predictions  , please import correct fodler",
+            )
+            return
+
     def open_dir(self, action, path_dir=None, btn=None):
         if not path_dir:
             path_dir = filedialog.askdirectory(title=action)
@@ -165,194 +345,17 @@ class FileManager:
                 )
                 return
             if action == "PATH_RAW":
-                self.state.path_dir = path_dir
-                self.state.files = tif_files
-                self.ui.sidebarleft.show_files_list()
-                self.ui.set_state(self.state)
-                for i in range(len(self.ui.sidebarleft.file_buttons)):
-                    self.ui.sidebarleft.file_buttons[i].config(
-                        command=lambda idx=i: self.sidebarleft_handl_file(idx)
-                    )
-                self.ui.sidebarleft.update_color_text_file()
-                self.ui.sidebarleft.file_buttons[0].config(bg="#555")
-                for j in range(len(self.state.files)):
-                    if not j == 0:
-                        self.ui.sidebarleft.file_buttons[j].config(bg=theme.PANEL)
-                self.ui.sidebarright.navigateFrame.grid()
-                self.ui.sidebarright.next_btn.config(state=tk.NORMAL)
-                self.ui.sidebarright.prev_btn.config(state=tk.NORMAL)
-                self.ui.zoom_slider.config(state=tk.NORMAL)
-                self.ui.sidebarright.get_model.config(
-                    state=tk.NORMAL,
-                    fg="white",
-                )
-                self.ui.sidebarright.btn.config(bg="white", fg="black")
-                first_path = os.path.join(
-                    path_dir,
-                    tif_files[0],
-                )
-                if self.state.path_log and self.state.path_out:
-                    self.ui.sidebarright.pred.grid()
-
-                self.open_file(first_path)
+                self.handle_raw(path_dir=path_dir, tif_files=tif_files)
 
             elif action == "PATH_PRED":
-                self.state.path_out = path_dir
-                if os.listdir(self.state.path_out):
-                    self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
-                    self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
-                (
-                    self.state.prediction,
-                    self.state.prediction_path_file,
-                    self.state.has_prediction,
-                ) = self.get_prediction(
-                    self.state.file_path,
-                    self.state.path_out,
-                )
-
-                self.ui.sidebarleft.update_color_text_file()
-                self.ui.sidebarright.get_folder_out.config(
-                    bg=theme.PANEL, fg=theme.TEXT_HI
-                )
-                if btn:
-                    btn.config(bg="white", fg="white")
-                if (
-                    self.state.path_out
-                    and os.path.isdir(self.state.path_out)
-                    and os.listdir(self.state.path_out)
-                ):
-                    if self.ui.st == 2:
-                        self.ui.sidebarright.correct_but.grid()
-                        self.ui.sidebarright.refuse_but.grid_remove()
-                        self.ui.sidebarright.validate_but.grid()
-                        self.ui.sidebarright.unreview_but.grid()
-                    elif self.ui.st == 1:
-                        self.ui.sidebarright.correct_but.grid_remove()
-                        self.edit_mode_utils.toggle_tool("deactivate")
-                        self.ui.sidebarright.refuse_but.grid()
-                        self.ui.sidebarright.unreview_but.grid()
-                        self.ui.sidebarright.validate_but.grid_remove()
-                    elif self.ui.st == 3:
-                        self.ui.sidebarright.correct_but.grid_remove()
-                        self.edit_mode_utils.toggle_tool("deactivate")
-                        self.ui.sidebarright.refuse_but.grid()
-                        self.ui.sidebarright.unreview_but.grid_remove()
-                        self.ui.sidebarright.validate_but.grid()
-                    else:
-                        self.ui.sidebarright.correct_but.grid_remove()
-                        self.edit_mode_utils.toggle_tool("deactivate")
-                        self.ui.sidebarright.refuse_but.grid_remove()
-                        self.ui.sidebarright.unreview_but.grid_remove()
-                        self.ui.sidebarright.validate_but.grid_remove()
-                self.state.edit_mode = False
-                self.ui.sidebarright.edit_frame.grid_remove()
-                self.ui_handel.update_display()
+                self.handle_pred(path_dir=path_dir, btn=btn)
 
         else:
             if action == "PATH_LOG":
-                list_log = os.listdir(path_dir)
-                if "model" in list_log:
-                    paths = os.path.join(path_dir, "model")
-                    list_model = os.listdir(paths)
-                    path_files = [f for f in list_model if f.lower().endswith(".pth")]
-                    if not path_files:
-                        messagebox.showerror(
-                            title="No Model Provided",
-                            message="check if the folder contain model/*.pth , please import correct model",
-                        )
-                        return
-                    self.state.path_log = path_dir
-                    self.ui.sidebarright.get_model.config(
-                        bg="white", fg="black", text="Change Model"
-                    )
-                    if btn:
-                        btn.config(bg="white", fg="black")
-                    if self.state.path_out and self.state.path_dir:
-                        self.ui.sidebarright.pred.grid()
-                else:
-                    messagebox.showerror(
-                        title="No Model Provided",
-                        message="check if the folder contain model/*.pth , please import correct model",
-                    )
-                    return
+                self.handle_model(path_dir=path_dir, btn=btn)
+
             elif action == "PATH_SEG":
-                self.state.path_seg = path_dir
-                list_seg = os.listdir(path_dir)
-                if "config.json" in list_seg:
-                    self.state.path_seg = path_dir
-                    # traitement selon config.json
-                    print(
-                        "path de la config :",
-                        os.path.join(self.state.path_seg, "config.json"),
-                    )
-                    cfg = self.load_config(
-                        os.path.join(self.state.path_seg, "config.json")
-                    )
-
-                    pred_name_fold = cfg["pred"] if cfg else ""
-                    self.state.out_name_folder = pred_name_fold
-
-                    self.state.path_out = os.path.join(
-                        self.state.path_seg, pred_name_fold
-                    )
-                    self.ui.sidebarright.get_segview_folder.config(
-                        bg="white", fg="black"
-                    )
-                    if os.listdir(self.state.path_out):
-                        self.ui.sidebarright.refuse_but.config(state=tk.NORMAL)
-                        self.ui.sidebarright.validate_but.config(state=tk.NORMAL)
-                    (
-                        self.state.prediction,
-                        self.state.prediction_path_file,
-                        self.state.has_prediction,
-                    ) = self.get_prediction(
-                        self.state.file_path,
-                        self.state.path_out,
-                    )
-
-                    self.ui.sidebarleft.update_color_text_file()
-                    self.ui.sidebarright.get_folder_out.config(
-                        bg=theme.PANEL, fg=theme.TEXT_HI
-                    )
-                    if btn:
-                        btn.config(bg="white", fg="white")
-                    if (
-                        self.state.path_out
-                        and os.path.isdir(self.state.path_out)
-                        and os.listdir(self.state.path_out)
-                    ):
-                        if self.ui.st == 2:
-                            self.ui.sidebarright.correct_but.grid()
-                            self.ui.sidebarright.refuse_but.grid_remove()
-                            self.ui.sidebarright.validate_but.grid()
-                            self.ui.sidebarright.unreview_but.grid()
-                        elif self.ui.st == 1:
-                            self.ui.sidebarright.correct_but.grid_remove()
-                            self.edit_mode_utils.toggle_tool("deactivate")
-                            self.ui.sidebarright.refuse_but.grid()
-                            self.ui.sidebarright.unreview_but.grid()
-                            self.ui.sidebarright.validate_but.grid_remove()
-                        elif self.ui.st == 3:
-                            self.ui.sidebarright.correct_but.grid_remove()
-                            self.edit_mode_utils.toggle_tool("deactivate")
-                            self.ui.sidebarright.refuse_but.grid()
-                            self.ui.sidebarright.unreview_but.grid_remove()
-                            self.ui.sidebarright.validate_but.grid()
-                        else:
-                            self.ui.sidebarright.correct_but.grid_remove()
-                            self.edit_mode_utils.toggle_tool("deactivate")
-                            self.ui.sidebarright.refuse_but.grid_remove()
-                            self.ui.sidebarright.unreview_but.grid_remove()
-                            self.ui.sidebarright.validate_but.grid_remove()
-                    self.state.edit_mode = False
-                    self.ui.sidebarright.edit_frame.grid_remove()
-                    self.ui_handel.update_display()
-                else:
-                    messagebox.showerror(
-                        title="No Segview folder Provided",
-                        message="check if the folder contain config.json , predictions  , please import correct fodler",
-                    )
-                    return
+                self.handle_segview_folder(path_dir=path_dir, btn=btn)
 
     def open_file(self, path):
         if not os.path.isfile(path):

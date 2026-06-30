@@ -172,70 +172,187 @@ class UIutils:
 
     def open_popup(self, root, needs, file_manager, state):
         modal = tk.Toplevel(root)
-        modal.title("Modal Pop-up")
+        modal.title("Training Configuration")
         modal.configure(bg=theme.PANEL)
         modal.resizable(False, False)
         modal.transient(root)
         modal.grab_set()
         modal.focus_set()
 
-        frame = tk.Frame(
-            modal,
+        # ── Outer shell ──────────────────────────────────────────────────────────
+        shell = tk.Frame(modal, bg=theme.PANEL, padx=20, pady=20)
+        shell.pack(fill="both", expand=True)
+
+        card = tk.Frame(
+            shell,
             bg=theme.CARD,
-            bd=1,
-            relief="solid",
             highlightbackground=theme.BORDER,
             highlightthickness=1,
         )
-        frame.pack(padx=12, pady=12, fill="both", expand=True)
+        card.pack(fill="both", expand=True)
+        card.grid_columnconfigure(0, weight=1)
 
-        for i in range(len(needs) + 2):
-            frame.grid_rowconfigure(i, weight=0)
-        frame.grid_columnconfigure(0, weight=1)
-        label = tk.Label(
-            frame,
-            text="number of opochs ?",
-            bg=theme.CARD,
+        row = 0
+
+        # ── Header bar ───────────────────────────────────────────────────────────
+        header = tk.Frame(card, bg=theme.PANEL, padx=16, pady=12)
+        header.grid(row=row, column=0, sticky="ew")
+        header.grid_columnconfigure(0, weight=1)
+
+        tk.Label(
+            header,
+            text="Training Setup",
+            font=(theme.SANS, 13, "bold"),
+            bg=theme.PANEL,
             fg=theme.TEXT_HI,
-            font=(theme.MONO, 11),
-        )
-        label.grid(row=0, column=0)
+            anchor="w",
+        ).grid(row=0, column=0, sticky="w")
 
-        self.num_epochs_var = tk.IntVar(value=1)
-        self.get_num_epoch = tk.Spinbox(
-            frame, from_=1, to=1000, textvariable=self.num_epochs_var
-        )
-        self.get_num_epoch.grid(row=1, column=0)
+        tk.Label(
+            header,
+            text="Configure paths and epochs before running",
+            font=(theme.MONO, 8),
+            bg=theme.PANEL,
+            fg=theme.TEXT_DIM,
+            anchor="w",
+        ).grid(row=1, column=0, sticky="w", pady=(2, 0))
 
-        widgets = []
-        k = 0
+        row += 1
+
+        # ── Thin divider ─────────────────────────────────────────────────────────
+        tk.Frame(card, bg=theme.BORDER, height=1).grid(row=row, column=0, sticky="ew")
+        row += 1
+
+        # ── Body padding frame ────────────────────────────────────────────────────
+        body = tk.Frame(card, bg=theme.CARD, padx=16, pady=14)
+        body.grid(row=row, column=0, sticky="ew")
+        body.grid_columnconfigure(0, weight=1)
+        row += 1
+
+        body_row = 0
+
+        # ── Warning banner (if data not reviewed) ────────────────────────────────
         if "Data_Not_Reviewed" in needs:
-            warning_label = tk.Label(
-                frame,
-                text="you have to review before , you must have at least one valide mask",
-                bg=theme.DANGER,
-                fg="white",
-                font=(theme.MONO, 13),
-            )
-            warning_label.grid(row=len(needs) + 3, column=0)
+            warn_frame = tk.Frame(body, bg="#4a1a1a", padx=10, pady=8)
+            warn_frame.grid(row=body_row, column=0, sticky="ew", pady=(0, 12))
+            warn_frame.grid_columnconfigure(0, weight=1)
+
+            tk.Label(
+                warn_frame,
+                text="⚠  No validated masks found",
+                font=(theme.SANS, 9, "bold"),
+                bg="#4a1a1a",
+                fg="#ff8080",
+                anchor="w",
+            ).grid(row=0, column=0, sticky="w")
+
+            tk.Label(
+                warn_frame,
+                text="Review and validate at least one mask before training.",
+                font=(theme.MONO, 8),
+                bg="#4a1a1a",
+                fg="#cc6666",
+                anchor="w",
+                wraplength=280,
+                justify="left",
+            ).grid(row=1, column=0, sticky="w", pady=(3, 0))
+
             needs.remove("Data_Not_Reviewed")
-        for i in needs:
-            widgets.append(
-                tk.Button(
-                    frame,
-                    text=i,
-                    bg=theme.PANEL,
-                    fg=theme.TEXT_HI,
-                    relief="flat",
-                    padx=12,
-                    pady=6,
-                )
+            body_row += 1
+
+        # ── Epochs field ─────────────────────────────────────────────────────────
+        tk.Label(
+            body,
+            text="EPOCHS",
+            font=(theme.MONO, 7),
+            bg=theme.CARD,
+            fg=theme.TEXT_DIM,
+            anchor="w",
+        ).grid(row=body_row, column=0, sticky="w")
+        body_row += 1
+
+        epoch_frame = tk.Frame(
+            body, bg=theme.PANEL, highlightbackground=theme.BORDER, highlightthickness=1
+        )
+        epoch_frame.grid(row=body_row, column=0, sticky="ew", pady=(4, 14))
+        epoch_frame.grid_columnconfigure(0, weight=1)
+
+        self.num_epochs_var = tk.IntVar(value=10)
+        self.get_num_epoch = tk.Spinbox(
+            epoch_frame,
+            from_=1,
+            to=1000,
+            textvariable=self.num_epochs_var,
+            font=(theme.MONO, 10),
+            bg=theme.PANEL,
+            fg=theme.TEXT_HI,
+            buttonbackground=theme.MUTED,
+            relief="flat",
+            bd=0,
+            insertbackground=theme.TEXT_HI,
+        )
+        self.get_num_epoch.grid(row=0, column=0, sticky="ew", padx=8, pady=6)
+        body_row += 1
+
+        # ── Path buttons ─────────────────────────────────────────────────────────
+        if needs:
+            tk.Label(
+                body,
+                text="MISSING PATHS",
+                font=(theme.MONO, 7),
+                bg=theme.CARD,
+                fg=theme.TEXT_DIM,
+                anchor="w",
+            ).grid(row=body_row, column=0, sticky="w")
+            body_row += 1
+
+        for i, need in enumerate(needs):
+            btn_frame = tk.Frame(
+                body,
+                bg=theme.MUTED,
+                highlightbackground=theme.BORDER,
+                highlightthickness=1,
             )
-            widgets[k].config(
-                command=lambda b=widgets[k]: file_manager.open_dir(action=i, btn=b),
+            btn_frame.grid(row=body_row, column=0, sticky="ew", pady=(4, 0))
+            btn_frame.grid_columnconfigure(1, weight=1)
+
+            tk.Label(
+                btn_frame,
+                text="○",
+                font=(theme.MONO, 9),
+                bg=theme.MUTED,
+                fg=theme.WARNING,
+                padx=10,
+            ).grid(row=0, column=0)
+
+            btn = tk.Button(
+                btn_frame,
+                text=need,
+                font=(theme.MONO, 8),
+                bg=theme.MUTED,
+                fg=theme.TEXT_HI,
+                activebackground=theme.PANEL,
+                activeforeground=theme.TEXT_HI,
+                relief="flat",
+                bd=0,
+                pady=7,
+                cursor="hand2",
+                anchor="w",
             )
-            widgets[k].grid(row=k + 2, column=0)
-            k += 1
+            btn.config(
+                command=lambda b=btn, n=need: file_manager.open_dir(action=n, btn=b)
+            )
+            btn.grid(row=0, column=1, sticky="ew")
+            body_row += 1
+
+        # ── Divider before footer ─────────────────────────────────────────────────
+        tk.Frame(card, bg=theme.BORDER, height=1).grid(row=row, column=0, sticky="ew")
+        row += 1
+
+        # ── Footer ────────────────────────────────────────────────────────────────
+        footer = tk.Frame(card, bg=theme.CARD, padx=16, pady=12)
+        footer.grid(row=row, column=0, sticky="ew")
+        footer.grid_columnconfigure(0, weight=1)
 
         def verrify():
             miss = []
@@ -244,36 +361,42 @@ class UIutils:
             if not state.path_log:
                 miss.append("PATH_LOG")
             if not state.path_out_valide:
-                miss.append("Data_Not_Reviewed")
+                miss.append("No validated masks")
             if miss:
-                mes = "\n".join(miss)
-                text = f"missing elements: {mes}"
-                messagebox.showerror(title="missing", message=text)
+                messagebox.showerror(
+                    title="Missing configuration",
+                    message="The following are required:\n\n"
+                    + "\n".join(f"  • {m}" for m in miss),
+                )
             else:
                 state.do_config = True
                 state.num_epochs = int(self.get_num_epoch.get())
                 modal.destroy()
 
-        confirm = tk.Button(
-            frame,
-            text="GO",
+        run_btn = tk.Button(
+            footer,
+            text="Start Training →",
+            font=(theme.SANS, 10, "bold"),
             bg=theme.SUCCESS,
             fg=theme.TEXT_HI,
+            activebackground=theme.SUCCESS,
+            activeforeground=theme.TEXT_HI,
             relief="flat",
-            padx=12,
-            pady=6,
+            bd=0,
+            padx=20,
+            pady=9,
+            cursor="hand2",
             command=verrify,
         )
-        confirm.grid(row=len(needs) + 7, column=0)
+        run_btn.grid(row=0, column=0, sticky="e")
 
+        # ── Center on parent ──────────────────────────────────────────────────────
         root.update_idletasks()
         rw, rh = root.winfo_width(), root.winfo_height()
         rx, ry = root.winfo_rootx(), root.winfo_rooty()
         modal.update_idletasks()
         pw, ph = modal.winfo_reqwidth(), modal.winfo_reqheight()
-        x = rx + max(0, (rw - pw) // 2)
-        y = ry + max(0, (rh - ph) // 2)
-        modal.geometry(f"+{x}+{y}")
+        modal.geometry(f"+{rx + max(0, (rw - pw) // 2)}+{ry + max(0, (rh - ph) // 2)}")
 
         root.wait_window(modal)
 
