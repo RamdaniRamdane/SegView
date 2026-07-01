@@ -196,29 +196,7 @@ class FileManager:
             and os.path.isdir(self.state.path_out)
             and os.listdir(self.state.path_out)
         ):
-            if self.ui.st == 2:
-                self.ui.sidebarright.correct_but.grid()
-                self.ui.sidebarright.refuse_but.grid_remove()
-                self.ui.sidebarright.validate_but.grid()
-                self.ui.sidebarright.unreview_but.grid()
-            elif self.ui.st == 1:
-                self.ui.sidebarright.correct_but.grid_remove()
-                self.edit_mode_utils.toggle_tool("deactivate")
-                self.ui.sidebarright.refuse_but.grid()
-                self.ui.sidebarright.unreview_but.grid()
-                self.ui.sidebarright.validate_but.grid_remove()
-            elif self.ui.st == 3:
-                self.ui.sidebarright.correct_but.grid_remove()
-                self.edit_mode_utils.toggle_tool("deactivate")
-                self.ui.sidebarright.refuse_but.grid()
-                self.ui.sidebarright.unreview_but.grid_remove()
-                self.ui.sidebarright.validate_but.grid()
-            else:
-                self.ui.sidebarright.correct_but.grid_remove()
-                self.edit_mode_utils.toggle_tool("deactivate")
-                self.ui.sidebarright.refuse_but.grid_remove()
-                self.ui.sidebarright.unreview_but.grid_remove()
-                self.ui.sidebarright.validate_but.grid_remove()
+            self.ui_handel.sidebar_right_buttons_show(self.edit_mode_utils)
         self.state.edit_mode = False
         self.ui.sidebarright.edit_frame.grid_remove()
         self.ui_handel.update_display()
@@ -289,29 +267,7 @@ class FileManager:
                 and os.path.isdir(self.state.path_out)
                 and os.listdir(self.state.path_out)
             ):
-                if self.ui.st == 2:
-                    self.ui.sidebarright.correct_but.grid()
-                    self.ui.sidebarright.refuse_but.grid_remove()
-                    self.ui.sidebarright.validate_but.grid()
-                    self.ui.sidebarright.unreview_but.grid()
-                elif self.ui.st == 1:
-                    self.ui.sidebarright.correct_but.grid_remove()
-                    self.edit_mode_utils.toggle_tool("deactivate")
-                    self.ui.sidebarright.refuse_but.grid()
-                    self.ui.sidebarright.unreview_but.grid()
-                    self.ui.sidebarright.validate_but.grid_remove()
-                elif self.ui.st == 3:
-                    self.ui.sidebarright.correct_but.grid_remove()
-                    self.edit_mode_utils.toggle_tool("deactivate")
-                    self.ui.sidebarright.refuse_but.grid()
-                    self.ui.sidebarright.unreview_but.grid_remove()
-                    self.ui.sidebarright.validate_but.grid()
-                else:
-                    self.ui.sidebarright.correct_but.grid_remove()
-                    self.edit_mode_utils.toggle_tool("deactivate")
-                    self.ui.sidebarright.refuse_but.grid_remove()
-                    self.ui.sidebarright.unreview_but.grid_remove()
-                    self.ui.sidebarright.validate_but.grid_remove()
+                self.ui_handel.sidebar_right_buttons_show(self.edit_mode_utils)
             self.state.edit_mode = False
             self.ui.sidebarright.edit_frame.grid_remove()
             self.ui_handel.update_display()
@@ -395,31 +351,7 @@ class FileManager:
             self.state.path_out,
         )
         print("######## st ->", self.ui.st)
-        if self.ui.st == 2:
-            print("remove refuse but")
-            self.ui.sidebarright.correct_but.grid()
-            self.ui.sidebarright.refuse_but.grid_remove()
-            self.ui.sidebarright.validate_but.grid()
-            self.ui.sidebarright.unreview_but.grid()
-        elif self.ui.st == 1:
-            self.ui.sidebarright.correct_but.grid_remove()
-            self.edit_mode_utils.toggle_tool("deactivate")
-            self.ui.sidebarright.refuse_but.grid()
-            self.ui.sidebarright.unreview_but.grid()
-            self.ui.sidebarright.validate_but.grid_remove()
-        elif self.ui.st == 3:
-            self.ui.sidebarright.correct_but.grid_remove()
-            self.edit_mode_utils.toggle_tool("deactivate")
-            self.ui.sidebarright.refuse_but.grid()
-            self.ui.sidebarright.unreview_but.grid_remove()
-            self.ui.sidebarright.validate_but.grid()
-        else:
-            self.ui.sidebarright.correct_but.grid_remove()
-            self.edit_mode_utils.toggle_tool("deactivate")
-            self.ui.sidebarright.refuse_but.grid_remove()
-            self.ui.sidebarright.unreview_but.grid_remove()
-            self.ui.sidebarright.validate_but.grid_remove()
-            self.ui.sidebarright.edit_frame.grid_remove()
+        self.ui_handel.sidebar_right_buttons_show(self.edit_mode_utils)
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
@@ -486,8 +418,11 @@ class FileManager:
             st = 1
         elif action == "refuse":
             st = 2
+            self.state.edit_mode = False
         else:
             st = 3
+            self.state.edit_mode = False
+
         UIutils.set_flag(
             self.ui.status.flag_sign,
             self.ui.status.flag_text,
@@ -505,7 +440,6 @@ class FileManager:
             self.ui.sidebarright.unreview_but.grid()
             self.ui.sidebarright.validate_but.grid_remove()
             self.ui.sidebarright.edit_frame.grid_remove()
-            self.state.edit_mode = False
         elif st == 3:
             self.ui.sidebarright.correct_but.grid_remove()
             self.edit_mode_utils.toggle_tool("deactivate")
@@ -513,7 +447,6 @@ class FileManager:
             self.ui.sidebarright.unreview_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
             self.ui.sidebarright.edit_frame.grid_remove()
-            self.state.edit_mode = False
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:

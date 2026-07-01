@@ -15,7 +15,9 @@ class SegViewApp:
         self.ui.set_state(self.state)
         self.edit_mode_utils = EditMode(self, self.state)
         self.file_manager = FileManager(ui, self.state, self, self.edit_mode_utils)
-        self.ui_handel = UIutils(self.ui, self.state, self.file_manager, self)
+        self.ui_handel = UIutils(
+            self.ui, self.state, self.file_manager, self, self.edit_mode_utils
+        )
         self.route = Route(self.ui, self.file_manager, self.edit_mode_utils, self.state)
         self.b3d = B3d(self.state, self.ui, self.route)
         self.worker = None

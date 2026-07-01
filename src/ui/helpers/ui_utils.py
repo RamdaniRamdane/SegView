@@ -7,13 +7,19 @@ from src.services.image_utils import display
 
 
 class UIutils:
-    def __init__(self, ui=None, state=None, file_manager=None, app=None):
+    def __init__(
+        self, ui=None, state=None, file_manager=None, app=None, edit_mode_utils=None
+    ):
         if ui:
             self.ui = ui
         if state:
             self.state = state
         if file_manager:
             self.file_manager = file_manager
+        if app:
+            self.app = app
+        if edit_mode_utils:
+            self.edit_mode_utils = edit_mode_utils
 
     @staticmethod
     def make_btn(
@@ -403,3 +409,28 @@ class UIutils:
     def change_z(self, val):
         self.state.zoom = int(float(val))
         self.update_display()
+
+    def sidebar_right_buttons_show(self, edit_mode_utils):
+        if self.ui.st == 2:
+            self.ui.sidebarright.correct_but.grid()
+            self.ui.sidebarright.refuse_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid()
+            self.ui.sidebarright.unreview_but.grid()
+        elif self.ui.st == 1:
+            self.ui.sidebarright.correct_but.grid_remove()
+            edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid()
+            self.ui.sidebarright.unreview_but.grid()
+            self.ui.sidebarright.validate_but.grid_remove()
+        elif self.ui.st == 3:
+            self.ui.sidebarright.correct_but.grid_remove()
+            edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid()
+            self.ui.sidebarright.unreview_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid()
+        else:
+            self.ui.sidebarright.correct_but.grid_remove()
+            edit_mode_utils.toggle_tool("deactivate")
+            self.ui.sidebarright.refuse_but.grid_remove()
+            self.ui.sidebarright.unreview_but.grid_remove()
+            self.ui.sidebarright.validate_but.grid_remove()
