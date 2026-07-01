@@ -58,6 +58,9 @@ class B3d:
                 "No output folder selected",
             )
             return
+        out = self.route.file_manager.create_segview_out_folder(self.state.path_out)
+        self.state.path_seg = out
+        self.state.path_out = out
 
         self.b3d_Threading.result = None
 

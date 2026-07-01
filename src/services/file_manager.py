@@ -220,7 +220,11 @@ class FileManager:
             )
             if btn:
                 btn.config(bg="white", fg="black")
-            if self.state.path_out and self.state.path_dir:
+            if (
+                self.state.path_out
+                and self.state.path_log
+                and not os.listdir(self.state.path_out)
+            ):
                 self.ui.sidebarright.pred.grid()
         else:
             messagebox.showerror(
@@ -390,16 +394,8 @@ class FileManager:
         out = filedialog.askdirectory(title="Destination for model predictions")
         if not out:
             return
-        out = self.create_segview_out_folder(out)
-        self.state.path_seg = out
         self.state.path_out = out
         self.ui.st = 4
-        self.ui.sidebarright.fine_btn.grid_remove()
-        self.ui.sidebarright.review_container.grid_remove()
-        self.ui.sidebarright.validate_but.grid_remove()
-        self.ui.sidebarright.refuse_but.grid_remove()
-        self.ui.sidebarright.unreview_but.grid_remove()
-        self.ui.sidebarright.edit_frame.grid_remove()
         if self.state.path_log and self.state.path_dir:
             self.ui.sidebarright.pred.grid()
         self.ui.sidebarright.get_folder_out.config(bg="white", fg="black")
@@ -415,38 +411,20 @@ class FileManager:
             action,
         )
         if action == "validate":
-            st = 1
+            self.ui.st = 1
         elif action == "refuse":
-            st = 2
+            self.ui.st = 2
             self.state.edit_mode = False
         else:
-            st = 3
+            self.ui.st = 3
             self.state.edit_mode = False
 
         UIutils.set_flag(
             self.ui.status.flag_sign,
             self.ui.status.flag_text,
-            st,
+            self.ui.st,
         )
-        if st == 2:
-            self.ui.sidebarright.correct_but.grid()
-            self.ui.sidebarright.refuse_but.grid_remove()
-            self.ui.sidebarright.validate_but.grid()
-            self.ui.sidebarright.unreview_but.grid()
-        elif st == 1:
-            self.ui.sidebarright.correct_but.grid_remove()
-            self.edit_mode_utils.toggle_tool("deactivate")
-            self.ui.sidebarright.refuse_but.grid()
-            self.ui.sidebarright.unreview_but.grid()
-            self.ui.sidebarright.validate_but.grid_remove()
-            self.ui.sidebarright.edit_frame.grid_remove()
-        elif st == 3:
-            self.ui.sidebarright.correct_but.grid_remove()
-            self.edit_mode_utils.toggle_tool("deactivate")
-            self.ui.sidebarright.refuse_but.grid()
-            self.ui.sidebarright.unreview_but.grid_remove()
-            self.ui.sidebarright.validate_but.grid()
-            self.ui.sidebarright.edit_frame.grid_remove()
+        self.ui_handel.sidebar_right_buttons_show(self.edit_mode_utils)
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()
         else:
