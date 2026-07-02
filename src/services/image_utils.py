@@ -23,6 +23,9 @@ def overlay(base, mask, alpha=0.4):
             resample=Image.NEAREST,
         )
         mask = np.array(mask_img)
+        print("mask \n", np.unique(mask))
+
+    print("mask \n", np.unique(mask))
     mask = (mask > 0).astype(np.uint8) * 255
     red_layer = np.zeros_like(base_rgb)
     red_layer[..., 0] = mask

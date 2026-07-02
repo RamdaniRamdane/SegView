@@ -44,6 +44,7 @@ class AppState:
     out_name_folder: str = ""
 
     def __setattr__(self, name, value):
+        debug = False
         old = getattr(self, name, "<UNSET>")
 
         changed = True
@@ -53,7 +54,7 @@ class AppState:
         else:
             changed = old != value
 
-        if changed:
+        if changed and debug:
             print(f"[STATE] {name}: {type(old)} -> {type(value)} -> {value}")
 
         super().__setattr__(name, value)
