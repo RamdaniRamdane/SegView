@@ -32,6 +32,7 @@ class UIutils:
         pady_top=8,
         col=0,
         image=None,
+        colspn=None,
     ):
 
         frame = tk.Frame(
@@ -45,6 +46,7 @@ class UIutils:
             sticky="ew",
             padx=0,
             pady=(pady_top, 0),
+            columnspan=colspn if colspn else 1,
         )
 
         frame.grid_columnconfigure(
@@ -97,7 +99,16 @@ class UIutils:
 
     @staticmethod
     def set_flag(flag_dot, flag_text, st):
+        import inspect
 
+        caller = inspect.stack()[1]
+
+        print("=== DEBUG CALL set flag===")
+        print(f"Appelée par : {caller.function}")
+        print(f"Fichier     : {caller.filename}")
+        print(f"Ligne       : {caller.lineno}")
+        print(f"st        : {st}")
+        print("=================")
         if st == 1:
             flag_dot.config(fg=theme.SUCCESS)
 
@@ -114,13 +125,16 @@ class UIutils:
                 fg=theme.DANGER,
             )
 
-        else:
+        elif st == 3:
             flag_dot.config(fg=theme.WARNING)
 
             flag_text.config(
                 text="unreviewed",
                 fg=theme.WARNING,
             )
+        else:
+            flag_dot.config(fg=theme.TEXT_HI)
+            flag_text.config(text="not yet predicted", fg=theme.TEXT_HI)
 
     def navigate(self, direction):
         if not self.state.files:
@@ -416,21 +430,25 @@ class UIutils:
             self.ui.sidebarright.refuse_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
             self.ui.sidebarright.unreview_but.grid()
+            self.ui.sidebarright.decision_label.grid()
         elif self.ui.st == 1:
             self.ui.sidebarright.correct_but.grid_remove()
             edit_mode_utils.toggle_tool("deactivate")
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.unreview_but.grid()
             self.ui.sidebarright.validate_but.grid_remove()
+            self.ui.sidebarright.decision_label.grid()
         elif self.ui.st == 3:
             self.ui.sidebarright.correct_but.grid_remove()
             edit_mode_utils.toggle_tool("deactivate")
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.unreview_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
+            self.ui.sidebarright.decision_label.grid()
         else:
             self.ui.sidebarright.correct_but.grid_remove()
             edit_mode_utils.toggle_tool("deactivate")
             self.ui.sidebarright.refuse_but.grid_remove()
             self.ui.sidebarright.unreview_but.grid_remove()
             self.ui.sidebarright.validate_but.grid_remove()
+            self.ui.sidebarright.decision_label.grid_remove()

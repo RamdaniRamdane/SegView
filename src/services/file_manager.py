@@ -33,13 +33,14 @@ class FileManager:
             self.ui.sidebarright.validate_but.grid()
             self.ui.sidebarright.unreview_but.grid()
             pred = tifffile.imread(pred_path)
-            st = self.status(pred_path)
-            self.ui.st = st
+            self.status(pred_path)
             UIutils.set_flag(
                 self.ui.status.flag_sign,
                 self.ui.status.flag_text,
-                st,
+                self.ui.st,
             )
+
+            self.ui_handel.sidebar_right_buttons_show(self.edit_mode_utils)
 
             return pred, pred_path, True
         else:
@@ -57,6 +58,7 @@ class FileManager:
 
     def status(self, file_path):
         if not file_path:
+            self.ui.st = 0
             return 0
         parent = os.path.dirname(os.path.dirname(file_path))
         filename = os.path.basename(file_path)
@@ -74,12 +76,16 @@ class FileManager:
         path_out = os.path.join(self.ui.state.path_out, filename)
 
         if os.path.isfile(path_val):
+            self.ui.st = 1
             return 1
 
-        if os.path.isfile(path_ref):
+        elif os.path.isfile(path_ref):
+            self.ui.st = 2
             return 2
-        if path_out and os.path.isfile(path_out):
+        elif path_out and os.path.isfile(path_out):
+            self.ui.st = 3
             return 3
+        self.ui.st = 4
         return 4
 
     def save_choice(
@@ -239,10 +245,7 @@ class FileManager:
         if "config.json" in list_seg:
             self.state.path_seg = path_dir
             # traitement selon config.json
-            print(
-                "path de la config :",
-                os.path.join(self.state.path_seg, "config.json"),
-            )
+
             cfg = self.load_config(os.path.join(self.state.path_seg, "config.json"))
 
             pred_name_fold = cfg["pred"] if cfg else ""
@@ -354,7 +357,7 @@ class FileManager:
             self.state.file_path,
             self.state.path_out,
         )
-        print("######## st ->", self.ui.st)
+
         self.ui_handel.sidebar_right_buttons_show(self.edit_mode_utils)
         if self.state.edited:
             self.ui.sidebarright.changes_state_label.grid_remove()

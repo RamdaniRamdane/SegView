@@ -79,11 +79,13 @@ class Sidebarright:
         self.navigateFrame.grid(row=1, column=0)
         self.next_btn.grid(row=0, column=1, sticky="en", padx=2, pady=2)
         self.prev_btn.grid(row=0, column=0, sticky="en", padx=2, pady=2)
-
+        self.decision_label = UIutils.sidebar_label(
+            self.review_container, "Decision :", 2
+        )
         self.validate_but = UIutils.make_btn(
             self.review_container,
             "Validate",
-            2,
+            3,
             color=theme.SUCCESS,
             text_color="white",
             pady_top=4,
@@ -91,7 +93,7 @@ class Sidebarright:
         self.refuse_but = UIutils.make_btn(
             self.review_container,
             "Refuse",
-            3,
+            4,
             color=theme.DANGER,
             text_color="white",
             pady_top=4,
@@ -99,7 +101,7 @@ class Sidebarright:
         self.unreview_but = UIutils.make_btn(
             self.review_container,
             "unreview",
-            4,
+            5,
             color=theme.WARNING,
             text_color="white",
             pady_top=4,
@@ -107,7 +109,7 @@ class Sidebarright:
         self.correct_but = UIutils.make_btn(
             self.review_container,
             "correct imperfections",
-            5,
+            6,
             color=theme.ACCENT,
             text_color="white",
             pady_top=4,
@@ -118,9 +120,32 @@ class Sidebarright:
         self.edit_frame = tk.Frame(
             self.review_container, bg=theme.PANEL, width=200, height=100
         )
-        for i in range(3):
+        for i in range(5):
             self.edit_frame.grid_rowconfigure(i, weight=0)
+        for i in range(3):
             self.edit_frame.grid_columnconfigure(i, weight=0)
+
+        self.tool_size_slider = tk.Scale(
+            self.edit_frame,
+            from_=1,
+            to=20,
+            orient="horizontal",
+            length=100,
+            showvalue=True,
+            font=(theme.MONO, 8),
+            bg=theme.PANEL,
+            fg=theme.TEXT_DIM,
+            troughcolor=theme.BORDER,
+            activebackground=theme.DANGER,
+            highlightthickness=0,
+            bd=0,
+            sliderlength=15,
+            sliderrelief="flat",
+            width=6,
+        )
+
+        self.tool_size_slider.set(2)
+        self.tool_size_slider.grid(row=0, column=0, columnspan=2)
 
         self.brush_icon = image_utils.load_icon(IMG_DIR, "brush.png", (24, 24))
         self.brush = UIutils.make_btn(
@@ -154,6 +179,7 @@ class Sidebarright:
             pady_top=4,
             col=1,
             image=self.save_icon,
+            colspn=2,
         )
         self.changes_state_label = tk.Label(
             self.edit_frame,
@@ -165,31 +191,11 @@ class Sidebarright:
             padx=10,
             pady=10,
         )
-        self.tool_size_slider = tk.Scale(
-            self.edit_frame,
-            from_=1,
-            to=20,
-            orient="horizontal",
-            length=100,
-            showvalue=True,
-            font=(theme.MONO, 8),
-            bg=theme.PANEL,
-            fg=theme.TEXT_DIM,
-            troughcolor=theme.BORDER,
-            activebackground=theme.DANGER,
-            highlightthickness=0,
-            bd=0,
-            sliderlength=15,
-            sliderrelief="flat",
-            width=6,
-        )
-        self.tool_size_slider.set(2)
-        self.tool_size_slider.grid(row=0, column=0, columnspan=2)
-        self.changes_state_label.grid(row=2, column=0, columnspan=2)
 
         self.get_segview_folder.grid(row=0, column=0, pady=10)
-        self.edit_frame.grid(row=6, column=0)
+        self.edit_frame.grid(row=7, column=0)
 
+        self.changes_state_label.grid(row=2, column=0, columnspan=2)
         # keep frames hidden by default (same behavior as original)
         self.review_container.grid_remove()
         self.validate_but.grid_remove()
@@ -212,7 +218,7 @@ class Sidebarright:
             compound="left",
         )
 
-        self.fine_btn.grid(row=7, column=0)
+        self.fine_btn.grid(row=8, column=0)
         self.fine_btn.grid_remove()
         # predictions frame
         self.pred_container = tk.Frame(
@@ -228,7 +234,7 @@ class Sidebarright:
         )
         self.get_folder_out = UIutils.make_btn(
             self.pred_container,
-            "OUT FOlDER",
+            "OUT Folder",
             1,
             color=theme.MUTED,
             text_color=theme.TEXT,
@@ -262,22 +268,7 @@ class Sidebarright:
             text_color=theme.TEXT,
             pady_top=6,
         )
-        # self.get_valid_masks = UIutils.make_btn(
-        #    self.fine_container,
-        #    "Valide Masks",
-        #    1,
-        #    color=theme.MUTED,
-        #    text_color=theme.TEXT,
-        #    pady_top=6,
-        # )
-        # self.make_config_file = UIutils.make_btn(
-        #    self.fine_container,
-        #    "Make Config",
-        #    2,
-        #    color=theme.MUTED,
-        #    text_color=theme.TEXT,
-        #    pady_top=6,
-        # )
+
         self.start_fine_tuning = UIutils.make_btn(
             self.fine_container,
             "Start Fine Tuning",
@@ -288,7 +279,6 @@ class Sidebarright:
         )
 
         self.fine_container.grid_remove()
-        # self.get_valid_masks.grid_remove()
-        # self.make_config_file.grid_remove()
+        self.decision_label.grid_remove()
         self.start_fine_tuning.grid_remove()
         self.get_model_fine.grid_remove()
