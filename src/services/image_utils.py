@@ -1,5 +1,16 @@
+import random
+
 import numpy as np
 from PIL import Image, ImageTk
+
+BASE_COLORS = [
+    (255, 0, 0),  # rouge
+    (0, 0, 255),  # bleu
+    (255, 255, 0),  # jaune
+    (255, 0, 255),  # magenta
+    (255, 165, 0),  # orange
+    (128, 0, 128),  # violet
+]
 
 
 def normalize_image(data):
@@ -13,9 +24,42 @@ def normalize_image(data):
     return (data * 255).astype(np.uint8)
 
 
+def color_distance(c1, c2):
+    c1 = np.array(c1)
+    c2 = np.array(c2)
+    return np.linalg.norm(c1 - c2)
+
+
+def generate_colors(n, min_distance=120):
+    colors = BASE_COLORS.copy()
+
+    while len(colors) < n:
+        candidate = (
+            random.randint(30, 255),
+            random.randint(30, 255),
+            random.randint(30, 255),
+        )
+
+        # éviter noir
+        if sum(candidate) < 100:
+            continue
+
+        valid = True
+        for existing in colors:
+            if color_distance(candidate, existing) < min_distance:
+                valid = False
+                break
+
+        if valid:
+            colors.append(candidate)
+
+    return colors
+
+
 def overlay(base, mask, alpha=0.4):
     base = normalize_image(base)
     base_rgb = np.stack([base] * 3, axis=-1)
+
     if mask.shape != base.shape:
         mask_img = Image.fromarray(mask.astype(np.uint8))
         mask_img = mask_img.resize(
@@ -23,13 +67,21 @@ def overlay(base, mask, alpha=0.4):
             resample=Image.NEAREST,
         )
         mask = np.array(mask_img)
-        print("mask \n", np.unique(mask))
 
-    print("mask \n", np.unique(mask))
-    mask = (mask > 0).astype(np.uint8) * 255
-    red_layer = np.zeros_like(base_rgb)
-    red_layer[..., 0] = mask
-    result = (1 - alpha) * base_rgb + alpha * red_layer
+    classes = [c for c in np.unique(mask) if c != 0]
+    colors = generate_colors(len(classes))
+
+    result = base_rgb.astype(np.float32).copy()
+
+    color_map = dict(zip(classes, colors))
+    print(color_map)
+
+    for cls, color in color_map.items():
+        class_mask = mask == cls
+        color = np.array(color, dtype=np.float32)
+
+        result[class_mask] = (1 - alpha) * result[class_mask] + alpha * color
+
     return result.astype(np.uint8)
 
 
