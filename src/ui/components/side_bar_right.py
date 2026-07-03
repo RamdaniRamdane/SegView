@@ -120,10 +120,13 @@ class Sidebarright:
         self.edit_frame = tk.Frame(
             self.review_container, bg=theme.PANEL, width=200, height=100
         )
+
         for i in range(5):
             self.edit_frame.grid_rowconfigure(i, weight=0)
-        for i in range(3):
+        for i in range(4):
             self.edit_frame.grid_columnconfigure(i, weight=0)
+
+        self.tools_label = UIutils.sidebar_label(self.edit_frame, "Tools:", 0, colspn=3)
 
         self.tool_size_slider = tk.Scale(
             self.edit_frame,
@@ -145,35 +148,35 @@ class Sidebarright:
         )
 
         self.tool_size_slider.set(2)
-        self.tool_size_slider.grid(row=0, column=0, columnspan=2)
+        self.tool_size_slider.grid(row=1, column=1, columnspan=2)
 
         self.brush_icon = image_utils.load_icon(IMG_DIR, "brush.png", (24, 24))
         self.brush = UIutils.make_btn(
             self.edit_frame,
             "",
-            1,
+            2,
             color="#555",
             text_color=theme.MUTED,
             pady_top=4,
-            col=0,
+            col=1,
             image=self.brush_icon,
         )
         self.eraser_icon = image_utils.load_icon(IMG_DIR, "eraser.png", (24, 24))
         self.ereaser = UIutils.make_btn(
             self.edit_frame,
             "",
-            1,
+            2,
             color=theme.MUTED,
             text_color=theme.MUTED,
             pady_top=4,
-            col=1,
+            col=2,
             image=self.eraser_icon,
         )
         self.save_icon = image_utils.load_icon(IMG_DIR, "save.png", (24, 24))
         self.save_changes = UIutils.make_btn(
             self.edit_frame,
             "",
-            2,
+            3,
             color=theme.SUCCESS,
             text_color="white",
             pady_top=4,
@@ -195,7 +198,7 @@ class Sidebarright:
         self.get_segview_folder.grid(row=0, column=0, pady=10)
         self.edit_frame.grid(row=7, column=0)
 
-        self.changes_state_label.grid(row=2, column=0, columnspan=2)
+        self.changes_state_label.grid(row=3, column=0, columnspan=3)
         # keep frames hidden by default (same behavior as original)
         self.review_container.grid_remove()
         self.validate_but.grid_remove()

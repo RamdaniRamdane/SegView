@@ -78,7 +78,7 @@ class UIutils:
         return button
 
     @staticmethod
-    def sidebar_label(parent, text, row):
+    def sidebar_label(parent, text, row, colspn=None):
 
         label = tk.Label(
             parent,
@@ -95,6 +95,7 @@ class UIutils:
             column=0,
             sticky="ew",
             pady=(14, 0),
+            columnspan=colspn if colspn else 1,
         )
 
         return label
@@ -431,25 +432,30 @@ class UIutils:
 
     def sidebar_right_buttons_show(self, edit_mode_utils):
         if self.ui.st == 2:
+            # refuse
             self.ui.sidebarright.correct_but.grid()
             self.ui.sidebarright.refuse_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
             self.ui.sidebarright.unreview_but.grid()
             self.ui.sidebarright.decision_label.grid()
         elif self.ui.st == 1:
+            # validate
             self.ui.sidebarright.correct_but.grid_remove()
             edit_mode_utils.toggle_tool("deactivate")
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.unreview_but.grid()
             self.ui.sidebarright.validate_but.grid_remove()
             self.ui.sidebarright.decision_label.grid()
+            self.ui.sidebarright.edit_frame.grid_remove()
         elif self.ui.st == 3:
+            # unreview
             self.ui.sidebarright.correct_but.grid_remove()
             edit_mode_utils.toggle_tool("deactivate")
             self.ui.sidebarright.refuse_but.grid()
             self.ui.sidebarright.unreview_but.grid_remove()
             self.ui.sidebarright.validate_but.grid()
             self.ui.sidebarright.decision_label.grid()
+            self.ui.sidebarright.edit_frame.grid_remove()
         else:
             self.ui.sidebarright.correct_but.grid_remove()
             edit_mode_utils.toggle_tool("deactivate")
@@ -457,3 +463,45 @@ class UIutils:
             self.ui.sidebarright.unreview_but.grid_remove()
             self.ui.sidebarright.validate_but.grid_remove()
             self.ui.sidebarright.decision_label.grid_remove()
+            self.ui.sidebarright.edit_frame.grid_remove()
+
+    def rgb_to_hex(rgb):
+        return "#{:02x}{:02x}{:02x}".format(*rgb)
+
+    def show_palette(self):
+        popup = tk.Toplevel(self.app.root)
+        popup.overrideredirect(True)
+        popup.configure(bg="#2b2b2b")
+
+        # position near mouse
+        x = self.app.root.winfo_pointerx()
+        y = self.app.root.winfo_pointery()
+
+        popup.geometry(f"+{x}+{y}")
+
+        cols = 5
+        nb_classes = self.app.state.num_classes - 1
+
+        for idx in range(nb_classes):
+            row = idx // cols
+            col = idx % cols
+
+            color = self.rgb_to_hex(self.app.state.colors[idx])
+
+            btn = tk.Button(
+                popup,
+                bg=color,
+                text=str(idx + 1),
+                width=4,
+                height=2,
+                relief="flat",
+                command=lambda c=idx + 1, p=popup: self.select_class(c, p),
+            )
+            btn.grid(row=row, column=col, padx=2, pady=2)
+
+        popup.focus_force()
+        popup.bind("<FocusOut>", lambda e: popup.destroy())
+
+    def select_class(self, cls, popup):
+        self.app.state.selected_class = cls
+        popup.destroy()
