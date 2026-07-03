@@ -40,7 +40,6 @@ def generate_colors(n, min_distance=120):
             random.randint(30, 255),
         )
 
-        # éviter noir
         if sum(candidate) < 100:
             continue
 
@@ -56,7 +55,7 @@ def generate_colors(n, min_distance=120):
     return colors
 
 
-def overlay(base, mask, alpha=0.4):
+def overlay(base, mask, colors_st, alpha=0.4):
     base = normalize_image(base)
     base_rgb = np.stack([base] * 3, axis=-1)
 
@@ -70,11 +69,11 @@ def overlay(base, mask, alpha=0.4):
 
     classes = [c for c in np.unique(mask) if c != 0]
     colors = generate_colors(len(classes))
-
+    colors_st.clear()
+    colors_st.extend(colors)
     result = base_rgb.astype(np.float32).copy()
 
     color_map = dict(zip(classes, colors))
-    print(color_map)
 
     for cls, color in color_map.items():
         class_mask = mask == cls
@@ -86,8 +85,12 @@ def overlay(base, mask, alpha=0.4):
 
 
 def display(canvas, data, pred=None):
+    colors = []
+    print("couleurs avant", colors)
     if pred is not None:
-        img = overlay(data, pred)
+        img = overlay(base=data, mask=pred, colors_st=colors)
+
+        print("couleurs apres", colors)
     else:
         gray = normalize_image(data)
         img = np.stack([gray] * 3, axis=-1)
@@ -113,6 +116,7 @@ def display(canvas, data, pred=None):
         image=tk_img,
     )
     canvas.image = tk_img
+    return colors
 
 
 def load_icon(img_dir, name, size=None):

@@ -2,6 +2,8 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 
+import numpy
+
 import src.ui.theme as theme
 from src.services.image_utils import display
 
@@ -182,13 +184,16 @@ class UIutils:
                 pred_img = self.state.prediction
             else:
                 pred_img = self.state.prediction[self.state.zoom]
-            display(
-                self.ui.canvas,
-                img,
-                pred_img,
+            colors = display(
+                canvas=self.ui.canvas,
+                data=img,
+                pred=pred_img,
             )
+            self.state.num_classes = len(numpy.unique(pred_img))
         else:
-            display(self.ui.canvas, img)
+            colors = display(canvas=self.ui.canvas, data=img)
+            self.state.num_classes = 0
+        self.state.colors = colors if colors else self.state.colors
 
     def open_popup(self, root, needs, file_manager, state):
         modal = tk.Toplevel(root)

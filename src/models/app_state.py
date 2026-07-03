@@ -40,11 +40,13 @@ class AppState:
     new_model_path: str = ""
     do_config: bool = False
     num_epochs: int = 1
-    num_classes: int = 1
+    num_classes: int = 0
     out_name_folder: str = ""
 
+    colors = []
+
     def __setattr__(self, name, value):
-        debug = False
+        debug = True
         old = getattr(self, name, "<UNSET>")
 
         changed = True
