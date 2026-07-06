@@ -52,6 +52,8 @@ class EditMode:
             self.app.ui.sidebarright.brush.config(
                 bg="#3a3a40",
             )
+
+            self.app.ui.sidebarright.color.grid_remove()
         else:
             self.app.ui.sidebarright.brush.config(
                 bg="#3a3a40",
@@ -59,6 +61,8 @@ class EditMode:
             self.app.ui.sidebarright.ereaser.config(
                 bg="#3a3a40",
             )
+
+            self.app.ui.sidebarright.color.grid_remove()
 
     def on_mouse_down(self, event):
         self.apply_tool(
