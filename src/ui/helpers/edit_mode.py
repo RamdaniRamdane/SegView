@@ -13,6 +13,8 @@ class EditMode:
             self.app.ui.sidebarright.edit_frame.grid()
             self.app.ui.sidebarright.ereaser.grid()
             self.app.ui.sidebarright.brush.grid()
+            self.app.ui.sidebarright.color.config(bg="red")
+            self.state.brush_bit = 1
         else:
             self.toggle_tool("deactivate")
             self.app.ui.sidebarright.edit_frame.grid_remove()
@@ -96,7 +98,7 @@ class EditMode:
         r = self.state.edit_tool_size
         yy, xx = np.ogrid[:h, :w]
         mask = ((yy - iy) ** 2 + (xx - ix) ** 2) <= r * r
-        bit = 1 if tool == "Brush" else 0
+        bit = self.state.brush_bit if tool == "Brush" else 0
         if self.app.state.prediction.ndim == 2:
             self.app.state.prediction[mask] = bit
         else:

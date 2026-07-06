@@ -59,6 +59,7 @@ class SegViewApp:
         self.ui.sidebarright.brush.config(
             command=lambda: self.edit_mode_utils.toggle_tool("Brush")
         )
+        self.ui.sidebarright.color.config(command=self.ui_handel.show_palette)
         self.ui.sidebarright.ereaser.config(
             command=lambda: self.edit_mode_utils.toggle_tool("Ereaser")
         )

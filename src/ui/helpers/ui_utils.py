@@ -35,6 +35,7 @@ class UIutils:
         col=0,
         image=None,
         colspn=None,
+        active=True,
     ):
 
         frame = tk.Frame(
@@ -55,21 +56,35 @@ class UIutils:
             0,
             weight=1,
         )
+        if active:
+            button = tk.Button(
+                frame,
+                text=text,
+                font=(theme.SANS, 9),
+                bg=color,
+                fg=text_color,
+                activebackground=color,
+                activeforeground=text_color,
+                relief="flat",
+                bd=0,
+                pady=6,
+                cursor="hand2",
+                command=cmd,
+            )
+        else:
+            button = tk.Button(
+                frame,
+                text=text,
+                font=(theme.SANS, 9),
+                bg=color,
+                fg=text_color,
+                relief="flat",
+                bd=0,
+                pady=6,
+                cursor="hand2",
+                command=cmd,
+            )
 
-        button = tk.Button(
-            frame,
-            text=text,
-            font=(theme.SANS, 9),
-            bg=color,
-            fg=text_color,
-            activebackground=color,
-            activeforeground=text_color,
-            relief="flat",
-            bd=0,
-            pady=6,
-            cursor="hand2",
-            command=cmd,
-        )
         if image:
             button.config(image=image, compound="left")
 
@@ -465,17 +480,17 @@ class UIutils:
             self.ui.sidebarright.decision_label.grid_remove()
             self.ui.sidebarright.edit_frame.grid_remove()
 
-    def rgb_to_hex(rgb):
+    def rgb_to_hex(self, rgb):
         return "#{:02x}{:02x}{:02x}".format(*rgb)
 
     def show_palette(self):
-        popup = tk.Toplevel(self.app.root)
+        popup = tk.Toplevel(self.ui.root)
         popup.overrideredirect(True)
         popup.configure(bg="#2b2b2b")
 
         # position near mouse
-        x = self.app.root.winfo_pointerx()
-        y = self.app.root.winfo_pointery()
+        x = self.ui.root.winfo_pointerx()
+        y = self.ui.root.winfo_pointery()
 
         popup.geometry(f"+{x}+{y}")
 
@@ -499,9 +514,13 @@ class UIutils:
             )
             btn.grid(row=row, column=col, padx=2, pady=2)
 
-        popup.focus_force()
-        popup.bind("<FocusOut>", lambda e: popup.destroy())
+    #        popup.focus_force()
+    #        popup.bind("<FocusOut>", lambda e: popup.destroy())
 
     def select_class(self, cls, popup):
-        self.app.state.selected_class = cls
+        print("clicked:")
+        self.state.brush_bit = cls
+        self.ui.sidebarright.color.config(
+            bg=self.rgb_to_hex(self.app.state.colors[cls - 1])
+        )
         popup.destroy()

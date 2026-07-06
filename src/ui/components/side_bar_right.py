@@ -149,7 +149,10 @@ class Sidebarright:
 
         self.tool_size_slider.set(2)
         self.tool_size_slider.grid(row=1, column=1, columnspan=2)
-
+        self.color = UIutils.make_btn(
+            self.edit_frame, "", 2, color="red", pady_top=4, col=0, active=False
+        )
+        self.color.config(width=1, height=1, padx=0, pady=0)
         self.brush_icon = image_utils.load_icon(IMG_DIR, "brush.png", (24, 24))
         self.brush = UIutils.make_btn(
             self.edit_frame,
