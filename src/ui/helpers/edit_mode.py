@@ -41,6 +41,7 @@ class EditMode:
             self.app.ui.sidebarright.ereaser.config(
                 bg="#3a3a40",
             )
+            self.app.ui.sidebarright.color.grid()
         elif tool == "Ereaser":
             self.app.ui.sidebarright.ereaser.config(
                 bg="white",

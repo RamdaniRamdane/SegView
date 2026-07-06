@@ -153,6 +153,8 @@ class Sidebarright:
             self.edit_frame, "", 2, color="red", pady_top=4, col=0, active=False
         )
         self.color.config(width=1, height=1, padx=0, pady=0)
+
+        self.color.grid_remove()
         self.brush_icon = image_utils.load_icon(IMG_DIR, "brush.png", (24, 24))
         self.brush = UIutils.make_btn(
             self.edit_frame,
