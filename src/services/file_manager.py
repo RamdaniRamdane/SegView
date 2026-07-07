@@ -250,6 +250,22 @@ class FileManager:
 
             pred_name_fold = cfg["pred"] if cfg else ""
             self.state.out_name_folder = pred_name_fold
+            if os.path.isdir(os.path.join(self.state.path_seg, pred_name_fold)):
+                list = os.listdir(os.path.join(self.state.path_seg, pred_name_fold))
+                list_tif = [f for f in list if f.lower().endswith(".tif")]
+
+                if not list_tif:
+                    messagebox.showerror(
+                        title="No Segview folder Provided",
+                        message="check if the folder contain fold where there is masks please import correct fodler",
+                    )
+                    return
+            else:
+                messagebox.showerror(
+                    title="No Segview folder Provided",
+                    message="check if the folder contain fold where there is masks please import correct fodler",
+                )
+                return
 
             self.state.path_out = os.path.join(self.state.path_seg, pred_name_fold)
             self.ui.sidebarright.get_segview_folder.config(bg="white", fg="black")

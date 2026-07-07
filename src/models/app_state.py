@@ -43,7 +43,8 @@ class AppState:
     num_epochs: int = 1
     num_classes: int = 0
     out_name_folder: str = ""
-
+    raw_dim: int = 0
+    mask_dim: int = 0
     colors = []
 
     def __setattr__(self, name, value):
