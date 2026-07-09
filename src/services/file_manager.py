@@ -33,6 +33,11 @@ class FileManager:
             self.ui.sidebarright.validate_but.grid()
             self.ui.sidebarright.unreview_but.grid()
             pred = tifffile.imread(pred_path)
+            self.state.mask_dim = pred.ndim
+            self.ui.topbar.show_info.config(
+                text=f"Raw = {self.state.raw_dim if self.state.raw_dim else '--'}D, Mask = {self.state.mask_dim if self.state.mask_dim else '--'}D, Classes = {self.state.num_classes - 1 if self.state.num_classes else '--'} "
+            )
+            # show it
             self.status(pred_path)
             UIutils.set_flag(
                 self.ui.status.flag_sign,
@@ -351,7 +356,12 @@ class FileManager:
         )
         self.state.data = tifffile.imread(path)
         self.state.shape = self.state.data.shape
+        self.state.raw_dim = self.state.data.ndim
 
+        self.ui.topbar.show_info.config(
+            text=f"Raw = {self.state.raw_dim if self.state.raw_dim else '--'}D, Mask = {self.state.mask_dim if self.state.mask_dim else '--'}D, Classes = {self.state.num_classes - 1 if self.state.num_classes else '--'} "
+        )
+        # show it
         if self.state.data.ndim > 2:
             self.state.zoom = int(self.state.shape[0] / 2)
         else:

@@ -15,8 +15,9 @@ class TopBar:
             self.root, bg=theme.BG, height=30, width=self.root.winfo_screenmmwidth()
         )
         self.frame.grid_rowconfigure(0, weight=0)
-        for i in range(3):
+        for i in range(4):
             self.frame.grid_columnconfigure(i, weight=0)
+        self.frame.grid_columnconfigure(2, weight=4)
 
         self.predict_icon = image_utils.load_icon(IMG_DIR, "predict.png", (10, 10))
         self.pred_btn = tk.Button(
@@ -43,8 +44,16 @@ class TopBar:
             image=self.review_icon,
             compound="left",
         )
+        self.show_info = tk.Label(
+            self.frame,
+            text="Raw = -- D, Mask = -- D, Classes = -- ",
+            font=(theme.MONO, 8),
+            bg=theme.BG,
+            fg=theme.TEXT_HI,
+        )
 
         self.pred_btn.grid(row=0, column=0, sticky="e")
         self.rev_btn.grid(row=0, column=1, sticky="e")
+        self.show_info.grid(row=0, column=3, sticky="e", padx=10)
 
-        self.frame.grid_propagate(False)
+        # self.frame.grid_propagate(False)

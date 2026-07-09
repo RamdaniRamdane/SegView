@@ -205,7 +205,11 @@ class UIutils:
                 data=img,
                 pred=pred_img,
             )
-            self.state.num_classes = len(numpy.unique(pred_img))
+            self.state.num_classes = (
+                len(numpy.unique(pred_img))
+                if not self.state.num_classes
+                else self.state.num_classes
+            )
         else:
             colors = display(canvas=self.ui.canvas, data=img)
             self.state.num_classes = 0
