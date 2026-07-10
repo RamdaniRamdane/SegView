@@ -1,6 +1,8 @@
 import numpy as np
 import tifffile
 
+from src.services.image_utils import update_region
+
 
 class EditMode:
     def __init__(self, app, state):
@@ -79,42 +81,111 @@ class EditMode:
         )
 
     def apply_tool(self, x, y, tool):
+
         if not tool:
             return
+
         if self.app.state.data is None:
             return
+
         if self.app.state.prediction is None:
             self.app.state.prediction = np.zeros_like(
                 self.app.state.data,
                 dtype=np.uint8,
             )
-        h, w = self.app.state.data.shape[-2:]
+
+        # Image courante
+        if self.app.state.data.ndim == 2:
+            img_h, img_w = self.app.state.data.shape
+
+        else:
+            img_h, img_w = self.app.state.data.shape[-2:]
+
+        # Conversion canvas -> image
+
         c_w = self.app.ui.canvas.winfo_width()
         c_h = self.app.ui.canvas.winfo_height()
-        scale = min(c_w / w, c_h / h)
-        new_w = int(w * scale)
-        new_h = int(h * scale)
+
+        scale = min(c_w / img_w, c_h / img_h)
+
+        new_w = int(img_w * scale)
+        new_h = int(img_h * scale)
+
         offset_x = (c_w - new_w) // 2
+
         offset_y = (c_h - new_h) // 2
+
         ix = int((x - offset_x) / scale)
+
         iy = int((y - offset_y) / scale)
-        if ix < 0 or iy < 0 or ix >= w or iy >= h:
+
+        if ix < 0 or iy < 0 or ix >= img_w or iy >= img_h:
             return
+
+        # Taille brush
+
         r = self.state.edit_tool_size
-        yy, xx = np.ogrid[:h, :w]
+
+        # Seulement la zone du brush
+
+        x0 = max(0, ix - r)
+
+        x1 = min(img_w, ix + r + 1)
+
+        y0 = max(0, iy - r)
+
+        y1 = min(img_h, iy + r + 1)
+
+        # Création du cercle local
+
+        yy, xx = np.ogrid[y0:y1, x0:x1]
+
         mask = ((yy - iy) ** 2 + (xx - ix) ** 2) <= r * r
-        bit = self.state.brush_bit if tool == "Brush" else 0
+
+        value = self.state.brush_bit if tool == "Brush" else 0
+
+        # Application du brush
+
         if self.app.state.prediction.ndim == 2:
-            self.app.state.prediction[mask] = bit
+            region = self.app.state.prediction[y0:y1, x0:x1]
+
+            region[mask] = value
+
+            update_region(
+                self.app.ui.canvas,
+                self.app.state.data,
+                self.app.state.prediction,
+                x0,
+                y0,
+                x1,
+                y1,
+                self.app.state.colors,
+            )
+
         else:
             z = self.app.state.zoom
-            self.app.state.prediction[z][mask] = bit
+
+            region = self.app.state.prediction[z, y0:y1, x0:x1]
+
+            region[mask] = value
+
+            update_region(
+                self.app.ui.canvas,
+                self.app.state.data[z],
+                self.app.state.prediction[z],
+                x0,
+                y0,
+                x1,
+                y1,
+                self.app.state.colors,
+            )
+
         self.app.state.edited += 1
 
         if self.app.state.edited > 0:
             self.app.ui.sidebarright.changes_state_label.grid_remove()
+
             self.app.ui.sidebarright.save_changes.grid()
-        self.app.ui_handel.update_display()
 
     def save_changes(self):
         if self.app.state.edited <= 0:

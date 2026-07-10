@@ -117,16 +117,7 @@ class UIutils:
 
     @staticmethod
     def set_flag(flag_dot, flag_text, st):
-        import inspect
 
-        caller = inspect.stack()[1]
-
-        print("=== DEBUG CALL set flag===")
-        print(f"Appelée par : {caller.function}")
-        print(f"Fichier     : {caller.filename}")
-        print(f"Ligne       : {caller.lineno}")
-        print(f"st        : {st}")
-        print("=================")
         if st == 1:
             flag_dot.config(fg=theme.SUCCESS)
 
@@ -201,9 +192,7 @@ class UIutils:
             else:
                 pred_img = self.state.prediction[self.state.zoom]
             colors = display(
-                canvas=self.ui.canvas,
-                data=img,
-                pred=pred_img,
+                canvas=self.ui.canvas, data=img, pred=pred_img, colors=self.state.colors
             )
             self.state.num_classes = (
                 len(numpy.unique(pred_img))
@@ -522,7 +511,6 @@ class UIutils:
     #        popup.bind("<FocusOut>", lambda e: popup.destroy())
 
     def select_class(self, cls, popup):
-        print("clicked:")
         self.state.brush_bit = cls
         self.ui.sidebarright.color.config(
             bg=self.rgb_to_hex(self.app.state.colors[cls - 1])

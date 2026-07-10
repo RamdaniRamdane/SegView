@@ -48,7 +48,7 @@ class AppState:
     colors = []
 
     def __setattr__(self, name, value):
-        debug = True
+        debug = False
         old = getattr(self, name, "<UNSET>")
 
         changed = True

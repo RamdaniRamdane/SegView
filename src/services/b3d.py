@@ -102,7 +102,6 @@ class B3d:
         self.make_config_fine_tuning()
 
         if not getattr(self.state, "config_path", None):
-            print("no config")
             return
 
         self.b3d_Threading.result = None
