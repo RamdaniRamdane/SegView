@@ -58,7 +58,7 @@ class AppState:
         else:
             changed = old != value
 
-        if changed and debug:
+        if changed and debug and name == "brush_bit":
             print(f"[STATE] {name}: {type(old)} -> {type(value)} -> {value}")
 
         super().__setattr__(name, value)

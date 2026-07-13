@@ -40,3 +40,16 @@ fix new bug : on predicting sucpect : on clear or on predict
 - add epoch choose
 - liber validated apre fine tuning 
 
+
+
+
+
+
+
+
+
+
+
+
+problem problem avec 2 classes
+

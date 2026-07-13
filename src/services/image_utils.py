@@ -76,19 +76,23 @@ def overlay(base, mask, colors_st, alpha=0.4):
 
     result = np.stack([base, base, base], axis=-1).astype(np.float32)
 
-    classes = np.unique(mask)
+    max_class = int(mask.max())
 
-    classes = classes[classes != 0]
+    if max_class <= 0:
+        return result.astype(np.uint8)
 
-    if len(colors_st) < len(classes):
+    # Une couleur par numéro de classe
+    if len(colors_st) < max_class:
         colors_st.clear()
+        colors_st.extend(generate_colors(max_class))
 
-        colors_st.extend(generate_colors(len(classes)))
-
-    for i, cls in enumerate(classes):
+    for cls in range(1, max_class + 1):
         class_mask = mask == cls
 
-        color = np.array(colors_st[i], dtype=np.float32)
+        if not np.any(class_mask):
+            continue
+
+        color = np.array(colors_st[cls - 1], dtype=np.float32)
 
         result[class_mask] = (1 - alpha) * result[class_mask] + alpha * color
 
@@ -160,9 +164,11 @@ def update_region(canvas, data, pred, x0, y0, x1, y1, colors):
 
     scale = DISPLAY_CACHE["scale"]
 
-    # taille affichage
     region_img = region_img.resize(
-        (max(1, int(region_img.width * scale)), max(1, int(region_img.height * scale))),
+        (
+            max(1, int(region_img.width * scale)),
+            max(1, int(region_img.height * scale)),
+        ),
         Image.NEAREST,
     )
 

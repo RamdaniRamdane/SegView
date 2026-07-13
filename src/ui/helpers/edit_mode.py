@@ -142,7 +142,9 @@ class EditMode:
 
         mask = ((yy - iy) ** 2 + (xx - ix) ** 2) <= r * r
 
+        # ici rrrr
         value = self.state.brush_bit if tool == "Brush" else 0
+        print("la valeur : ", value)
 
         # Application du brush
 

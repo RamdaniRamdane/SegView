@@ -131,7 +131,7 @@ class Sidebarright:
         self.tool_size_slider = tk.Scale(
             self.edit_frame,
             from_=1,
-            to=20,
+            to=100,
             orient="horizontal",
             length=100,
             showvalue=True,
