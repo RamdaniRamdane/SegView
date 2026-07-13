@@ -109,3 +109,4 @@ class SegViewApp:
             "<B1-Motion>",
             self.edit_mode_utils.on_mouse_drag,
         )
+        self.ui.canvas.bind("<Configure>", self.ui_handel.on_canvas_resize)

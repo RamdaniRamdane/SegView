@@ -516,3 +516,27 @@ class UIutils:
             bg=self.rgb_to_hex(self.app.state.colors[cls - 1])
         )
         popup.destroy()
+
+    def on_canvas_resize(self, event):
+
+        if self.app.state.data is None:
+            return
+
+        if self.app.state.data.ndim == 2:
+            display(
+                self.app.ui.canvas,
+                self.app.state.data,
+                self.app.state.prediction,
+                self.app.state.colors,
+            )
+        else:
+            z = self.app.state.zoom
+
+            display(
+                self.app.ui.canvas,
+                self.app.state.data[z],
+                None
+                if self.app.state.prediction is None
+                else self.app.state.prediction[z],
+                self.app.state.colors,
+            )
