@@ -174,7 +174,7 @@ class B3d:
             self.state.config_path = auto_config_preprocess(
                 img_path=img_pth,
                 msk_path=msk_pth,
-                num_classes=self.state.num_classes,
+                num_classes=self.state.num_classes - 1,
                 config_dir="configs",
                 base_config=None,
                 ct_norm=False,
