@@ -176,7 +176,7 @@ class B3d:
                 msk_path=msk_pth,
                 num_classes=self.state.num_classes,
                 config_dir="configs",
-                base_config=None,
+                base_config=os.path.join(self.state.path_log, "log/config.yaml"),
                 ct_norm=False,
                 desc="unet",
                 max_dim=128,
