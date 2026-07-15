@@ -51,6 +51,7 @@ fix new bug : on predicting sucpect : on clear or on predict
 
 
 
+
 problem problem avec 2 classes
 
 
@@ -86,7 +87,7 @@ problem problem avec 2 classes
 
 
 
-2d
+Done 2d
 omero
 raport
 
