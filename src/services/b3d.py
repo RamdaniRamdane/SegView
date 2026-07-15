@@ -170,6 +170,7 @@ class B3d:
                 if i.endswith("_out"):
                     shutil.rmtree(os.path.join(self.state.path_seg, i))
             print("les files dans Segview", list_files_Segview)
+            Is_2d = True if self.state.mask_dim == 2 else False
             self.state.config_path = auto_config_preprocess(
                 img_path=img_pth,
                 msk_path=msk_pth,
@@ -180,7 +181,7 @@ class B3d:
                 desc="unet",
                 max_dim=128,
                 num_epochs=self.state.num_epochs,
-                is_2d=False,
+                is_2d=Is_2d,
             )
 
             print(
