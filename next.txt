@@ -52,6 +52,7 @@ fix new bug : on predicting sucpect : on clear or on predict
 
 
 
+
 problem problem avec 2 classes
 
 
@@ -90,4 +91,14 @@ problem problem avec 2 classes
 Done 2d
 omero
 raport
+
+
+
+
+what i nee to do with omero, 
+
+/connection si le repot est public on a pas besion de connecion 
+/download
+/upload
+/link
 

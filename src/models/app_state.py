@@ -46,9 +46,10 @@ class AppState:
     raw_dim: int = 0
     mask_dim: int = 0
     colors = []
+    storage: str = "LOCAL"
 
     def __setattr__(self, name, value):
-        debug = False
+        debug = True
         old = getattr(self, name, "<UNSET>")
 
         changed = True

@@ -3,6 +3,7 @@ import tkinter as tk
 from src.models.app_state import AppState
 from src.services.b3d import B3d
 from src.services.file_manager import FileManager
+from src.services.omero import OmeroHandler
 from src.services.route import Route
 from src.ui.helpers.edit_mode import EditMode
 from src.ui.helpers.ui_utils import UIutils
@@ -21,6 +22,7 @@ class SegViewApp:
         self.route = Route(self.ui, self.file_manager, self.edit_mode_utils, self.state)
         self.b3d = B3d(self.state, self.ui, self.route)
         self.worker = None
+        self.omero_handler = OmeroHandler(self.ui, self.state)
 
     def bind_events(self):
         # top bar binds
@@ -28,6 +30,8 @@ class SegViewApp:
         self.ui.topbar.pred_btn.config(command=lambda: self.route.route("prediction"))
         self.ui.topbar.rev_btn.config(command=lambda: self.route.route("review"))
         self.ui.sidebarright.fine_btn.config(command=lambda: self.b3d.run_fine_tuning())
+        self.ui.topbar.local.config(command=lambda: self.omero_handler.toggle("LOCAL"))
+        self.ui.topbar.omero.config(command=lambda: self.omero_handler.toggle("OMERO"))
         # sidebarright binds
         # =============================================================================
         self.ui.sidebarright.btn.config(

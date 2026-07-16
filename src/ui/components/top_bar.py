@@ -15,7 +15,7 @@ class TopBar:
             self.root, bg=theme.BG, height=30, width=self.root.winfo_screenmmwidth()
         )
         self.frame.grid_rowconfigure(0, weight=0)
-        for i in range(4):
+        for i in range(6):
             self.frame.grid_columnconfigure(i, weight=0)
         self.frame.grid_columnconfigure(2, weight=4)
 
@@ -51,9 +51,31 @@ class TopBar:
             bg=theme.BG,
             fg=theme.TEXT_HI,
         )
+        self.local = tk.Button(
+            self.frame,
+            text="Local",
+            font=(theme.MONO, 8),
+            bg=theme.DANGER,
+            fg=theme.TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+            compound="left",
+        )
+        self.omero = tk.Button(
+            self.frame,
+            text="Omero",
+            font=(theme.MONO, 8),
+            bg=theme.MUTED,
+            fg=theme.TEXT_HI,
+            relief="flat",
+            cursor="hand2",
+            compound="left",
+        )
 
         self.pred_btn.grid(row=0, column=0, sticky="e")
         self.rev_btn.grid(row=0, column=1, sticky="e")
         self.show_info.grid(row=0, column=3, sticky="e", padx=10)
+        self.local.grid(row=0, column=4, sticky="e", padx=0)
+        self.omero.grid(row=0, column=5, sticky="e", padx=0)
 
         # self.frame.grid_propagate(False)
