@@ -22,6 +22,7 @@ class OmeroHandler:
 
             if conn.connect():
                 self.state.conn_omero = conn
+                conn.c.enableKeepAlive(60)
                 return True
 
             return False

@@ -2,7 +2,7 @@ import os
 import shutil
 import tkinter as tk
 from datetime import datetime
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 
 import tifffile
 
@@ -306,9 +306,86 @@ class FileManager:
             )
             return
 
+    def ask_omero_id(self):
+        dialog = tk.Toplevel(self.ui.root)
+        dialog.title("Open from OMERO")
+        dialog.geometry("300x120")
+        dialog.resizable(False, False)
+
+        dialog.transient(self.ui.root)
+        dialog.grab_set()
+
+        result = None
+
+        ttk.Label(dialog, text="Project / Dataset ID /File").pack(
+            padx=15, pady=(15, 5), anchor="w"
+        )
+
+        entry = ttk.Entry(dialog)
+        entry.pack(fill="x", padx=15)
+        entry.focus()
+
+        button_frame = ttk.Frame(dialog)
+        button_frame.pack(fill="x", padx=15, pady=15)
+
+        def ok():
+            nonlocal result
+
+            try:
+                result = int(entry.get())
+                dialog.destroy()
+            except ValueError:
+                entry.selection_range(0, tk.END)
+                entry.focus()
+
+        def cancel():
+            dialog.destroy()
+
+        ttk.Button(button_frame, text="Cancel", command=cancel).pack(side="right")
+
+        ttk.Button(button_frame, text="OK", command=ok).pack(side="right", padx=5)
+
+        dialog.bind("<Return>", lambda e: ok())
+        dialog.bind("<Escape>", lambda e: cancel())
+
+        self.ui.root.wait_window(dialog)
+
+        return result
+
+    def get_dir(self):
+        if (
+            self.state.storage == "OMERO"
+            and self.state.conn_omero is not None
+            and self.state.conn_omero.isConnected()
+        ):
+            id = self.ask_omero_id()
+            types = [
+                "Project",
+                "Dataset",
+                "Image",
+                "FileAnnotation",
+                "OriginalFile",
+            ]
+
+            for t in types:
+                obj = self.state.conn_omero.getObject(t, id)
+                if obj is not None:
+                    print(f"Found {t}")
+                    print("ID :", obj.getId())
+
+                    if hasattr(obj, "getName"):
+                        print("Name :", obj.getName())
+
+                    break
+            else:
+                print("Object not found.")
+        else:
+            p = filedialog.askdirectory()
+            return p
+
     def open_dir(self, action, path_dir=None, btn=None):
         if not path_dir:
-            path_dir = filedialog.askdirectory(title=action)
+            path_dir = self.get_dir()
         if not path_dir:
             return
         if not os.path.isdir(path_dir):
