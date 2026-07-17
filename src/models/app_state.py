@@ -48,6 +48,8 @@ class AppState:
     colors = []
     storage: str = "LOCAL"
 
+    conn_omero = None
+
     def __setattr__(self, name, value):
         debug = True
         old = getattr(self, name, "<UNSET>")
