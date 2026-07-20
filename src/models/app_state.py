@@ -49,6 +49,7 @@ class AppState:
     storage: str = "LOCAL"
 
     conn_omero = None
+    omero_dir: str = ""
 
     def __setattr__(self, name, value):
         debug = True

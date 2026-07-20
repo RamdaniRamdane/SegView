@@ -5,6 +5,7 @@ from datetime import datetime
 from tkinter import filedialog, messagebox, ttk
 
 import tifffile
+from omero.plugins.download import DownloadControl
 
 import src.ui.theme as theme
 from src.ui.helpers.ui_utils import UIutils
@@ -385,7 +386,118 @@ class FileManager:
         print(contents)
         return contents
 
+    def get_working_directory(self):
+        """
+        Return the current working directory.
+        Ask the user if none is configured.
+        """
+
+        if self.state.omero_dir and os.path.isdir(self.state.omero_dir):
+            return self.state.omero_dir
+
+        workdir = filedialog.askdirectory(title="Choose a working directory")
+
+        if not workdir:
+            return None
+
+        self.state.omero_dir = workdir
+        return workdir
+
+    def get_download_control(self):
+        """
+        Return OMERO DownloadControl.
+        """
+
+        return DownloadControl()
+
+    def download_dataset(self, dataset, destination):
+        """
+        Download an OMERO Dataset using its original files.
+        """
+
+        os.makedirs(destination, exist_ok=True)
+
+        dc = self.get_download_control()
+
+        dataset_dir = os.path.join(destination, dataset.getName())
+
+        os.makedirs(dataset_dir, exist_ok=True)
+
+        print("Downloading Dataset:", dataset.getName())
+
+        for image in dataset.listChildren():
+            fileset = image.getFileset()
+
+            if fileset is None:
+                print("No fileset for:", image.getName())
+                continue
+
+            print("Downloading image:", image.getName())
+
+            dc.download_fileset(self.state.conn_omero, fileset, dataset_dir)
+
+        return dataset_dir
+
+    def download_file(self, file_obj, destination):
+
+        os.makedirs(destination, exist_ok=True)
+
+        filename = file_obj.getName()
+
+        output = os.path.join(destination, filename)
+
+        print("Downloading:", filename)
+
+        store = self.state.conn_omero.c.sf.createRawFileStore()
+
+        try:
+            store.setFileId(file_obj.getId())
+
+            size = file_obj.getSize()
+
+            with open(output, "wb") as f:
+                offset = 0
+
+                while offset < size:
+                    block = store.read(offset, 1024 * 1024)
+
+                    f.write(block)
+
+                    offset += len(block)
+
+        finally:
+            store.close()
+
+        print("Saved:", output)
+
+        return output
+
+    def download_omero_object(self, obj):
+
+        destination = self.get_working_directory()
+
+        if destination is None:
+            return None
+
+        try:
+            if obj.OMERO_CLASS == "Dataset":
+                return self.download_dataset(obj, destination)
+
+            elif obj.OMERO_CLASS == "OriginalFile":
+                return self.download_file(obj, destination)
+
+            else:
+                messagebox.showerror("OMERO", f"Unsupported: {obj.OMERO_CLASS}")
+
+                return None
+
+        except Exception as e:
+            messagebox.showerror("Download failed", str(e))
+
+            return None
+
     def get_dir(self, action):
+        dest = ""
         if (
             self.state.storage == "OMERO"
             and self.state.conn_omero is not None
@@ -423,8 +535,9 @@ class FileManager:
                     if not i.endswith("tif"):
                         return None
                 print("Telechargement ..")
+                dest = self.download_omero_object(obj)
 
-            return obj
+            return dest if dest else ""
 
         else:
             p = filedialog.askdirectory()
