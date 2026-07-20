@@ -309,7 +309,7 @@ class FileManager:
     def ask_omero_id(self):
         dialog = tk.Toplevel(self.ui.root)
         dialog.title("Open from OMERO")
-        dialog.geometry("300x120")
+        dialog.geometry("320x170")
         dialog.resizable(False, False)
 
         dialog.transient(self.ui.root)
@@ -317,9 +317,19 @@ class FileManager:
 
         result = None
 
-        ttk.Label(dialog, text="Project / Dataset ID /File").pack(
-            padx=15, pady=(15, 5), anchor="w"
+        ttk.Label(dialog, text="Object type").pack(padx=15, pady=(15, 5), anchor="w")
+
+        object_type = tk.StringVar(value="Dataset")
+
+        selector = ttk.Combobox(
+            dialog,
+            textvariable=object_type,
+            values=["Dataset", "File"],
+            state="readonly",
         )
+        selector.pack(fill="x", padx=15)
+
+        ttk.Label(dialog, text="Object ID").pack(padx=15, pady=(10, 5), anchor="w")
 
         entry = ttk.Entry(dialog)
         entry.pack(fill="x", padx=15)
@@ -332,7 +342,9 @@ class FileManager:
             nonlocal result
 
             try:
-                result = int(entry.get())
+                print("in try")
+                obj_id = int(entry.get())
+                result = (object_type.get(), obj_id)
                 dialog.destroy()
             except ValueError:
                 entry.selection_range(0, tk.END)
@@ -342,7 +354,6 @@ class FileManager:
             dialog.destroy()
 
         ttk.Button(button_frame, text="Cancel", command=cancel).pack(side="right")
-
         ttk.Button(button_frame, text="OK", command=ok).pack(side="right", padx=5)
 
         dialog.bind("<Return>", lambda e: ok())
@@ -352,40 +363,76 @@ class FileManager:
 
         return result
 
-    def get_dir(self):
+    def ls_omero(self, obj):
+        contents = []
+
+        if obj.OMERO_CLASS == "Project":
+            contents = [ds.getName() for ds in obj.listChildren()]
+
+        elif obj.OMERO_CLASS == "Dataset":
+            contents = [img.getName() for img in obj.listChildren()]
+
+        elif obj.OMERO_CLASS == "Image":
+            contents = [
+                ann.getFile().getName()
+                for ann in obj.listAnnotations()
+                if ann.OMERO_CLASS == "FileAnnotation"
+            ]
+
+        elif obj.OMERO_CLASS == "OriginalFile":
+            contents = [obj.getName()]
+
+        print(contents)
+        return contents
+
+    def get_dir(self, action):
         if (
             self.state.storage == "OMERO"
             and self.state.conn_omero is not None
             and self.state.conn_omero.isConnected()
         ):
-            id = self.ask_omero_id()
-            types = [
-                "Project",
-                "Dataset",
-                "Image",
-                "FileAnnotation",
-                "OriginalFile",
-            ]
+            result = self.ask_omero_id()
+            print(result)
+            if result is None:
+                return None
 
-            for t in types:
-                obj = self.state.conn_omero.getObject(t, id)
-                if obj is not None:
-                    print(f"Found {t}")
-                    print("ID :", obj.getId())
+            obj_type, obj_id = result
 
-                    if hasattr(obj, "getName"):
-                        print("Name :", obj.getName())
+            # Conversion du nom du sélecteur vers le type OMERO
+            type_map = {
+                "Project": "Project",
+                "Dataset": "Dataset",
+                "File": "OriginalFile",  # ou "FileAnnotation" selon ce que tu veux ouvrir
+            }
 
-                    break
-            else:
-                print("Object not found.")
+            omero_type = type_map[obj_type]
+
+            obj = self.state.conn_omero.getObject(omero_type, obj_id)
+
+            if obj is None:
+                print(f"{omero_type} {obj_id} not found.")
+                return None
+
+            print(f"Found {omero_type}")
+            print("ID:", obj.getId())
+            if hasattr(obj, "getName"):
+                print("Name:", obj.getName())
+            content = self.ls_omero(obj)
+            if action == "PATH_RAW" or action == "PATH_PRED":
+                for i in content:
+                    if not i.endswith("tif"):
+                        return None
+                print("Telechargement ..")
+
+            return obj
+
         else:
             p = filedialog.askdirectory()
             return p
 
     def open_dir(self, action, path_dir=None, btn=None):
         if not path_dir:
-            path_dir = self.get_dir()
+            path_dir = self.get_dir(action)
         if not path_dir:
             return
         if not os.path.isdir(path_dir):
