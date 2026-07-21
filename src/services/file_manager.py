@@ -549,6 +549,42 @@ class FileManager:
 
             return None
 
+    def get_omero_object_anywhere(self, obj_type, obj_id):
+
+        conn = self.state.conn_omero
+
+        try:
+            # Recherche normale dans le groupe courant
+            obj = conn.getObject(obj_type, obj_id)
+
+            if obj:
+                return obj
+
+            # Recherche dans tous les groupes accessibles
+            print(f"Searching {obj_type} {obj_id} in all groups...")
+
+            params = {"omero.group": "-1"}
+
+            obj = conn.getQueryService().get(obj_type, obj_id, params)
+
+            if obj:
+                # récupérer le groupe où se trouve l'objet
+                group_id = obj.details.group.id.val
+                group_name = obj.details.group.name.val
+
+                print(f"Found in group: {group_id} ({group_name})")
+
+                # mettre à jour la session OMERO
+                conn.setGroupForSession(group_id)
+
+                # retourner l'objet via Gateway
+                return conn.getObject(obj_type, obj_id)
+
+        except Exception as e:
+            print(f"OMERO search error ({obj_type}, {obj_id}):", e)
+
+        return None
+
     def get_dir(self, action):
         dest = ""
         if (
@@ -572,8 +608,7 @@ class FileManager:
 
             omero_type = type_map[obj_type]
 
-            obj = self.state.conn_omero.getObject(omero_type, obj_id)
-
+            obj = self.get_omero_object_anywhere(omero_type, obj_id)
             if obj is None:
                 print(f"{omero_type} {obj_id} not found.")
                 return None
