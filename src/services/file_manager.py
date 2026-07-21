@@ -308,9 +308,10 @@ class FileManager:
             return
 
     def ask_omero_id(self):
+
         dialog = tk.Toplevel(self.ui.root)
         dialog.title("Open from OMERO")
-        dialog.geometry("320x170")
+        dialog.geometry("350x220")
         dialog.resizable(False, False)
 
         dialog.transient(self.ui.root)
@@ -318,47 +319,99 @@ class FileManager:
 
         result = None
 
-        ttk.Label(dialog, text="Object type").pack(padx=15, pady=(15, 5), anchor="w")
+        # ===== Styles =====
+        style = ttk.Style()
+
+        style.configure("OMERO.TFrame", background=theme.BG)
+
+        style.configure("OMERO.TLabel", background=theme.BG, foreground=theme.TEXT_HI)
+
+        style.configure(
+            "OMERO.TButton",
+            background=theme.PANEL,
+            foreground=theme.TEXT_HI,
+            padding=(10, 5),
+        )
+
+        style.map(
+            "OMERO.TButton",
+            background=[("active", theme.PANEL)],
+            foreground=[("active", theme.TEXT_HI)],
+        )
+
+        style.configure(
+            "OMERO.TCombobox",
+            fieldbackground=theme.PANEL,
+            background=theme.PANEL,
+            foreground=theme.TEXT_HI,
+        )
+
+        # ===== Main frame =====
+        frame = ttk.Frame(dialog, style="OMERO.TFrame", padding=15)
+        frame.pack(fill="both", expand=True)
+
+        ttk.Label(frame, text="Object type", style="OMERO.TLabel").pack(anchor="w")
 
         object_type = tk.StringVar(value="Dataset")
 
         selector = ttk.Combobox(
-            dialog,
+            frame,
             textvariable=object_type,
             values=["Dataset", "File"],
             state="readonly",
         )
-        selector.pack(fill="x", padx=15)
 
-        ttk.Label(dialog, text="Object ID").pack(padx=15, pady=(10, 5), anchor="w")
+        selector.pack(fill="x", pady=(5, 15))
 
-        entry = ttk.Entry(dialog)
-        entry.pack(fill="x", padx=15)
+        ttk.Label(frame, text="Object ID", style="OMERO.TLabel").pack(anchor="w")
+
+        entry = ttk.Entry(frame)
+
+        entry.pack(fill="x", pady=5)
+
         entry.focus()
 
-        button_frame = ttk.Frame(dialog)
-        button_frame.pack(fill="x", padx=15, pady=15)
+        # ===== Buttons =====
+        button_frame = ttk.Frame(frame, style="OMERO.TFrame")
 
-        def ok():
+        button_frame.pack(fill="x", pady=(20, 0))
+
+        def on_ok():
+
             nonlocal result
 
             try:
-                print("in try")
                 obj_id = int(entry.get())
+
                 result = (object_type.get(), obj_id)
+
                 dialog.destroy()
+
             except ValueError:
-                entry.selection_range(0, tk.END)
+                entry.delete(0, tk.END)
                 entry.focus()
 
-        def cancel():
+        def on_cancel():
             dialog.destroy()
 
-        ttk.Button(button_frame, text="Cancel", command=cancel).pack(side="right")
-        ttk.Button(button_frame, text="OK", command=ok).pack(side="right", padx=5)
+        cancel_btn = ttk.Button(
+            button_frame, text="Cancel", style="OMERO.TButton", command=on_cancel
+        )
 
-        dialog.bind("<Return>", lambda e: ok())
-        dialog.bind("<Escape>", lambda e: cancel())
+        cancel_btn.pack(side="right")
+
+        ok_btn = ttk.Button(
+            button_frame,
+            text="OK - choose WorkDir",
+            style="OMERO.TButton",
+            command=on_ok,
+        )
+
+        ok_btn.pack(side="right", padx=8)
+
+        dialog.bind("<Return>", lambda e: on_ok())
+
+        dialog.bind("<Escape>", lambda e: on_cancel())
 
         self.ui.root.wait_window(dialog)
 
