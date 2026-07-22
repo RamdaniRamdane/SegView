@@ -526,9 +526,11 @@ class FileManager:
         name_dir = os.path.basename(output).split(".")[0]
         import zipfile
 
+        print("path of the zip", output)
         with zipfile.ZipFile(output, "r") as zip_ref:
             zip_ref.extractall(name_dir)
         dir = os.path.join(destination, name_dir)
+        print("dir after unzip :", dir)
 
         return dir
 
