@@ -92,7 +92,7 @@ class OmeroHandler:
         ).grid(row=2, column=0, sticky="w", pady=5)
 
         host = ttk.Entry(frame, width=30)
-        host.insert(0, "localhost")
+        host.insert(0, "omero.igred.fr")
         host.grid(row=2, column=1)
 
         # Port

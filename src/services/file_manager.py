@@ -517,13 +517,20 @@ class FileManager:
                     f.write(block)
 
                     offset += len(block)
+                    print(offset)
 
         finally:
             store.close()
 
         print("Saved:", output)
+        name_dir = os.path.basename(output).split(".")[0]
+        import zipfile
 
-        return output
+        with zipfile.ZipFile(output, "r") as zip_ref:
+            zip_ref.extractall(name_dir)
+        dir = os.path.join(destination, name_dir)
+
+        return dir
 
     def download_omero_object(self, obj):
 
@@ -533,6 +540,8 @@ class FileManager:
             return None
 
         try:
+            print("rey ..........................")
+            print(obj.OMERO_CLASS)
             if obj.OMERO_CLASS == "Dataset":
                 return self.download_dataset(obj, destination)
 
@@ -623,6 +632,8 @@ class FileManager:
                     if not i.endswith("tif"):
                         return None
                 print("Telechargement ..")
+                dest = self.download_omero_object(obj)
+            elif action == "PATH_LOG":
                 dest = self.download_omero_object(obj)
 
             return dest if dest else ""
