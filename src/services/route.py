@@ -34,3 +34,4 @@ class Route:
         self.ui.sidebarright.fine_container.grid_remove()
         if not self.state.path_out:
             self.ui.sidebarright.correct_but.grid_remove()
+        self.ui.sidebarright.btn.grid_remove()
