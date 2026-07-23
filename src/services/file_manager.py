@@ -532,10 +532,11 @@ class FileManager:
         print("path of the zip", output)
         try:
             with zipfile.ZipFile(output, "r") as zip_ref:
+                print("mauvais,", zip_ref.testzip())
                 zip_ref.extractall(path_out)
                 print("dir after unzip :", dir)
         except Exception as e:
-            messagebox.showerror(repr(e))
+            messagebox.showerror(title="unzip error", message=repr(e))
             return None
 
         return path_out
