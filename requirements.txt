@@ -1,6 +1,5 @@
-biom3d
+biom3d==0.1.2
 numpy==2.2.6
 pillow==12.2.0
 tifffile==2025.5.10
 imagecodecs==2025.3.30
-

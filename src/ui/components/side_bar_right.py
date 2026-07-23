@@ -36,18 +36,18 @@ class Sidebarright:
         self.review_container = tk.Frame(
             self.container, bg=theme.PANEL, width=200, height=100
         )
-        self.get_segview_folder = tk.Button(
-            self.review_container,
-            text="Import SegView Folder",
-            font=(theme.MONO, 8),
-            bg=theme.MUTED,
-            fg=theme.TEXT_HI,
-            relief="flat",
-            cursor="hand2",
-            compound="left",
-            pady=10,
-            padx=10,
-        )
+        # self.get_segview_folder = tk.Button(
+        #     self.review_container,
+        #     text="Import SegView Folder",
+        #     font=(theme.MONO, 8),
+        #     bg=theme.MUTED,
+        #     fg=theme.TEXT_HI,
+        #     relief="flat",
+        #     cursor="hand2",
+        #     compound="left",
+        #     pady=10,
+        #     padx=10,
+        # )
         # navigation
         self.navigateFrame = tk.Frame(
             self.review_container, bg=theme.PANEL, width=200, height=100
@@ -200,7 +200,7 @@ class Sidebarright:
             pady=10,
         )
 
-        self.get_segview_folder.grid(row=0, column=0, pady=10)
+        # self.get_segview_folder.grid(row=0, column=0, pady=10)
         self.edit_frame.grid(row=7, column=0)
 
         self.changes_state_label.grid(row=3, column=0, columnspan=3)

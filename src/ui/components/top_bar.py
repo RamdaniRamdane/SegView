@@ -32,18 +32,18 @@ class TopBar:
             compound="left",
         )
 
-        self.review_icon = image_utils.load_icon(IMG_DIR, "review.png", (10, 10))
-        self.rev_btn = tk.Button(
-            self.frame,
-            text="Review Predictions",
-            font=(theme.MONO, 8),
-            bg=theme.MUTED,
-            fg=theme.TEXT_HI,
-            relief="flat",
-            cursor="hand2",
-            image=self.review_icon,
-            compound="left",
-        )
+        #        self.review_icon = image_utils.load_icon(IMG_DIR, "review.png", (10, 10))
+        #        self.rev_btn = tk.Button(
+        #            self.frame,
+        #            text="Review Predictions",
+        #            font=(theme.MONO, 8),
+        #            bg=theme.MUTED,
+        #            fg=theme.TEXT_HI,
+        #            relief="flat",
+        #            cursor="hand2",
+        #            image=self.review_icon,
+        #            compound="left",
+        #        )
         self.show_info = tk.Label(
             self.frame,
             text="Raw = -- D, Mask = -- D, Classes = -- ",
@@ -73,7 +73,7 @@ class TopBar:
         )
 
         self.pred_btn.grid(row=0, column=0, sticky="e")
-        self.rev_btn.grid(row=0, column=1, sticky="e")
+        #        self.rev_btn.grid(row=0, column=1, sticky="e")
         self.show_info.grid(row=0, column=3, sticky="e", padx=10)
         self.local.grid(row=0, column=4, sticky="e", padx=0)
         self.omero.grid(row=0, column=5, sticky="e", padx=0)

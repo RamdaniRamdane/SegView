@@ -28,7 +28,7 @@ class SegViewApp:
         # top bar binds
         # ============================================================================
         self.ui.topbar.pred_btn.config(command=lambda: self.route.route("prediction"))
-        self.ui.topbar.rev_btn.config(command=lambda: self.route.route("review"))
+        #        self.ui.topbar.rev_btn.config(command=lambda: self.route.route("review"))
         self.ui.sidebarright.fine_btn.config(command=lambda: self.b3d.run_fine_tuning())
         self.ui.topbar.local.config(command=lambda: self.omero_handler.toggle("LOCAL"))
         self.ui.topbar.omero.config(command=lambda: self.omero_handler.toggle("OMERO"))
@@ -83,9 +83,10 @@ class SegViewApp:
             command=self.file_manager.get_out_path
         )
         self.ui.sidebarright.pred.config(command=self.b3d.run_prediction)
-        self.ui.sidebarright.get_segview_folder.config(
-            command=lambda: self.file_manager.open_dir("PATH_SEG")
-        )
+
+        #        self.ui.sidebarright.get_segview_folder.config(
+        #            command=lambda: self.file_manager.open_dir("PATH_SEG")
+        #        )
         # fine tuning
         # self.ui.sidebarright.get_valid_masks.config(
         #    command=lambda: self.file_manager.open_dir("PATH_VALID")

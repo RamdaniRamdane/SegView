@@ -30,8 +30,8 @@ class Route:
         self.state.route = "review"
         if path:
             self.file_manager.open_dir("PATH_PRED", path)
-        self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
-        self.ui.topbar.rev_btn.config(bg="white", fg="black")
+        #        self.ui.topbar.pred_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        #        self.ui.topbar.rev_btn.config(bg="white", fg="black")
         self.ui.sidebarright.review_container.grid()
         self.ui.sidebarright.pred_container.grid_remove()
         self.ui.sidebarright.fine_container.grid_remove()
