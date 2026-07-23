@@ -549,22 +549,21 @@ class FileManager:
             store.close()
 
         # Extraction
-        name_dir = os.path.splitext(os.path.basename(output))[0]
-        path_out = os.path.join(destination, name_dir)
-        os.makedirs(path_out, exist_ok=True)
 
         try:
-            print("Unzipping:", output, "->", path_out)
+            print("Unzipping:", output, "->", destination)
 
             with zipfile.ZipFile(output, "r") as zip_ref:
                 bad = zip_ref.testzip()  # None si OK, sinon nom du fichier corrompu
                 print("testzip:", bad)
-                zip_ref.extractall(path_out)
+                zip_ref.extractall(destination)
 
-            print("dir after unzip:", os.listdir(path_out))
+            print("dir after unzip:", os.listdir(destination))
         except Exception as e:
             messagebox.showerror(title="unzip error", message=repr(e))
             return None
+        name_dir = os.path.splitext(os.path.basename(output))[0]
+        path_out = os.path.join(destination, name_dir)
 
         return path_out
 
