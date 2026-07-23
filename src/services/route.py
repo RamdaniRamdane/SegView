@@ -1,6 +1,3 @@
-import src.ui.theme as theme
-
-
 class Route:
     def __init__(self, ui, file_manager, edit_mode_utils, state):
         self.file_manager = file_manager
@@ -20,7 +17,7 @@ class Route:
         self.edit_mode_utils.toggle_tool("deactivate")
         self.state.route = "prediction"
         self.ui.topbar.pred_btn.config(bg="white", fg="black")
-        self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
+        #        self.ui.topbar.rev_btn.config(bg=theme.MUTED, fg=theme.TEXT_HI)
         self.ui.sidebarright.pred_container.grid()
         self.ui.sidebarright.get_folder_out.grid()
         self.ui.sidebarright.review_container.grid_remove()
