@@ -524,15 +524,21 @@ class FileManager:
 
         print("Saved:", output)
         name_dir = os.path.basename(output).split(".")[0]
+        path_out = os.path.join(destination, name_dir)
+        os.makedirs(path_out, exist_ok=True)
+
         import zipfile
 
         print("path of the zip", output)
-        with zipfile.ZipFile(output, "r") as zip_ref:
-            zip_ref.extractall(name_dir)
-        dir = os.path.join(destination, name_dir)
-        print("dir after unzip :", dir)
+        try:
+            with zipfile.ZipFile(output, "r") as zip_ref:
+                zip_ref.extractall(path_out)
+                print("dir after unzip :", dir)
+        except Exception as e:
+            messagebox.showerror(repr(e))
+            return None
 
-        return dir
+        return path_out
 
     def download_omero_object(self, obj):
 
