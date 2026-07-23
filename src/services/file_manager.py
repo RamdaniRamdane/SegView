@@ -492,49 +492,76 @@ class FileManager:
         return dataset_dir
 
     def download_file(self, file_obj, destination):
+        import os
+        import zipfile
+        from tkinter import messagebox
 
         os.makedirs(destination, exist_ok=True)
 
         filename = file_obj.getName()
-
         output = os.path.join(destination, filename)
-
-        print("Downloading:", filename)
+        print("Downloading:", filename, "->", output)
 
         store = self.state.conn_omero.c.sf.createRawFileStore()
+
+        expected_size = file_obj.getSize()
 
         try:
             store.setFileId(file_obj.getId())
 
-            size = file_obj.getSize()
+            chunk = 1024 * 1024
+            offset = 0
 
             with open(output, "wb") as f:
-                offset = 0
+                while offset < expected_size:
+                    to_read = min(chunk, expected_size - offset)
+                    block = store.read(offset, to_read)
 
-                while offset < size:
-                    block = store.read(offset, 1024 * 1024)
+                    # si ça renvoie rien avant d'avoir tout lu, le zip sera corrompu
+                    if not block:
+                        raise IOError(
+                            f"Lecture terminée trop tôt: {offset}/{expected_size} octets"
+                        )
 
                     f.write(block)
-
                     offset += len(block)
-                    print(offset)
+                    print("downloaded:", offset)
 
+            # Vérif taille disque
+            actual_size = os.path.getsize(output)
+            if actual_size != expected_size:
+                raise IOError(
+                    f"Taille finale différente: attendu {expected_size}, obtenu {actual_size}"
+                )
+
+            # Vérif signature ZIP (header)
+            with open(output, "rb") as f:
+                magic = f.read(4)
+            print("ZIP header:", magic)
+
+            if magic[:2] != b"PK" and not zipfile.is_zipfile(output):
+                raise IOError("Le fichier téléchargé ne ressemble pas à un ZIP valide.")
+
+        except Exception as e:
+            messagebox.showerror(title="download error", message=repr(e))
+            return None
         finally:
             store.close()
 
-        print("Saved:", output)
-        name_dir = os.path.basename(output).split(".")[0]
+        # Extraction
+        name_dir = os.path.splitext(os.path.basename(output))[0]
         path_out = os.path.join(destination, name_dir)
         os.makedirs(path_out, exist_ok=True)
 
-        import zipfile
-
-        print("path of the zip", output)
         try:
+            print("Unzipping:", output, "->", path_out)
+
             with zipfile.ZipFile(output, "r") as zip_ref:
-                print("mauvais,", zip_ref.testzip())
+                bad = zip_ref.testzip()  # None si OK, sinon nom du fichier corrompu
+                print("testzip:", bad)
                 zip_ref.extractall(path_out)
-                print("dir after unzip :", dir)
+
+            print("dir after unzip:", os.listdir(path_out))
         except Exception as e:
             messagebox.showerror(title="unzip error", message=repr(e))
             return None
