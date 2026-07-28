@@ -20,6 +20,11 @@ DISPLAY_CACHE = {
     "scale": None,
     "offset_x": None,
     "offset_y": None,
+    "base_pil": None,
+    "overlay_pil": None,
+    "base_ref": None,
+    "mask_ref": None,
+    "alpha": 0.4,
 }
 
 
@@ -70,33 +75,49 @@ def generate_colors(n, min_distance=120):
     return colors[:n]
 
 
-def overlay(base, mask, colors_st, alpha=0.4):
+def overlay(base, mask, colors_st, alpha=None):
 
-    base = normalize_image(base)
+    if alpha is None:
+        alpha = DISPLAY_CACHE["alpha"]
+    else:
+        DISPLAY_CACHE["alpha"] = alpha
 
-    result = np.stack([base, base, base], axis=-1).astype(np.float32)
+    rebuild = (
+        DISPLAY_CACHE["base_pil"] is None
+        or DISPLAY_CACHE["overlay_pil"] is None
+        or DISPLAY_CACHE["base_ref"] is not base
+        or DISPLAY_CACHE["mask_ref"] is not mask
+    )
 
-    max_class = int(mask.max())
+    if rebuild:
+        gray = normalize_image(base)
+        base_rgb = np.stack([gray, gray, gray], axis=-1)
 
-    if max_class <= 0:
-        return result.astype(np.uint8)
+        overlay_rgb = np.zeros_like(base_rgb)
 
-    # Une couleur par numéro de classe
-    if len(colors_st) < max_class:
-        colors_st.clear()
-        colors_st.extend(generate_colors(max_class))
+        max_class = int(mask.max())
 
-    for cls in range(1, max_class + 1):
-        class_mask = mask == cls
+        if max_class > 0:
+            if len(colors_st) < max_class:
+                colors_st.clear()
+                colors_st.extend(generate_colors(max_class))
 
-        if not np.any(class_mask):
-            continue
+            for cls in range(1, max_class + 1):
+                overlay_rgb[mask == cls] = colors_st[cls - 1]
 
-        color = np.array(colors_st[cls - 1], dtype=np.float32)
+        DISPLAY_CACHE["base_pil"] = Image.fromarray(base_rgb)
+        DISPLAY_CACHE["overlay_pil"] = Image.fromarray(overlay_rgb)
 
-        result[class_mask] = (1 - alpha) * result[class_mask] + alpha * color
+        DISPLAY_CACHE["base_ref"] = base
+        DISPLAY_CACHE["mask_ref"] = mask
 
-    return result.astype(np.uint8)
+    return np.asarray(
+        Image.blend(
+            DISPLAY_CACHE["base_pil"],
+            DISPLAY_CACHE["overlay_pil"],
+            alpha,
+        )
+    )
 
 
 def display(canvas, data, pred=None, colors=None):
@@ -196,3 +217,35 @@ def load_icon(img_dir, name, size=None):
         img = img.resize(size, Image.LANCZOS)
 
     return ImageTk.PhotoImage(img)
+
+
+# user in change opacity
+def set_overlay_alpha(canvas, alpha):
+
+    DISPLAY_CACHE["alpha"] = alpha
+
+    if DISPLAY_CACHE["base_pil"] is None:
+        return
+
+    img = Image.blend(
+        DISPLAY_CACHE["base_pil"],
+        DISPLAY_CACHE["overlay_pil"],
+        alpha,
+    )
+
+    scale = DISPLAY_CACHE["scale"]
+
+    w = max(1, int(img.width * scale))
+    h = max(1, int(img.height * scale))
+
+    img = img.resize((w, h), Image.NEAREST)
+
+    DISPLAY_CACHE["image"] = img
+    DISPLAY_CACHE["tk_image"] = ImageTk.PhotoImage(img)
+
+    canvas.itemconfig(
+        DISPLAY_CACHE["item"],
+        image=DISPLAY_CACHE["tk_image"],
+    )
+
+    canvas.image = DISPLAY_CACHE["tk_image"]

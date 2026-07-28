@@ -87,6 +87,7 @@ class SliderRow:
             sliderrelief="flat",
             width=8,
         )
+        self.opacity_slider.set(40)
         self.opacity_slider.grid(row=1, column=1, sticky="ew")
 
 

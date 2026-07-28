@@ -67,6 +67,7 @@ class SegViewUI:
         # frequently used widgets on top-level
         self.canvas = self.canvas_view.canvas
         self.zoom_slider = self.slider.zoom_slider
+        self.opacity_slider = self.slider.opacity_slider
         self.path_label = self.toolbar.path_label
 
     def set_state(self, state):

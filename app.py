@@ -3,6 +3,7 @@ import tkinter as tk
 from src.models.app_state import AppState
 from src.services.b3d import B3d
 from src.services.file_manager import FileManager
+from src.services.image_utils import set_overlay_alpha
 from src.services.omero import OmeroHandler
 from src.services.route import Route
 from src.ui.helpers.edit_mode import EditMode
@@ -104,6 +105,9 @@ class SegViewApp:
         self.ui.zoom_slider.config(
             state=tk.DISABLED,
             command=self.ui_handel.change_z,
+        )
+        self.ui.opacity_slider.config(
+            command=lambda v: set_overlay_alpha(self.ui.canvas, float(v) / 100)
         )
 
         self.ui.canvas.bind(
