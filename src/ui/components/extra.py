@@ -36,7 +36,7 @@ class SliderRow:
             text="Z",
             font=(theme.MONO, 8),
             bg=theme.BG,
-            fg=theme.TEXT_DIM,
+            fg=theme.TEXT_HI,
             width=2,
         )
         self.z_label.grid(row=0, column=0, sticky="w", padx=(0, 6), pady=4)
@@ -49,7 +49,7 @@ class SliderRow:
             showvalue=True,
             font=(theme.MONO, 8),
             bg=theme.BG,
-            fg=theme.TEXT_DIM,
+            fg=theme.TEXT_HI,
             troughcolor=theme.BORDER,
             activebackground=theme.ACCENT,
             highlightthickness=0,
@@ -59,6 +59,35 @@ class SliderRow:
             width=6,
         )
         self.zoom_slider.grid(row=0, column=1, sticky="ew")
+
+        self.opacity_label = tk.Label(
+            self.frame,
+            text="Opacity",
+            font=(theme.MONO, 8),
+            bg=theme.BG,
+            fg=theme.TEXT_HI,
+            width=8,
+        )
+
+        self.opacity_label.grid(row=1, column=0)
+        self.opacity_slider = tk.Scale(
+            self.frame,
+            from_=0,
+            to=100,
+            orient="horizontal",
+            showvalue=True,
+            font=(theme.MONO, 8),
+            bg=theme.BG,
+            fg=theme.TEXT_HI,
+            troughcolor=theme.BORDER,
+            activebackground=theme.ACCENT,
+            highlightthickness=0,
+            bd=0,
+            sliderlength=12,
+            sliderrelief="flat",
+            width=8,
+        )
+        self.opacity_slider.grid(row=1, column=1, sticky="ew")
 
 
 class StatusStrip:
