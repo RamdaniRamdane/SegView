@@ -8,6 +8,59 @@ class Toolbar:
     def __init__(self, parent):
         self.frame = tk.Frame(parent, bg=theme.PANEL, height=36)
         self.frame.grid_propagate(False)
+
+        self.zoom_frame = tk.Frame(self.frame, bg=theme.PANEL, height=30)
+
+        self.zoom_frame.pack(side="right", padx=(5, 8))
+
+        self.zoom_label = tk.Label(
+            self.zoom_frame,
+            text="Zoom",
+            font=(theme.MONO, 9),
+            bg=theme.PANEL,
+            fg=theme.TEXT,
+        )
+        self.zoom_label.pack(side="left", padx=(0, 8))
+
+        self.buttons_frame = tk.Frame(self.zoom_frame, bg=theme.PANEL, height=25)
+        self.buttons_frame.pack(side="left")
+
+        button_style = {
+            "font": (theme.MONO, 11, "bold"),
+            "bg": theme.PANEL,
+            "fg": theme.TEXT,
+            "activebackground": theme.PANEL,
+            "activeforeground": theme.TEXT,
+            "relief": "flat",
+            "bd": 0,
+            "width": 2,
+            "height": 1,
+            "cursor": "hand2",
+        }
+
+        self.left = tk.Button(self.buttons_frame, text="←", **button_style)
+        self.left.pack(side="left", padx=2, pady=1)
+
+        self.up = tk.Button(self.buttons_frame, text="↑", **button_style)
+        self.up.pack(side="left", padx=2, pady=1)
+
+        self.down = tk.Button(self.buttons_frame, text="↓", **button_style)
+        self.down.pack(side="left", padx=2, pady=1)
+
+        # Droite
+        self.right = tk.Button(self.buttons_frame, text="→", **button_style)
+        self.right.pack(side="left", padx=2, pady=1)
+
+        tk.Frame(self.buttons_frame, bg=theme.TEXT_DIM, width=1, height=18).pack(
+            side="left", padx=7, pady=1
+        )
+
+        self.zoom_out = tk.Button(self.buttons_frame, text="−", **button_style)
+        self.zoom_out.pack(side="left", padx=2, pady=1)
+
+        self.zoom_in = tk.Button(self.buttons_frame, text="+", **button_style)
+        self.zoom_in.pack(side="left", padx=2, pady=1)
+
         self.path_label = tk.Label(
             self.frame,
             text="no file loaded",
@@ -18,6 +71,7 @@ class Toolbar:
             padx=10,
             pady=10,
         )
+
         self.path_label.pack(side="left", fill="both", expand=True)
 
 
