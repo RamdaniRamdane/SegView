@@ -1,6 +1,14 @@
 import tkinter as tk
 
 import src.ui.theme as theme
+from src.services.image_utils import (
+    go_down,
+    go_left,
+    go_right,
+    go_up,
+    zoom_in,
+    zoom_out,
+)
 
 from .components.extra import CanvasView, SliderRow, StatusStrip, Toolbar
 from .components.side_bar_left import Sidebarleft
@@ -69,6 +77,17 @@ class SegViewUI:
         self.zoom_slider = self.slider.zoom_slider
         self.opacity_slider = self.slider.opacity_slider
         self.path_label = self.toolbar.path_label
+        self.toolbar.left.config(command=lambda: go_left(self.canvas))
+
+        self.toolbar.right.config(command=lambda: go_right(self.canvas))
+
+        self.toolbar.up.config(command=lambda: go_up(self.canvas))
+
+        self.toolbar.down.config(command=lambda: go_down(self.canvas))
+
+        self.toolbar.zoom_in.config(command=lambda: zoom_in(self.canvas))
+
+        self.toolbar.zoom_out.config(command=lambda: zoom_out(self.canvas))
 
     def set_state(self, state):
         self.state = state

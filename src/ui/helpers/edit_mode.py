@@ -1,7 +1,7 @@
 import numpy as np
 import tifffile
 
-from src.services.image_utils import update_region
+from src.services.image_utils import canvas_to_image, update_region
 
 
 class EditMode:
@@ -103,30 +103,16 @@ class EditMode:
 
         # Conversion canvas -> image
 
-        c_w = self.app.ui.canvas.winfo_width()
-        c_h = self.app.ui.canvas.winfo_height()
+        ix, iy = canvas_to_image(
+            self.app.ui.canvas,
+            x,
+            y,
+        )
 
-        scale = min(c_w / img_w, c_h / img_h)
-
-        new_w = int(img_w * scale)
-        new_h = int(img_h * scale)
-
-        offset_x = (c_w - new_w) // 2
-
-        offset_y = (c_h - new_h) // 2
-
-        ix = int((x - offset_x) / scale)
-
-        iy = int((y - offset_y) / scale)
-
-        if ix < 0 or iy < 0 or ix >= img_w or iy >= img_h:
+        if ix is None:
             return
 
-        # Taille brush
-
         r = self.state.edit_tool_size
-
-        # Seulement la zone du brush
 
         x0 = max(0, ix - r)
 
@@ -136,17 +122,11 @@ class EditMode:
 
         y1 = min(img_h, iy + r + 1)
 
-        # Création du cercle local
-
         yy, xx = np.ogrid[y0:y1, x0:x1]
 
         mask = ((yy - iy) ** 2 + (xx - ix) ** 2) <= r * r
 
-        # ici rrrr
         value = self.state.brush_bit if tool == "Brush" else 0
-        print("la valeur : ", value)
-
-        # Application du brush
 
         if self.app.state.prediction.ndim == 2:
             region = self.app.state.prediction[y0:y1, x0:x1]
